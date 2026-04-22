@@ -3,28 +3,24 @@ spring:
   application:
     name: back
 
-#  datasource:
-#    # ?????? ?? board? ?????
-#    url: jdbc:mysql://localhost:3306/board?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
-#    username: root # ??? MySQL ??? (?? root)
-#    password: jehee826@ # ??? MySQL ???? (? ?????!)
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#
-#  h2:
-#    console:
-#      enabled: true
-#
-#  jpa:
-#    hibernate:
-#      # update: ???? ??? ??, ??? ?? ??? ?
-#      # ddl-auto: update
-#      # ?????? ???? ?? ????? 'none'?? 'validate' ??
-#      ddl-auto: validate
-#    show-sql: true # ???? SQL? ??? ??
-#    properties:
-#      hibernate:
-#        format_sql: true # SQL? ?? ?? ??
-#        dialect: org.hibernate.dialect.MySQLDialect
+  datasource:
+    url: jdbc:mysql://localhost:3306/board?createDatabaseIfNotExist=true
+    username: sjh4335
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: validate #update로 바꿔서 db 연동 실행 가능, vaildate는 테이블이
+    show-sql: true # ???? SQL? ??? ??
+    properties:
+      hibernate:
+        format_sql: true # SQL? ?? ?? ??
+        dialect: org.hibernate.dialect.MySQLDialect
 
   mail:
     host: smtp.gmail.com

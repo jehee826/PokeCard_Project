@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name="UserEntity")
 @Getter // private 된 함수들을 외부로 알아서 꺼내 쓸 수 있게 해줌
 public class UserEntity {
 
