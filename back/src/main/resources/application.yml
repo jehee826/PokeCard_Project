@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 spring:
   application:
     name: back
@@ -40,4 +41,48 @@ spring:
 # JWT settings (Custom properties)
 jwt:
   secret: your-very-secure-random-secret-key-at-least-32-chars-long
+=======
+spring:
+  application:
+    name: back
+
+  datasource:
+    # ?????? ?? board? ?????
+    url: jdbc:mysql://localhost:3306/board?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
+    username: root # ??? MySQL ??? (?? root)
+    password: jehee826@ # ??? MySQL ???? (? ?????!)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      # update: ???? ??? ??, ??? ?? ??? ?
+      # ddl-auto: update
+      # ?????? ???? ?? ????? 'none'?? 'validate' ??
+      ddl-auto: validate
+    show-sql: true # ???? SQL? ??? ??
+    properties:
+      hibernate:
+        format_sql: true # SQL? ?? ?? ??
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# JWT settings (Custom properties)
+jwt:
+  secret: your-very-secure-random-secret-key-at-least-32-chars-long
+>>>>>>> cc00384a07fea4897bf0948befbba65d70e67bb0
   expiration: 86400000
