@@ -1,0 +1,79 @@
+.topBar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #ffffff;
+    padding: 12px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.topBar-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.topBar input[type="text"] {
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 0.9rem;
+    width: 200px;
+    transition: all 0.2s;
+}
+
+.topBar input[type="text"]:focus {
+    border-color: #e3350d;
+    box-shadow: 0 0 0 2px rgba(227, 53, 13, 0.1);
+}
+
+.topBar input[type="button"] {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #444;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.topBar input[type="button"]:hover {
+    background-color: #f8f9fa;
+    border-color: #bbb;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Primary/Logout Button Style */
+.topBar input[value="로그아웃"],
+.topBar input[value="로그인"] {
+    background-color: #2a2a2a;
+    color: white;
+    border: none;
+    padding: 8px 22px;
+}
+
+.topBar input[value="로그아웃"]:hover,
+.topBar input[value="로그인"]:hover {
+    background-color: #444;
+}
+
+.main_icon {
+    height: 45px;
+    width: auto;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.main_icon:hover {
+    transform: scale(1.05);
+}

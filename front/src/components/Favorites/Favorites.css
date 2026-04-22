@@ -1,0 +1,159 @@
+.favorites-container {
+  padding: 20px;
+  max-width: 700px;
+  margin: 0 auto;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #fdfdfd;
+  min-height: 80vh;
+}
+
+.favorites-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.favorites-header h2 {
+  color: #333;
+  font-size: 1.8rem;
+  position: relative;
+  display: inline-block;
+}
+
+.favorites-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 4px;
+  background-color: #ffcb05; /* Pokemon Yellow */
+  border-radius: 2px;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 25px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #ffcb05;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 14px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  color: #777;
+}
+
+.tab.buy.active {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.tab.sell.active {
+  background-color: #1890ff;
+  color: white;
+}
+
+.favorites-list {
+  display: flex;
+  flex-wrap: wrap;       /* 공간 부족 시 다음 줄로 */
+  gap: 20px;             /* 카드 사이 간격 */
+  justify-content: flex-start;
+}
+
+.favorite-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  height: 400px;
+  width: calc(25% - 15px); /* 한 행에 4개 배치 (데스크탑 기준) */
+  min-width: 250px;        /* 너무 작아지지 않게 방어 */
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s;
+}
+
+.favorite-card:hover {
+  transform: translateX(5px);
+  border-color: #ffcb05;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-image-container {
+  width: 250px;
+  height: 250px;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-right: 1px solid #eee;
+}
+
+.card-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.card-info {
+  flex: 1;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-name {
+  font-size: 1.15rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #2c3e50;
+}
+
+.price-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.price-row {
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.price-label {
+  width: 85px;
+  color: #888;
+  font-weight: 500;
+}
+
+.price-value {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.buy-price .price-value {
+  color: #ff4d4f;
+}
+
+.sell-price .price-value {
+  color: #1890ff;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 50px 0;
+  color: #aaa;
+  font-style: italic;
+}

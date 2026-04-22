@@ -1,0 +1,123 @@
+.my-cards-container {
+  display: flex;
+  width: 100%;
+  max-width: 1400px;
+  height: calc(100vh - 100px);
+  margin: 20px auto;
+  background-color: #f8f9fa;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Sidebar for Search & Filter */
+.sidebar {
+  width: 300px;
+  background-color: #ffffff;
+  border-right: 1px solid #e9ecef;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.sidebar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.search-section h3, .filter-section h3 {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.search-bar input:focus {
+  border-color: #007bff;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-group button {
+  padding: 10px 15px;
+  border: 1px solid #ced4da;
+  background: #fff;
+  color: #495057;
+  cursor: pointer;
+  border-radius: 8px;
+  text-align: left;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.filter-group button:hover {
+  background-color: #f1f3f5;
+}
+
+.filter-group button.active {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+/* Main Content Area */
+.cards-display {
+  flex: 1;
+  padding: 30px;
+  background-color: #fdfdfd;
+  overflow-y: auto;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 25px;
+}
+
+/* Custom Scrollbar for Main Display */
+.cards-display::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cards-display::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.cards-display::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.cards-display::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 100px 0;
+  color: #999;
+}
+
+.no-results p {
+  font-size: 1.2rem;
+}

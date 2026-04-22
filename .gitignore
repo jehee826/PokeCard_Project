@@ -1,0 +1,13 @@
+# Backend (Spring)
+back/*
+!back/src/
+
+# Frontend (React/Vite)
+front/node_modules/
+front/dist/
+
+# IDE & OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
