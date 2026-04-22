@@ -1,31 +1,27 @@
-<<<<<<< HEAD
 spring:
   application:
     name: back
 
+  # 1. MySQL DB 설정 (주석 해제 및 설정 최적화)
   datasource:
-    # ?????? ?? board? ?????
     url: jdbc:mysql://localhost:3306/board?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
-    username: root # ??? MySQL ??? (?? root)
-    password: jehee826@ # ??? MySQL ???? (? ?????!)
+    username: root
+    password: jehee826@ # 본인의 MySQL root 계정 비밀번호를 입력하세요!
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  h2:
-    console:
-      enabled: true
-
+  # 2. JPA 설정 (MySQLDialect 적용)
   jpa:
     hibernate:
-      # update: ???? ??? ??, ??? ?? ??? ?
-      # ddl-auto: update
-      # ?????? ???? ?? ????? 'none'?? 'validate' ??
-      ddl-auto: validate
-    show-sql: true # ???? SQL? ??? ??
+      # 처음 실행 시 테이블이 없다면 자동으로 만들어주도록 update로 설정합니다.
+      ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
-        format_sql: true # SQL? ?? ?? ??
+        format_sql: true
+        # MySQL 8.0 이상을 사용하신다면 아래 dialect가 적합합니다.
         dialect: org.hibernate.dialect.MySQLDialect
 
+  # 3. 메일 설정 (환경 변수 누락 시 실행 에러 방지를 위해 직접 입력 권장)
   mail:
     host: smtp.gmail.com
     port: 587
@@ -38,51 +34,6 @@ spring:
           starttls:
             enable: true
 
-# JWT settings (Custom properties)
+# 4. JWT 설정 (필터와 Provider에서 읽어갈 값)
 jwt:
   secret: your-very-secure-random-secret-key-at-least-32-chars-long
-=======
-spring:
-  application:
-    name: back
-
-  datasource:
-    # ?????? ?? board? ?????
-    url: jdbc:mysql://localhost:3306/board?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
-    username: root # ??? MySQL ??? (?? root)
-    password: jehee826@ # ??? MySQL ???? (? ?????!)
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  h2:
-    console:
-      enabled: true
-
-  jpa:
-    hibernate:
-      # update: ???? ??? ??, ??? ?? ??? ?
-      # ddl-auto: update
-      # ?????? ???? ?? ????? 'none'?? 'validate' ??
-      ddl-auto: validate
-    show-sql: true # ???? SQL? ??? ??
-    properties:
-      hibernate:
-        format_sql: true # SQL? ?? ?? ??
-        dialect: org.hibernate.dialect.MySQLDialect
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
-# JWT settings (Custom properties)
-jwt:
-  secret: your-very-secure-random-secret-key-at-least-32-chars-long
->>>>>>> cc00384a07fea4897bf0948befbba65d70e67bb0
-  expiration: 86400000
