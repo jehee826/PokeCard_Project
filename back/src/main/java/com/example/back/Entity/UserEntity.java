@@ -12,6 +12,7 @@ import javax.management.relation.Role;
 import java.time.LocalDateTime;
 
 @Entity //엔티티 선언
+@Table (name = "users")
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,38 +22,37 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
+    @Column(name = "email", nullable = false, unique = true, length = 100)
+    private String email;
+
+    @Column(name = "password_hash", nullable = false)
+    private String password;
+
     @Column(nullable = false, unique = true, length = 50)
-    private String username; // 로그인 아이디로 사용
+    private String nickname;
 
-    @Column(nullable = false)
-    private String password; // 암호화된 비밀번호 저장
+    @Column(name = "profile_img_url", length = 2048)
+    private String profileImgUrl;
 
-    @Column(nullable = false, length = 20)
-    private String nickname; // 장터에서 활동할 이름
+    @Column(length = 20)
+    private String tier;
 
-    @Column(length = 15)
-    private String phoneNumber; // 연락처
-
-//    @Enumerated(EnumType.STRING)
-//    @Column(nullable = false)
-//    private Role role; // 권한 (USER, ADMIN 등)
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt; // 가입일
-
-    // --- 비즈니스 로직 (수정 메서드) ---
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     // 유저 정보 수정 (더티 체킹 활용)
-    public void updateProfile(String nickname, String phoneNumber) {
+    public void updateProfile(String nickname, String profileImgUrl) {
         this.nickname = nickname;
-        this.phoneNumber = phoneNumber;
+        this.profileImgUrl = profileImgUrl;
     }
 
     // 가입 시 생성 시간 자동 설정
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+        if (this.tier == null) this.tier = "BRONZE"; // 초기 등급 설정
     }
 }
