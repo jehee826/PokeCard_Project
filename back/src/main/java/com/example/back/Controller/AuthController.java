@@ -11,10 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/public")
 @RequiredArgsConstructor // 아래 final변수 두개 생성자 자동주입
@@ -31,7 +27,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("이미 사용 중인 이메일입니다.");
         }
-
+        //Entity 변환
         UserEntity newUser = request.toEntity();
         try {
             userRepository.save(newUser);
@@ -39,7 +35,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            // DB 제약조건 위반 등 예외 발생 시
+            // DB 제약조건 위반 등 예외 발생 시 오류뱉음
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("회원가입 중 오류가 발생했습니다.");
         }
@@ -48,7 +44,8 @@ public class AuthController {
     // 로그인 컨트롤러
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        // [수정] 대문자 UserRepository -> 소문자 userRepository (객체 참조)
+
+        // LoginId를 통해
         return userRepository.findByLoginId(request.getLoginId())
                 .map(user -> {
                     if (user.getPassword().equals(request.getPassword())) {
