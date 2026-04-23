@@ -4,7 +4,7 @@ spring:
 
   # 1. MySQL DB 설정 (주석 해제 및 설정 최적화)
   datasource:
-    url: jdbc:mysql://localhost:3306/board?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/pokecard?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: jehee826@ # 본인의 MySQL root 계정 비밀번호를 입력하세요!
     driver-class-name: com.mysql.cj.jdbc.Driver

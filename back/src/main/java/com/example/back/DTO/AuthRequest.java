@@ -12,20 +12,18 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuthRequest {
-    private String username;
+
+    private String email;
     private String password;
+    private String nickname;
+    private String profileImgUrl;
 
-
-    // Getter, Setter 추가
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public UserEntity toEntity() {
+    public UserEntity toEntity(String encodedPassword) {
         return UserEntity.builder()
-                .username(this.username)
-                .password(this.password)
+                .email(this.email)
+                .password(encodedPassword) // 암호화된 비밀번호를 넣어야 함
+                .nickname(this.nickname)
+                .profileImgUrl(this.profileImgUrl)
                 .build();
     }
 
