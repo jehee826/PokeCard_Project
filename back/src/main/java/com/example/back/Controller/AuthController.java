@@ -22,11 +22,8 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtTokenProvider tokenProvider;
 
-    // 가짜 DB (기존 코드 유지)
+    // 가짜 DB
     private static final Map<String, String> mockDatabase = new HashMap<>();
-
-    // 직접 작성했던 생성자는 지우세요! (RequiredArgsConstructor와 충돌함)
-    // 대신 가짜 데이터는 static 블록이나 별도 메서드로 초기화할 수 있습니다.
     static {
         mockDatabase.put("123", "123");
     }
