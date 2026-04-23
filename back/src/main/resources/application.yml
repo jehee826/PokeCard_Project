@@ -4,16 +4,10 @@ spring:
 
   # 1. MySQL DB 설정 (주석 해제 및 설정 최적화)
   datasource:
-<<<<<<< HEAD
     url: jdbc:mysql://localhost:3306/board?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
-    username: sjh4335
+    username: sjh4335 #계정이 다름
     password: 1234 # 본인의 MySQL root 계정 비밀번호를 입력하세요!
-=======
-    url: jdbc:mysql://localhost:3306/pokecard?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: jehee826@ # 본인의 MySQL root 계정 비밀번호를 입력하세요!
->>>>>>> 030f1b89cae5151fe44359a545095d502c3dcc21
-    driver-class-name: com.mysql.cj.jdbc.Driver
+
 
   # 2. JPA 설정 (MySQLDialect 적용)
   jpa:
