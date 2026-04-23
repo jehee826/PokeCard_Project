@@ -28,6 +28,9 @@ public class UserEntity {
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
+    @Column(name = "login_id", nullable = false, unique = true, length = 100)
+    private String loginId;
+
     @Column(name = "password_hash", nullable = false)
     private String password;
 
