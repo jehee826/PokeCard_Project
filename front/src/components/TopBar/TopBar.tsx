@@ -1,4 +1,4 @@
-import './TopBar.css';
+import styles from './TopBar.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
@@ -27,10 +27,10 @@ const TopBar = () => {
     navigate('/');
   };
   return (
-    <div className='topBar'>
-      <img className="main_icon" src="/lightPokeLogo.png" alt="로고" onClick={mainHandleClick}/>
+    <div className={styles.topBar}>
+      <img className={styles.main_icon} src="/lightPokeLogo.png" alt="로고" onClick={mainHandleClick}/>
       
-      <div className="topBar-buttons">
+      <div className={styles['topBar-buttons']}>
         <input 
           type="button" 
           value="관심 카드" 
