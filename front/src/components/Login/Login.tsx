@@ -23,6 +23,7 @@ const Login = () => {
 
     const handleReset = () => {
         setId('');
+        setPw('');
         sessionStorage.removeItem('login_id');
     };
 
