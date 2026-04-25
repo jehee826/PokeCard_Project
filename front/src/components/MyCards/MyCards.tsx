@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Card from "../Middle/M/Card.tsx";
-import './MyCards.css';
+import styles from './MyCards.module.css';
 
 const MyCards = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,14 +37,14 @@ const MyCards = () => {
   });
 
   return (
-    <div className="my-cards-container">
+    <div className={styles['my-cards-container']}>
       {/* 왼쪽 사이드바: 검색 및 필터 */}
-      <aside className="sidebar">
-        <h2 className="sidebar-title">My Collection</h2>
+      <aside className={styles.sidebar}>
+        <h2 className={styles['sidebar-title']}>My Collection</h2>
         
-        <div className="search-section">
+        <div className={styles['search-section']}>
           <h3>Search</h3>
-          <div className="search-bar">
+          <div className={styles['search-bar']}>
             <input 
               type="text" 
               placeholder="Card ID (001~012)" 
@@ -54,11 +54,11 @@ const MyCards = () => {
           </div>
         </div>
 
-        <div className="filter-section">
+        <div className={styles['filter-section']}>
           <h3>Filter by Type</h3>
-          <div className="filter-group">
+          <div className={styles['filter-group']}>
             <button 
-              className={selectedTypes.length === 0 ? "active" : ""}
+              className={selectedTypes.length === 0 ? styles.active : ""}
               onClick={() => toggleType("All")}
             >
               All Types
@@ -66,7 +66,7 @@ const MyCards = () => {
             {types.map(type => (
               <button 
                 key={type}
-                className={selectedTypes.includes(type) ? "active" : ""}
+                className={selectedTypes.includes(type) ? styles.active : ""}
                 onClick={() => toggleType(type)}
               >
                 {type}
@@ -77,14 +77,14 @@ const MyCards = () => {
       </aside>
 
       {/* 오른쪽 메인 콘텐츠: 카드 그리드 */}
-      <main className="cards-display">
-        <div className="cards-grid">
+      <main className={styles['cards-display']}>
+        <div className={styles['cards-grid']}>
           {filteredCards.length > 0 ? (
             filteredCards.map((card) => (
               <Card key={card.id} imageNum={card.id} />
             ))
           ) : (
-            <div className="no-results">
+            <div className={styles['no-results']}>
               <p>No cards found matching your criteria.</p>
             </div>
           )}
