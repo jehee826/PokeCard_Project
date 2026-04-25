@@ -39,12 +39,12 @@ const MyCards = () => {
   return (
     <div className={styles['my-cards-container']}>
       {/* 왼쪽 사이드바: 검색 및 필터 */}
-      <aside className={styles.sidebar}>
-        <h2 className={styles['sidebar-title']}>My Collection</h2>
+      <aside className={styles["sidebar"]}>
+        <h2 className={styles["sidebar-title"]}>My Collection</h2>
         
-        <div className={styles['search-section']}>
+        <div className={styles["search-section"]}>
           <h3>Search</h3>
-          <div className={styles['search-bar']}>
+          <div className={styles["search-bar"]}>
             <input 
               type="text" 
               placeholder="Card ID (001~012)" 
@@ -54,9 +54,9 @@ const MyCards = () => {
           </div>
         </div>
 
-        <div className={styles['filter-section']}>
+        <div className={styles["filter-section"]}>
           <h3>Filter by Type</h3>
-          <div className={styles['filter-group']}>
+          <div className={styles["filter-group"]}>
             <button 
               className={selectedTypes.length === 0 ? styles.active : ""}
               onClick={() => toggleType("All")}

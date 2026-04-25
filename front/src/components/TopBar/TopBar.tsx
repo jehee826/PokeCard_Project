@@ -27,10 +27,10 @@ const TopBar = () => {
     navigate('/');
   };
   return (
-    <div className={styles.topBar}>
-      <img className={styles.main_icon} src="/lightPokeLogo.png" alt="로고" onClick={mainHandleClick}/>
+    <div className={styles["topBar"]}>
+      <img className={styles["main_icon"]} src="/lightPokeLogo.png" alt="로고" onClick={mainHandleClick}/>
       
-      <div className={styles['topBar-buttons']}>
+      <div className={styles["topBar-buttons"]}>
         <input 
           type="button" 
           value="관심 카드" 

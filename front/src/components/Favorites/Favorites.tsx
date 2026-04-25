@@ -50,54 +50,54 @@ const Favorites = () => {
       </header>
 
       {/* 상단 탭 바 */}
-      <div className={styles.tabs}>
+      <div className={styles["tabs"]}>
         <div 
           onClick={() => setViewMode('buy')}
-          className={`${styles.tab} ${styles.buy} ${viewMode === 'buy' ? styles.active : ''}`}
+          className={`${styles["tab"]} ${styles["buy"]} ${viewMode === 'buy' ? styles["active"] : ''}`}
         >
           구매 예정
         </div>
         <div 
           onClick={() => setViewMode('sell')}
-          className={`${styles.tab} ${styles.sell} ${viewMode === 'sell' ? styles.active : ''}`}
+          className={`${styles["tab"]} ${styles["sell"]} ${viewMode === 'sell' ? styles["active"] : ''}`}
         >
           판매 예정
         </div>
       </div>
 
       {/* 리스트 렌더링 */}
-      <div className={styles['favorites-list']}>
+      <div className={styles["favorites-list"]}>
         {currentList.length > 0 ? (
           currentList.map(card => (
-            <div key={card.id} className={styles['favorite-card']}>
-              <div className={styles['card-image-container']}>
-                <img src={card.image} alt={card.name} className={styles['card-image']} />
+            <div key={card.id} className={styles["favorite-card"]}>
+              <div className={styles["card-image-container"]}>
+                <img src={card.image} alt={card.name} className={styles["card-image"]} />
               </div>
               
-              <div className={styles['card-info']}>
-                <div className={styles['card-name']}>{card.name}</div>
+              <div className={styles["card-info"]}>
+                <div className={styles["card-name"]}>{card.name}</div>
                 
-                <div className={styles['price-details']}>
+                <div className={styles["price-details"]}>
                   {viewMode === 'buy' ? (
                     <>
-                      <div className={`${styles['price-row']} ${styles['buy-price']}`}>
-                        <span className={styles['price-label']}>구매 목표가</span>
-                        <span className={styles['price-value']}>{(card as { targetPrice: string }).targetPrice}</span>
+                      <div className={`${styles["price-row"]} ${styles["buy-price"]}`}>
+                        <span className={styles["price-label"]}>구매 목표가</span>
+                        <span className={styles["price-value"]}>{(card as { targetPrice: string }).targetPrice}</span>
                       </div>
-                      <div className={`${styles['price-row']} ${styles['market-price']}`}>
-                        <span className={styles['price-label']}>현재 시세</span>
-                        <span className={styles['price-value']}>{(card as { currentMarket: string }).currentMarket}</span>
+                      <div className={`${styles["price-row"]} ${styles["market-price"]}`}>
+                        <span className={styles["price-label"]}>현재 시세</span>
+                        <span className={styles["price-value"]}>{(card as { currentMarket: string }).currentMarket}</span>
                       </div>
                     </>
                   ) : (
                     <>
-                      <div className={`${styles['price-row']} ${styles['sell-price']}`}>
-                        <span className={styles['price-label']}>판매 희망가</span>
-                        <span className={styles['price-value']}>{(card as { minPrice: string }).minPrice}</span>
+                      <div className={`${styles["price-row"]} ${styles["sell-price"]}`}>
+                        <span className={styles["price-label"]}>판매 희망가</span>
+                        <span className={styles["price-value"]}>{(card as { minPrice: string }).minPrice}</span>
                       </div>
-                      <div className={`${styles['price-row']} ${styles['buy-price']}`}>
-                        <span className={styles['price-label']}>매입가</span>
-                        <span className={styles['price-value']}>{(card as { purchasePrice: string }).purchasePrice}</span>
+                      <div className={`${styles["price-row"]} ${styles["buy-price"]}`}>
+                        <span className={styles["price-label"]}>매입가</span>
+                        <span className={styles["price-value"]}>{(card as { purchasePrice: string }).purchasePrice}</span>
                       </div>
                     </>
                   )}
@@ -106,7 +106,7 @@ const Favorites = () => {
             </div>
           ))
         ) : (
-          <div className={styles['empty-message']}>목록이 비어 있습니다.</div>
+          <div className={styles["empty-message"]}>목록이 비어 있습니다.</div>
         )}
       </div>
     </div>
