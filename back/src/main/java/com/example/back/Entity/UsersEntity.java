@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 
 @Entity //엔티티 선언
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter // private 된 함수들을 외부로 알아서 꺼내 쓸 수 있게 해줌
-public class UserEntity {
+public class UsersEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

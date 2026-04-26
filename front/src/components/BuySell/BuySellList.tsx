@@ -1,13 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/axios'; // axios 설정 파일
+import api from '../../api/axios'; //통신기능
 import './BuySell.css';
 
 interface MarketCard {
-    id: number;
-    cardName: string;
-    imageUrl: string;
+    listingId: number;
+    sellerId: number;
+    cardId: number;
     price: number;
+    contactInfo: string;
+    location: string;
+    cardNameKo: string;
+    cardNumber: string;
+    attribute: string;
+    officialImageUrl: string;
+    
 }
 
 const BuySellList = () => {
@@ -17,13 +24,12 @@ const BuySellList = () => {
     const [selectedType, setSelectedType] = useState("All");
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const types = ["All", "Grass", "Fire", "Water", "Bug", "Dragon"];
+    const types = ["All", "풀", "불", "물", "벌레", "드래곤"];
 
     // 페이지 로드 시 DB에서 데이터를 가져오는 useEffect
     useEffect(() => {
         const fetchCards = async () => {
             try {
-                // 백엔드 컨트롤러 주소: /api/market/list
                 const response = await api.get('/api/market/list');
                 setItems(response.data);
             } catch (error) {
@@ -44,12 +50,13 @@ const BuySellList = () => {
         }
     };
 
-    // 필터링 로직: 목업 데이터 대신 상태값(items)을 사용
+    //검색창에 입력한값으로 필터링 후 해당되는거만 출력
     const filteredItems = items.filter(item => {
-        // DTO 필드명인 cardName을 사용하도록 수정
-        const matchesSearch = item.cardName.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesType = selectedType === "All" || item.type === selectedType;
-        return matchesSearch && matchesType;
+        // cardNumber + cardNameKo를 사용
+        const matchesCardName = item.cardNameKo.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCardNum = item.cardNumber.toLowerCase().includes(searchTerm.toLowerCase());
+        // const matchesType = item.cardType //지정한 타입만 나오게하는 추가기능은 나중에하는걸로
+        return matchesCardName || matchesCardNum;
     });
 
     return (
@@ -96,15 +103,16 @@ const BuySellList = () => {
             <div className="item-grid">
                 {filteredItems.length > 0 ? (
                     filteredItems.map(item => (
-                        <div key={item.id} className="item-card" onClick={() => navigate(`/buysell/detail/${item.id}`)}>
+                        <div key={item.listingId} className="item-card" onClick={() => navigate(`/buysell/detail/${item.listingId}`)}>
                             <div 
                                 className="item-image" 
                                 // DB에서 받아온 imageUrl을 그대로 배경으로 사용
-                                style={{ backgroundImage: `url(${item.imageUrl})` }}
+                                style={{ backgroundImage: `url(${item.officialImageUrl})` }}
                             />
                             <div className="item-info">
                                 {/* DTO 필드명인 cardName 사용 */}
-                                <h3>{item.cardName}</h3>
+                                <h3>{item.cardNameKo}</h3>
+                                <p>{item.cardNumber}</p>
                                 <p className="item-price">₩{item.price.toLocaleString()}</p>
                             </div>
                         </div>
