@@ -224,7 +224,7 @@
 }
 
 .btn-buy { background-color: #e3350d; color: white; }
-.btn-sell { background-color: #2a2a2a; color: white; }
+.btn-sell { background-color: #2a2a2a; color: white; margin-top: 10px; }
 .btn-confirm { background-color: #4caf50; color: white; width: 100%; }
 
 /* Payment Page */
@@ -264,12 +264,16 @@
     align-items: center;
     border: 2px dashed #ccc;
     border-radius: 17px;
-    min-height: 400px;
+    min-height: 200px;
+    max-height: 420px;
 }
 
 .sell-left img {
-    width: 300px;
-    min-height: 400px;
+    width: 100%;
+    height: auto;
+    max-height: 100%;  /* 박스 높이를 넘지 않음 */
+    object-fit: contain; /* 이미지가 잘리지 않고 상자 안에 쏙 들어가게 함 */
+    border-radius: 10px;
 }
 
 .sell-right {

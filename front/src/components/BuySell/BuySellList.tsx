@@ -24,7 +24,7 @@ const BuySellList = () => {
     const [selectedType, setSelectedType] = useState("All");
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const types = ["All", "풀", "불", "물", "벌레", "드래곤"];
+    const types = ["All", "풀", "불", "물", "벌레", "악", "드래곤"];
 
     // 페이지 로드 시 DB에서 데이터를 가져오는 useEffect
     useEffect(() => {
@@ -52,12 +52,12 @@ const BuySellList = () => {
 
     //검색창에 입력한값으로 필터링 후 해당되는거만 출력
     const filteredItems = items.filter(item => {
-        // cardNumber + cardNameKo를 사용
-        const matchesCardName = item.cardNameKo.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCardNum = item.cardNumber.toLowerCase().includes(searchTerm.toLowerCase());
-        // const matchesType = item.cardType //지정한 타입만 나오게하는 추가기능은 나중에하는걸로
-        return matchesCardName || matchesCardNum;
-    });
+    const matchesSearch = 
+        item.cardNameKo.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        item.cardNumber.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = (selectedType === "All") || (item.attribute === selectedType);
+    return matchesSearch && matchesType;
+});
 
     return (
         <div className="buysell-container">
@@ -110,9 +110,9 @@ const BuySellList = () => {
                                 style={{ backgroundImage: `url(${item.officialImageUrl})` }}
                             />
                             <div className="item-info">
-                                {/* DTO 필드명인 cardName 사용 */}
                                 <h3>{item.cardNameKo}</h3>
                                 <p>{item.cardNumber}</p>
+                                <p>{item.attribute}</p>
                                 <p className="item-price">₩{item.price.toLocaleString()}</p>
                             </div>
                         </div>

@@ -83,7 +83,7 @@ const SellRegistration = () => {
 
     return (
         <div className="buysell-container">
-            <h1 style={{ marginBottom: '30px' }}>Register Card for Sale</h1>
+            <h1 style={{ marginBottom: '30px' }}>판매등록</h1>
             <div className="sell-registration-container">
                 <div className="sell-left">
                     {selectedCardId ? (
@@ -93,7 +93,7 @@ const SellRegistration = () => {
                             alt="Preview" 
                         />
                     ) : (
-                        <p className="placeholder-text">Please select a card to see preview</p>
+                        <p className="placeholder-text">카드 미리보기</p>
                     )}
                 </div>
                 <div className="sell-right">
@@ -133,14 +133,8 @@ const SellRegistration = () => {
                             onChange={(e) => setContact(e.target.value)}
                         />
                     </div>
-                    <button className="btn-buy" onClick={handleRegister}>Register for Sale</button>
-                    <button 
-                        className="btn-sell" 
-                        onClick={() => navigate('/buysell')}
-                        style={{ marginTop: '10px' }}
-                    >
-                        Cancel
-                    </button>
+                    <button className="btn-buy" onClick={handleRegister}>등록</button>
+                    <button className="btn-sell" onClick={() => navigate('/buysell')}>취소</button>
                 </div>
             </div>
         </div>
