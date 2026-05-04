@@ -23,7 +23,7 @@ public class AuthController {
 
     // 회원가입 컨트롤러
     @PostMapping("/signup")
-    public ResponseEntity<?> join(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> join   (@RequestBody AuthRequest request) {
         //중복검사
         if (userRepository.findByLoginId(request.getLoginId()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
