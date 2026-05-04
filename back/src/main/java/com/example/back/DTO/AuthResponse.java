@@ -2,22 +2,20 @@ package com.example.back.DTO;
 
 
 import lombok.Getter;
+import lombok.ToString;
 
-
+@ToString //로그찍기용
 @Getter
 public class AuthResponse {
-    private String token;
-    private String message;
-    private String userNumber; // 임의로 할당해 본 변수
+    private String token; //로그인토큰
+    private String message; //확인 메세지
+    private String loginId; //사용자가 로그인한 id
 
-    public AuthResponse(String token, String message, String userNumber) {
+    public AuthResponse(String token, String message, String loginId) {
         this.token = token;
         this.message = message;
-        this.userNumber = userNumber;
+        this.loginId = loginId;
     }
 
-    // Getter 추가 (React에서 JSON으로 읽기 위해 필수)
-    public String getToken() { return token; }
-    public String getMessage() { return message; }
-    public String getUserNumber() { return userNumber; }
+
 }
