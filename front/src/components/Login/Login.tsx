@@ -31,7 +31,7 @@ const Login = () => {
         if (!isOn) return;
         try {
             const response = await api.post('/api/public/login', {
-                email: id,
+                loginId: id,
                 password: pw
             });
 

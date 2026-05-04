@@ -1,7 +1,7 @@
 
 package com.example.back.DTO;
 
-import com.example.back.Entity.UserEntity;
+import com.example.back.Entity.UsersEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,14 +14,16 @@ import lombok.Setter;
 public class AuthRequest {
 
     private String email;
+    private String loginId;
     private String password;
     private String nickname;
     private String profileImgUrl;
 
-    public UserEntity toEntity(String encodedPassword) {
-        return UserEntity.builder()
+    public UsersEntity toEntity() {
+        return UsersEntity.builder()
                 .email(this.email)
-                .password(encodedPassword) // 암호화된 비밀번호를 넣어야 함
+                .loginId(this.loginId)
+                .password(this.password) // 암호화된 비밀번호를 넣어야 함
                 .nickname(this.nickname)
                 .profileImgUrl(this.profileImgUrl)
                 .build();

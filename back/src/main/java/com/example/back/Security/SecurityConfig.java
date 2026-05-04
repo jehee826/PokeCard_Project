@@ -26,6 +26,7 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    /** 로그인 토근 인증로직 */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
