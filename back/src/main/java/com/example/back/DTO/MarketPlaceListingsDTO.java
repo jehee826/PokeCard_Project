@@ -3,10 +3,13 @@ package com.example.back.DTO;
 import com.example.back.Entity.CardsEntity;
 import com.example.back.Entity.MarketPlaceListingsEntity;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @ToString//로그찍기용
 @Builder
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class MarketPlaceListingsDTO {
@@ -22,6 +25,9 @@ public class MarketPlaceListingsDTO {
     private String cardNumber;
     private String attribute;
     private String officialImageUrl;
+    //이미지 담을 변수
+    private List<MultipartFile> images;
+    List<String> imageStrings;
 
 
     public static MarketPlaceListingsDTO toDto(MarketPlaceListingsEntity entity, CardsEntity cardEntity){

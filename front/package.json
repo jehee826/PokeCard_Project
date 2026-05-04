@@ -14,7 +14,7 @@
     "axios": "^1.13.6",
     "bootstrap": "^5.3.8",
     "classnames": "^2.5.1",
-    "onnxruntime-web": "^1.24.3",
+    "onnxruntime-web": "^1.25.1",
     "react": "^19.2.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.0",

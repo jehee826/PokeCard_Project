@@ -61,7 +61,7 @@ public class MarketController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerCard(@RequestBody MarketPlaceListingsDTO register, @RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<?> registerCard(@ModelAttribute MarketPlaceListingsDTO register, @RequestHeader("Authorization") String authHeader){
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
         }
