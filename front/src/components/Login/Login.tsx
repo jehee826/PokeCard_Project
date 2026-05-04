@@ -29,9 +29,10 @@ const Login = () => {
 
     const handleLogin = async () => {
         if (!isOn) return;
+        console.log(id,pw);
         try {
             const response = await api.post('/api/public/login', {
-                email: id,
+                loginId: id,
                 password: pw
             });
 

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 
 @Entity //엔티티 선언
@@ -19,7 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name="UserEntity")
 @Getter // private 된 함수들을 외부로 알아서 꺼내 쓸 수 있게 해줌
-public class UserEntity {
+public class UsersEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +27,9 @@ public class UserEntity {
 
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
+
+    @Column(name = "login_id", nullable = false, unique = true, length = 100)
+    private String loginId;
 
     @Column(name = "password_hash", nullable = false)
     private String password;

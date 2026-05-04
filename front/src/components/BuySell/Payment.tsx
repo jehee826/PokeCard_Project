@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockItems } from './mockData';
+
 import './BuySell.css';
 
 const Payment = () => {

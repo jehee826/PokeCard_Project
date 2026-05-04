@@ -5,9 +5,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
+    const [email, setEmail] = useState('');
     const [id, setId] = useState('');
     const [pw, setPw] = useState('');
     const [confirmPw, setConfirmPw] = useState('');
+    const [nickname, setNickname] = useState('');
     const navigate = useNavigate();
 
     const handleSignUp = async () => {
@@ -18,8 +20,10 @@ const SignUp = () => {
 
         try {
             const response = await api.post('/api/public/signup', {
-                username: id,
+                email: email,
+                loginId: id,
                 password: pw,
+                nickname: nickname,
             });
 
             alert((response.data).message || "회원가입 성공");
@@ -36,6 +40,13 @@ const SignUp = () => {
     return (
         <div className={styles.loginContainer}>
             <div className={styles.loginForm} style={{ height: 'auto', padding: '20px' }}>
+                <div className={styles.loginTitle}>
+                    <input 
+                        className={styles.loginInput} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        placeholder="EMAIL" 
+                    />
+                </div>
                 <div className={styles.loginTitle}>
                     <input 
                         className={styles.loginInput} 
@@ -57,6 +68,13 @@ const SignUp = () => {
                         type="password"
                         onChange={(e) => setConfirmPw(e.target.value)} 
                         placeholder="Confirm PW" 
+                    />
+                </div>
+                <div className={styles.loginTitle}>
+                    <input 
+                        className={styles.loginInput} 
+                        onChange={(e) => setNickname(e.target.value)} 
+                        placeholder="NICKNAME" 
                     />
                 </div>
                 <div>

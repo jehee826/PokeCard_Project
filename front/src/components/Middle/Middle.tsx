@@ -127,8 +127,12 @@ const Middle = () => {
             <span></span><span></span><span></span><span></span>
           </div>
           <div className={styles["round-btns"]}>
-             <button className={`${styles["r-btn"]} ${styles.blue}`} onClick={AiCamera}></button>
-            <button className={`${styles["r-btn"]} ${styles.yellow}`} onClick={AiCamera}></button>
+             <button className={`${styles["r-btn"]} ${styles.blue}`} onClick={AiCamera}>                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M12 15c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm0-8c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm7-3h-2.17l-1.33-1.5c-.38-.4-1.01-.5-1.5-.5H9c-.49 0-1.12.1-1.5.5L6.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/>
+                            </svg></button>
+            <button className={`${styles["r-btn"]} ${styles.yellow}`} onClick={AiCamera}>                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M12 15c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm0-8c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm7-3h-2.17l-1.33-1.5c-.38-.4-1.01-.5-1.5-.5H9c-.49 0-1.12.1-1.5.5L6.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/>
+                            </svg></button>
           </div>
         </div>
       </div>
