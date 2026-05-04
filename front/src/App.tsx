@@ -12,6 +12,7 @@ import Payment from './components/BuySell/Payment';
 import TopBar from './components/TopBar/TopBar'
 import SellRegistration from './components/BuySell/SellRegistration';
 import ProtectedRoute from './components/ProtectedRoute';
+import AiCamera from './components/AiCamera/AiCamera';
 
 
 
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/pwreset" element={<PwReset />} />
           <Route path="/buysell" element={<><TopBar/><BuySellList/></>}/>
+          <Route path="/AiCamera" element={<><TopBar/><AiCamera/></>}/>
 
            <Route 
              path="/favorites" 

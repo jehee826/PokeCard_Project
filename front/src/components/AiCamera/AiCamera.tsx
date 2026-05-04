@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { runOcrInference, initService } from './OcrService';
-import './App.css';
+import styles from './AiCamera.module.css';
 
-const App = () => {
+const AiCamera = () => {
   const [result, setResult] = useState("");
   const [status, setStatus] = useState("모델 로딩 중...");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -108,15 +108,14 @@ const App = () => {
   };
 
   return (
-    <div className="pokedex-container">
-      <div className="left-panel">
-        <div className="status-leds">
-          <div className="led led-red led-blink"></div>
-          <div className="led" style={{backgroundColor: '#ffd93e'}}></div>
-          <div className="led" style={{backgroundColor: '#3eff3e'}}></div>
+    <div className={styles["pokedex-container"]}>
+      <div className={styles["left-panel"]}>
+        <div className={styles["status-leds"]}>
+          <div className={styles["led"]} style={{backgroundColor: '#ffd93e'}}></div>
+          <div className={styles["led"]} style={{backgroundColor: '#3eff3e'}}></div>
         </div>
 
-        <div className="screen">
+        <div className={styles.screen}>
           <video 
             ref={videoRef} 
             autoPlay 
@@ -125,7 +124,7 @@ const App = () => {
             style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
           />
           <canvas ref={canvasRef} style={{ display: 'none' }} />
-          {isAnalyzing && <div className="scan-line"></div>}
+          {isAnalyzing && <div className={styles["scan-line"]}></div>}
         </div>
 
         <div style={{ marginTop: '30px', width: '100%' }}>
@@ -143,8 +142,8 @@ const App = () => {
         </div>
       </div>
 
-      <div className="right-section">
-        <h1 className="result-title">POKEMON SCANNER</h1>
+      <div className={styles["right-section"]}>
+        <h1 className={styles["result-title"]}>POKEMON SCANNER</h1>
         
         <div style={{ background: '#222', borderRadius: '10px', width: '95%', textAlign: 'left', margin: 'auto', padding: '15px' }}>
           <p style={{ color: '#888', fontSize: '12px', margin: 0 }}>SYSTEM STATUS:</p>
@@ -165,4 +164,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AiCamera;

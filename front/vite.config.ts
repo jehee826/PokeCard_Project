@@ -5,6 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
     server: {
+      allowedHosts: [
+      'thrower-unnerve-tux.ngrok-free.dev' // 에러 메시지에 뜬 주소를 여기에 추가
+    ],
     proxy: {
       // 프론트엔드에서 '/api'로 시작하는 요청을 보내면 백엔드(8080)로 전달합니다.
       '/api': {
@@ -15,8 +18,12 @@ export default defineConfig({
       },
     },
   },
+
   build: {
     outDir: '../back/src/main/resources/static',
     emptyOutDir: true,
+  },
+    optimizeDeps: {
+    exclude: ['onnxruntime-web']
   },
 })

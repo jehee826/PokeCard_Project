@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from "react";
 import Card from "./M/Card.tsx";
 import styles from "./Middle.module.css";
+import { useNavigate } from 'react-router-dom';
 
 const Middle = () => {
+  const navigate = useNavigate();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  // 1. 초기값 설정: sessionStorage에 저장된 값이 있으면 가져오고, 없으면 빈 문자열("")을 사용합니다.
+  const [searchTerm, setSearchTerm] = useState(() => {
+    return sessionStorage.getItem('search_term') || "";
+  });
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+
+  // 2. 검색어가 바뀔 때마다 sessionStorage에 실시간으로 저장합니다.
+  useEffect(() => {
+    sessionStorage.setItem('search_term', searchTerm);
+  }, [searchTerm]);
 
   useEffect(() => {
         sessionStorage.removeItem('login_id');
@@ -31,6 +41,9 @@ const Middle = () => {
     event.preventDefault();
     const imageNum = event.dataTransfer.getData("imageNum");
     setSelectedCard(imageNum);
+  };
+    const AiCamera = () => {
+    navigate('/AiCamera'); 
   };
 
   // 타입 토글 핸들러
@@ -114,8 +127,8 @@ const Middle = () => {
             <span></span><span></span><span></span><span></span>
           </div>
           <div className={styles["round-btns"]}>
-             <button className={`${styles["r-btn"]} ${styles.blue}`}></button>
-            <button className={`${styles["r-btn"]} ${styles.yellow}`}></button>
+             <button className={`${styles["r-btn"]} ${styles.blue}`} onClick={AiCamera}></button>
+            <button className={`${styles["r-btn"]} ${styles.yellow}`} onClick={AiCamera}></button>
           </div>
         </div>
       </div>
