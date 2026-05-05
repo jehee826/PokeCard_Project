@@ -1,12 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { runOcrInference, initService } from './OcrService';
 import styles from './AiCamera.module.css';
+import api from '../../api/axios';
+import axios from 'axios';
+
 
 const AiCamera = () => {
   const [result, setResult] = useState("");
   const [status, setStatus] = useState("모델 로딩 중...");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [capturedImg, setCapturedImg] = useState<string | null>(null);
+  
+  // 1. 서버에서 받은 공식 카드 이미지를 저장할 State 추가
+  const [officialImg, setOfficialImg] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -41,7 +47,8 @@ const AiCamera = () => {
     }
   };
 
-  const handleCapture = async () => {
+  // 2. OCR 스캔과 API 요청을 하나로 묶은 통합 핸들러
+  const handleScanProcess = async () => {
     if (!videoRef.current || !canvasRef.current || isAnalyzing) return;
     
     const video = videoRef.current;
@@ -49,13 +56,14 @@ const AiCamera = () => {
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
-    // 1. 피드백 제공: 비디오 정지 및 상태 변경
+    // 초기화 및 피드백
     video.pause(); 
     setIsAnalyzing(true);
     setResult(""); 
+    setOfficialImg(null); // 새로운 스캔 시작 시 기존 이미지 초기화
     setStatus("DATA SCANNING...");
 
-    // 2. 캔버스 작업 (멈춘 비디오 프레임 복사)
+    // 캔버스 이미지 크롭 및 복사 작업
     canvas.width = TARGET_WIDTH;
     canvas.height = TARGET_HEIGHT;
 
@@ -81,21 +89,28 @@ const AiCamera = () => {
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, TARGET_WIDTH, TARGET_HEIGHT);
 
-    // 3. 하단 미리보기용 이미지 저장
+    // 하단 미리보기용 캡처 이미지 저장
     const base64 = canvas.toDataURL('image/jpeg', 0.9);
     setCapturedImg(base64);
 
-    // 4. 잠깐의 정지 후 카메라 재개 (사용자가 찍혔음을 인지할 시간 부여)
+    // 카메라 재생 재개
     setTimeout(() => {
       video.play().catch(e => console.error("Video play error:", e));
     }, 800);
 
-    // 5. OCR 분석 수행
+    // OCR 분석 및 서버 통신 수행
     try {
       const results = await runOcrInference(canvas);
+      
       if (results && results.length > 0) {
-        setResult(results.map((item: any) => item.text).join(", "));
-        setStatus("ANALYSIS COMPLETE");
+        // OCR 결과를 문자열로 추출
+        const extractedText = results.map((item: any) => item.text).join(", ");
+        setResult(extractedText);
+        setStatus("ANALYSIS COMPLETE. FETCHING DATA...");
+
+        // 주의: 여기서 상태값인 'result' 대신, 방금 추출한 'extractedText'를 바로 넘겨야 합니다.
+        await fetchCardDataFromServer(extractedText);
+        
       } else {
         setStatus("RETRY SCAN");
       }
@@ -104,6 +119,29 @@ const AiCamera = () => {
       setStatus("SCAN ERROR");
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  // 3. 서버로 데이터를 보내고 이미지를 받아오는 함수 분리
+  const fetchCardDataFromServer = async (ocrResultText: string) => {
+    try {
+      const response = await api.post('/api/main/ai', {
+        cardNum: ocrResultText // 방금 스캔한 텍스트를 바로 전송
+      });
+      
+      const imageUrl = response.data.officialImageUrl;
+      
+      // 서버에서 받은 이미지 URL을 상태에 저장하여 렌더링 유도
+      if (imageUrl) {
+        setOfficialImg(imageUrl);
+      }
+      
+      setStatus("CARD DATA RETRIEVED");
+      alert(response.data.msg || "카드 인식 성공 (프론트)");
+
+    } catch (error) {
+      console.error("서버 통신 오류:", error);
+      setStatus("API SERVER ERROR");
     }
   };
 
@@ -129,7 +167,7 @@ const AiCamera = () => {
 
         <div style={{ marginTop: '30px', width: '100%' }}>
             <button 
-              onClick={handleCapture} 
+              onClick={handleScanProcess} // 두 개의 함수를 하나로 통합한 함수 호출
               disabled={isAnalyzing}
               style={{ 
                 padding: '15px 0', fontSize: '18px', fontWeight: 'bold', width: '70%',
@@ -153,10 +191,29 @@ const AiCamera = () => {
           <h2 style={{ fontSize: '18px', color: '#fff', wordBreak: 'break-all' }}>{result || "---"}</h2>
         </div>
 
-        {capturedImg && (
+        {/* 4. 서버에서 받아온 공식 이미지가 있을 경우 화면에 표시 */}
+        {officialImg && (
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <p style={{ fontSize: '12px', color: '#ffcb05', fontWeight: 'bold' }}>POKEDEX OFFICIAL DATA</p>
+            <img 
+              src={officialImg} 
+              alt="Official Card" 
+              style={{ 
+                width: '100%', 
+                maxWidth: '250px', 
+                borderRadius: '15px', 
+                boxShadow: '0px 0px 15px rgba(255, 203, 5, 0.5)',
+                marginTop: '10px'
+              }} 
+            />
+          </div>
+        )}
+
+        {/* 기존의 스캔한 직후의 카메라 캡처본 (위 공식 이미지가 뜨면 가려지거나 아래로 밀려납니다) */}
+        {capturedImg && !officialImg && (
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
             <p style={{ fontSize: '12px', color: '#888' }}>LAST CAPTURED DATA</p>
-            <img src={capturedImg} alt="captured" className="capture-preview" />
+            <img src={capturedImg} alt="captured" className="capture-preview" style={{ maxWidth: '150px', borderRadius: '10px' }} />
           </div>
         )}
       </div>
