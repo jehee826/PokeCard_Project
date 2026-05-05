@@ -18,10 +18,11 @@ const BuySellDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [item, setItem] = useState<detailCard>();
-    // [추가] 현재 크게 보여줄 이미지의 파일명을 저장하는 상태
+    const [imageList, setImageList] = useState<string[]>([]);
     const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
-    const SERVER_URL = "http://localhost:8080/upload/images/";
+
+    const BASE_URL = "http://localhost:8080/pokemon/";
 
     useEffect(() => {
         const fetchCards = async () => {
@@ -31,16 +32,26 @@ const BuySellDetail = () => {
                 });
                 setItem(response.data);
                 
-                // [추가] 데이터 로드 시 실물 사진이 있다면 첫 번째 사진을 기본 선택
-                if (response.data.imageStrings && response.data.imageStrings.length > 0) {
-                    setSelectedImg(response.data.imageStrings[0]);
+                const combined = [
+                    response.data.officialImageUrl,
+                    ...(response.data.imageStrings || [])
+                ].filter(Boolean); // 혹시 모를 null/undefined 제거
+
+                setImageList(combined);
+                
+                // 데이터 로드 시 리스트의 첫 번째 이미지(오피셜)를 기본 선택
+                if (combined.length > 0) {
+                    setSelectedImg(combined[0]);
                 }
+                
             } catch (error) {
                 console.error("데이터 로딩 실패:", error);
             }
         };
         fetchCards();
     }, [id]);
+
+  
 
     if (!item) return <div className="buysell-container">조회된 아이템이 없습니다.</div>;
 
@@ -49,16 +60,15 @@ const BuySellDetail = () => {
             <button onClick={() => navigate('/buysell')} style={{ marginBottom: '20px', cursor: 'pointer', background: 'none', border: 'none', color: '#666' }}>← Back to List</button>
             <div className="detail-container">
                 <div className="detail-image">
-                    {item.imageStrings && item.imageStrings.length > 0 ? (
+                    {imageList.length > 0 ? (
                         <div className="image-gallery">
-                            {/* [수정] 고정된 index 0 대신 selectedImg 상태값을 사용 */}
-                            <img src={`${SERVER_URL}${selectedImg}`} alt="실물 사진 메인" />
+                            <img src={`${BASE_URL}${selectedImg}`} alt="실물 사진 메인" />
                             
                             <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px' }}>
-                                {item.imageStrings.map((img, idx) => (
+                                {imageList.map((img, idx) => (
                                     <img 
                                         key={idx} 
-                                        src={`${SERVER_URL}${img}`} 
+                                        src={`${BASE_URL}${imageList[idx]}`} 
                                         // [추가] 클릭 시 selectedImg 상태 업데이트
                                         onClick={() => setSelectedImg(img)}
                                         style={{ 

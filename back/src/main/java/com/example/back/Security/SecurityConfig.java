@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/public/**").permitAll() /* 로그인이나 회원가입 페이지 /api/auth/** 은 모두 허용 */
                 .requestMatchers("/api/market/list").permitAll() //리스트 보여주기
                 .requestMatchers("/api/market/detail/**").permitAll() //리스트 상세정보 보여주기
-                .requestMatchers("/upload/images/**").permitAll() //서버(내컴퓨터)에 저장된 이미지들도 보여주기
+                .requestMatchers("/pokemon/**").permitAll() //서버(내컴퓨터)에 저장된 이미지들도 보여주기
                 .anyRequest().authenticated() /* 그 외 모든 페이지 요청은 인증 필요 */
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); /* 아이디/비번을 치기 전에 이미 토큰을 들고 온 사람인지 먼저 확인해서, 인증이 됐다면 바로 통과시켜주기 위한 코드 */

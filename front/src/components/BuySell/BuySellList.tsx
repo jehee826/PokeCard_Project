@@ -24,6 +24,7 @@ const BuySellList = () => {
     const [selectedType, setSelectedType] = useState("All");
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const BASE_URL = "http://localhost:8080/pokemon/";
     const types = ["All", "풀", "불", "물", "벌레", "악", "드래곤"];
 
     // 페이지 로드 시 DB에서 데이터를 가져오는 useEffect
@@ -107,7 +108,7 @@ const BuySellList = () => {
                             <div 
                                 className="item-image" 
                                 // DB에서 받아온 imageUrl을 그대로 배경으로 사용
-                                style={{ backgroundImage: `url(${item.officialImageUrl})` }}
+                                style={{ backgroundImage: `url(${BASE_URL}${item.officialImageUrl})` }}
                             />
                             <div className="item-info">
                                 <h3>{item.cardNameKo}</h3>

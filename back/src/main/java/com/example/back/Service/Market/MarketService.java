@@ -111,13 +111,13 @@ public class MarketService {
         MarketPlaceListingsEntity savedListing = marketPlaceListingsRepository.save(newListing);
 
         if (register.getImages() != null && !register.getImages().isEmpty()) {
-            String uploadDir = "C:/upload/pokemon/";
+            String uploadDir = "C:/pokemon/upload/";
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
 
             for (MultipartFile file : register.getImages()) {
                 String originalFileName = file.getOriginalFilename();
-                String savedFileName = UUID.randomUUID().toString() + "_" + originalFileName;
+                String savedFileName = "upload/" + UUID.randomUUID().toString() + "_" + originalFileName;
 
                 try {
                     file.transferTo(new File(uploadDir + savedFileName));
