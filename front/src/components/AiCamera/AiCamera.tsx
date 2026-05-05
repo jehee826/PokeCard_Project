@@ -126,7 +126,7 @@ const AiCamera = () => {
   const fetchCardDataFromServer = async (ocrResultText: string) => {
     try {
       const response = await api.post('/api/main/ai', {
-        cardNum: ocrResultText // 방금 스캔한 텍스트를 바로 전송
+        cardNumber: ocrResultText // 방금 스캔한 텍스트를 바로 전송
       });
       
       const imageUrl = response.data.officialImageUrl;
@@ -137,11 +137,12 @@ const AiCamera = () => {
       }
       
       setStatus("CARD DATA RETRIEVED");
-      alert(response.data.msg || "카드 인식 성공 (프론트)");
+      alert(response.data.message || "카드 인식 성공 (프론트)");
 
-    } catch (error) {
+    } catch (error: any) {
       console.error("서버 통신 오류:", error);
-      setStatus("API SERVER ERROR");
+      const errorMsg = error.response?.data?.message || error.response?.data || "API SERVER ERROR";
+      setStatus(errorMsg);
     }
   };
 
