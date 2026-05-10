@@ -149,9 +149,18 @@ const AiCamera = () => {
       if (imageUrl) {
         setOfficialImg(imageUrl);
       }
-      if (result) {
-        setSearchTerm(result);
+      
+      // 검색용 카드 번호 정제 (예: 052/100 형태 추출)
+      const parts = ocrResultText.split(/,\s*/);
+      let foundNumber = "";
+      for (const part of parts) {
+        const match = part.match(/\d+\/\d+/);
+        if (match) {
+          foundNumber = match[0];
+          break;
+        }
       }
+      setSearchTerm(foundNumber || ocrResultText);
 
       setStatus("CARD DATA RETRIEVED");
       alert(response.data.message || "카드 인식 성공 (프론트)");
@@ -166,7 +175,9 @@ const AiCamera = () => {
   };
   const handleImgClick = () => {
     // 이동할 경로와 함께 state 전달
-    navigate('/BuySellList', { state: { cardNumber: searchTerm } });
+    if (searchTerm) {
+      navigate('/buysell', { state: { cardNumber: searchTerm } });
+    }
   };
 
   return (

@@ -29,8 +29,12 @@ const BuySellList = () => {
 
     // 페이지 로드 시 DB에서 데이터를 가져오는 useEffect
     useEffect(() => {
+        // location.state에서 전달된 cardNumber가 있으면 검색어로 설정
         const initialSearch = (location.state as any)?.cardNumber || "";
-        setSearchTerm(initialSearch);
+        if (initialSearch) {
+            setSearchTerm(initialSearch);
+        }
+        
         const fetchCards = async () => {
             try {
                 const response = await api.get('/api/market/list');
@@ -40,7 +44,7 @@ const BuySellList = () => {
             }
         };
         fetchCards();
-    }, []);
+    }, [location.state]);
 
     const handleCameraClick = () => {
         fileInputRef.current?.click();
