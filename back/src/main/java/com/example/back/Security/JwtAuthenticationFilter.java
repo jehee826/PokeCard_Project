@@ -1,51 +1,79 @@
 package com.example.back.Security;
 
+import com.example.back.Repository.UsersRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+
 import java.io.IOException;
-import java.util.ArrayList;
+
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter /* 부모 필터 */ {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider tokenProvider; // 같은 패키지에 있으면 import 안 해도 됨
+    private final JwtTokenProvider tokenProvider;
+    private final UserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtTokenProvider tokenProvider) { /* 자식 필터를 부모 필터 코드들 사이에 살짝 끼우기 */
+
+    @Lazy
+    public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, UserDetailsService userDetailsService) {
         this.tokenProvider = tokenProvider;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
         String token = getJwtFromRequest(request);
 
+        // 토큰이 있고 유효한지 확인
         if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
-            String username = tokenProvider.getLoginIdFromToken(token);
-            /* 스프링 시큐리티용 임시 신분증 만들기, 필터를 통과했다는 사실을 뒤에 있는 처리과정에도 알려주기 위해 씀*/
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    username/*보통 DB의 PK나 ID*/, null/*비밀번호 자리, jwt 인증되서 null*/, new ArrayList<>());/*권한(Role) 목록*/
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));/*부가 정보,IP 주소나 세션 ID를 기록*/
 
-            SecurityContextHolder.getContext().setAuthentication(authentication); /* "로그인 된 사용자"로 간주하는 코드 */
+            // 토큰에서 로그인 ID 추출
+            String username = tokenProvider.getLoginIdFromToken(token);
+
+            // 서비스 로직을 통해 DB에서 UserDetails(신분증) 가져오기
+            // 이 과정이 있어야 컨트롤러의 @AuthenticationPrincipal이 채워짐
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            if (userDetails != null) {
+                // 추출한 UserDetails를 담아 진짜 신분증(Authentication) 생성
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, // 문자열이 아닌 UserDetails 객체가 들어감
+                        null,
+                        userDetails.getAuthorities() // DB에 저장된 실제 권한 사용
+                );
+
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                // 5. 시큐리티 금고에 저장
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
 
-        filterChain.doFilter(request, response); /*내가 짠 자식 필터 다음에 부모 필터 코드를 마저 실행하기 위한 코드*/
+        filterChain.doFilter(request, response);
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization"); //브라우저 정보,인증 토큰, 언어 설정 같은 헤더 정보 읽기
+        String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
         return null;
-    }}
+    }
+}
