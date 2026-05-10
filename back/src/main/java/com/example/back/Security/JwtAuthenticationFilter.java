@@ -25,7 +25,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService; //스프링 시큐리티 자체 인터페이스
 
 
     @Lazy
@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     if (userDetails != null) {
                         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                                userDetails,
+                                userDetails, /*아이디, 이름, 이메일 등 유저의 상세 정보가 담긴 객체*/
                                 null,
                                 userDetails.getAuthorities()
                         );
