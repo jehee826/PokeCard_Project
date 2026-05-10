@@ -2,7 +2,9 @@ package com.example.back.Controller;
 
 
 import com.example.back.DTO.CardsDTO;
+import com.example.back.DTO.MarketPlaceListingsDTO;
 import com.example.back.Entity.CardsEntity;
+import com.example.back.Entity.MarketPlaceListingsEntity;
 import com.example.back.Entity.UserCollectionsEntity;
 import com.example.back.Repository.CardsRepository;
 import com.example.back.Repository.UserCollectionsRepository;
@@ -11,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Optional;
 
 
@@ -32,6 +36,16 @@ public class MainController {
         this.userCollectionsRepository = userCollectionsRepository;
         this.userRepository = userRepository;
         this.tokenProvider = tokenProvider;
+    }    @GetMapping("/ency")
+    public ResponseEntity<List<CardsEntity>> getAllCardList(){
+
+        // 서비스호출 -> 모든 리스트 가져오기(cards테이블 조인까지)
+        List<CardsEntity> cardList = cardsRepository.findAll();
+
+        //잘 넘어오나 확인용 로그
+        log.info("전송할 DTO 리스트 (카드정보 포함): {}", cardList);
+
+        return ResponseEntity.ok(cardList);
     }
 
     @PostMapping("/ai")

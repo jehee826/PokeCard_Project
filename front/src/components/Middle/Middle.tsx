@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Card from "./M/Card.tsx";
 import styles from "./Middle.module.css";
+import api from '../../api/axios'; //통신기능
 import { useNavigate } from 'react-router-dom';
 
 const Middle = () => {
   const navigate = useNavigate();
+  const [fullCardList, setFullCardList] = useState<any[]>([]);
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+  const [selectedCardNum, setSelectedCardNum] = useState<string | null>(null);
   // 1. 초기값 설정: sessionStorage에 저장된 값이 있으면 가져오고, 없으면 빈 문자열("")을 사용합니다.
   const [searchTerm, setSearchTerm] = useState(() => {
     return sessionStorage.getItem('search_term') || "";
@@ -22,16 +25,29 @@ const Middle = () => {
         sessionStorage.removeItem('login_pw');
         sessionStorage.removeItem('login_isOn');
     }, []);
+    
+  useEffect(() => {
+  // location.state에서 전달된 cardNumber가 있으면 검색어로 설정
+  const fetchCards = async () => {
+      try {
+          const response = await api.get('/api/main/ency');
+          setFullCardList(response.data);
+      } catch (error) {
+          console.error("데이터 로딩 실패:", error);
+      }
+  };
+  fetchCards();
+}, []);
 
   // 카드 데이터베이스
-  const fullCardList = [
-    { id: "001", type: "Grass" }, { id: "002", type: "Grass" }, { id: "003", type: "Grass" },
-    { id: "004", type: "Fire" }, { id: "005", type: "Fire" }, { id: "006", type: "Fire" },
-    { id: "007", type: "Water" }, { id: "008", type: "Water" }, { id: "009", type: "Water" },
-    { id: "010", type: "Bug" }, { id: "011", type: "Bug" }, { id: "012", type: "Bug" },
-  ];
+  // const fullCardList = [
+  //   { id: "001", type: "Grass" }, { id: "002", type: "Grass" }, { id: "003", type: "Grass" },
+  //   { id: "004", type: "Fire" }, { id: "005", type: "Fire" }, { id: "006", type: "Fire" },
+  //   { id: "007", type: "Water" }, { id: "008", type: "Water" }, { id: "009", type: "Water" },
+  //   { id: "010", type: "Bug" }, { id: "011", type: "Bug" }, { id: "012", type: "Bug" },
+  // ];
 
-  const types = ["Grass", "Fire", "Water", "Bug", "Dragon"];
+  const types = ["악", "초", "불", "벌레", "드래곤", "격투", "풀", "물", "번개", "에스퍼", "얼음", "고스트", "노말"];
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -39,8 +55,10 @@ const Middle = () => {
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const imageNum = event.dataTransfer.getData("imageNum");
-    setSelectedCard(imageNum);
+    const image = event.dataTransfer.getData("image");
+    const cardNumber = event.dataTransfer.getData("cardNumber");
+    setSelectedCard(image);
+    setSelectedCardNum(cardNumber);
   };
     const AiCamera = () => {
     navigate('/AiCamera'); 
@@ -61,9 +79,10 @@ const Middle = () => {
 
   // 검색 및 복수 필터링 로직
   const filteredCards = fullCardList.filter(card => {
-    const matchesSearch = card.id.includes(searchTerm);
-    const matchesType = selectedTypes.length === 0 || selectedTypes.includes(card.type);
-    return matchesSearch && matchesType;
+    const matchesSearch = card.cardNumber.includes(searchTerm);
+    const nameSearch = card.cardNameKo.includes(searchTerm);
+    const matchesType = selectedTypes.length === 0 || selectedTypes.includes(card.attribute);
+    return ( matchesSearch || nameSearch ) && matchesType;
   });
 
   return (
@@ -90,14 +109,14 @@ const Middle = () => {
             <h3 className={styles["scanning-text"]}>DATA SCANNING...</h3>
             <div className={styles["info-image"]}>
               <img 
-                src={`https://cards.image.pokemonkorea.co.kr/data/wmimages/MEGA/M3/M3_${selectedCard}.png`} 
+                src={`${selectedCard}`} 
                 alt="Selected Card" 
               />
             </div>
             <div className={styles["info-text"]}>
               <div className={styles["info-row"]}>
                 <span className={styles.label}>INDEX:</span>
-                <span className={styles.value}>M3_{selectedCard}</span>
+                <span className={styles.value}>{selectedCardNum}</span> {/* 카드 번호를 인덱스로 표시 */}
               </div>
               <div className={styles["info-row"]}>
                 <span className={styles.label}>STATUS:</span>
@@ -143,7 +162,7 @@ const Middle = () => {
           <div className={styles["search-bar"]}>
             <input 
               type="text" 
-              placeholder="도감 번호 검색 (001~012)" 
+              placeholder="도감 검색 EX) 리자몽 or 201/190" 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -170,7 +189,7 @@ const Middle = () => {
         <div className={styles["right-panel"]}>
           {filteredCards.length > 0 ? (
             filteredCards.map((card) => (
-              <Card key={card.id} imageNum={card.id} />
+              <Card key={card.cardNumber} cardNumber={card.cardNumber} officialImageUrl={card.officialImageUrl} />
             ))
           ) : (
             <div className={styles["no-results"]}>
