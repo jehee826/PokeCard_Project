@@ -1,112 +1,95 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Favorites.module.css';
+import api from '../../api/axios'; // 설정하신 axios 인스턴스
+
+// 백엔드 MarketPlaceListingsDTO 구조와 일치하는 인터페이스
+interface FavoriteItem {
+  listingId: number;
+  cardNameKo: string;
+  cardNumber: string;
+  price: number;
+  officialImageUrl: string;
+  imageStrings: string[];
+  nickname: string;
+  location: string;
+}
 
 const Favorites = () => {
-  // 'buy' 또는 'sell' 상태를 관리
-  const [viewMode, setViewMode] = useState('buy');
+  const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
+  const navigate = useNavigate();
 
-  // 샘플 데이터 (실제로는 DB나 API에서 가져오게 됩니다)
-  // 카드 이미지, 구매 목표가, 판매 희망가를 포함하도록 확장
-  const buyList = [
-    { 
-      id: 1, 
-      name: '주리비안', 
-      image: '/M3_004.png', 
-      targetPrice: '150,000원', 
-      currentMarket: '165,000원' 
-    },
-    { 
-      id: 2, 
-      name: '뮤츠 ex (포켓몬 카드 151)', 
-      image: '/ball.png', 
-      targetPrice: '80,000원', 
-      currentMarket: '85,000원' 
-    },
-  ];
+  const BASE_URL = "http://localhost:8080/pokemon/";
 
-  const sellList = [
-    { 
-      id: 3, 
-      name: '리자몽 ex (테라스탈)', 
-      image: '/ball.png', 
-      minPrice: '200,000원', 
-      purchasePrice: '120,000원' 
-    },
-    { 
-      id: 4, 
-      name: '루카리오 V (스타터 세트)', 
-      image: '/ball.png', 
-      minPrice: '45,000원', 
-      purchasePrice: '30,000원' 
-    },
-  ];
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      const token = sessionStorage.getItem('accessToken');
+      
+      if (!token) {
+        console.warn("로그인 토큰이 없습니다.");
+        return;
+      }
 
-  const currentList = viewMode === 'buy' ? buyList : sellList;
+      try {
+        // 백엔드 컨트롤러의 @GetMapping("favoritelist") 호출
+        const response = await api.get('/api/market/favoritelist', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        setFavorites(response.data);
+      } catch (error) {
+        console.error("즐겨찾기 목록 로드 실패:", error);
+      } finally {
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+
 
   return (
     <div className={styles['favorites-container']}>
       <header className={styles['favorites-header']}>
-        <h2>내 포켓몬 카드 위시리스트</h2>
+        <h2>관심 카드 리스트</h2>
       </header>
 
-      {/* 상단 탭 바 */}
-      <div className={styles["tabs"]}>
-        <div 
-          onClick={() => setViewMode('buy')}
-          className={`${styles["tab"]} ${styles["buy"]} ${viewMode === 'buy' ? styles["active"] : ''}`}
-        >
-          구매 예정
-        </div>
-        <div 
-          onClick={() => setViewMode('sell')}
-          className={`${styles["tab"]} ${styles["sell"]} ${viewMode === 'sell' ? styles["active"] : ''}`}
-        >
-          판매 예정
-        </div>
-      </div>
-
-      {/* 리스트 렌더링 */}
       <div className={styles["favorites-list"]}>
-        {currentList.length > 0 ? (
-          currentList.map(card => (
-            <div key={card.id} className={styles["favorite-card"]}>
+        {favorites.length > 0 ? (
+          favorites.map(card => (
+            <div key={card.listingId} className={styles["favorite-card"]} onClick={() => navigate(`/buysell/detail/${card.listingId}`)}>
               <div className={styles["card-image-container"]}>
-                <img src={card.image} alt={card.name} className={styles["card-image"]} />
+                <img 
+                  src={card.imageStrings && card.imageStrings.length > 0 
+                    ? `${BASE_URL}${card.imageStrings[0]}` 
+                    : `${BASE_URL}${card.officialImageUrl}`} 
+                  alt={card.cardNameKo} 
+                  className={styles["card-image"]} 
+                />
               </div>
               
               <div className={styles["card-info"]}>
-                <div className={styles["card-name"]}>{card.name}</div>
+                <div className={styles["card-name"]}>{card.cardNameKo}</div>
+                <div className={styles["card-number"]} style={{fontSize: '0.8rem', color: '#888'}}>
+                  {card.cardNumber}
+                </div>
                 
                 <div className={styles["price-details"]}>
-                  {viewMode === 'buy' ? (
-                    <>
-                      <div className={`${styles["price-row"]} ${styles["buy-price"]}`}>
-                        <span className={styles["price-label"]}>구매 목표가</span>
-                        <span className={styles["price-value"]}>{(card as { targetPrice: string }).targetPrice}</span>
-                      </div>
-                      <div className={`${styles["price-row"]} ${styles["market-price"]}`}>
-                        <span className={styles["price-label"]}>현재 시세</span>
-                        <span className={styles["price-value"]}>{(card as { currentMarket: string }).currentMarket}</span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className={`${styles["price-row"]} ${styles["sell-price"]}`}>
-                        <span className={styles["price-label"]}>판매 희망가</span>
-                        <span className={styles["price-value"]}>{(card as { minPrice: string }).minPrice}</span>
-                      </div>
-                      <div className={`${styles["price-row"]} ${styles["buy-price"]}`}>
-                        <span className={styles["price-label"]}>매입가</span>
-                        <span className={styles["price-value"]}>{(card as { purchasePrice: string }).purchasePrice}</span>
-                      </div>
-                    </>
-                  )}
+                  <div className={`${styles["price-row"]} ${styles["sell-price"]}`}>
+                    <span className={styles["price-label"]}>판매가</span>
+                    <span className={styles["price-value"]}>
+                      {card.price.toLocaleString()}원
+                    </span>
+                  </div>
+                  
+                  <div className={styles["seller-tag"]} style={{marginTop: '5px', fontSize: '0.9rem'}}>
+                    <span>판매자: <strong>{card.nickname}</strong></span>
+                  </div>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <div className={styles["empty-message"]}>목록이 비어 있습니다.</div>
+          <div className={styles["empty-message"]}>즐겨찾기한 카드가 없습니다.</div>
         )}
       </div>
     </div>

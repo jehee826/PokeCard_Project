@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -175,46 +177,65 @@ public class MarketService {
     }
 
     @Transactional // DB 작업과 파일 저장이 한 묶음으로 처리되도록 추가
-    public String toggleFavorite(Long listingId, String token){
+    public String toggleFavorite(Long listingId, String token) {
+        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
+        UsersEntity user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
+
+        // 1. 이미 즐겨찾기가 되어 있는지 확인
+        Optional<MarketPlaceFavoriteEntity> existingFavorite =
+                marketPlaceFavoriteRepository.findByUserIdAndListingId(user.getId(), listingId);
+
+        if (existingFavorite.isPresent()) {
+            // 2. 이미 있다면? 삭제 (취소)
+            marketPlaceFavoriteRepository.delete(existingFavorite.get());
+            return "즐겨찾기가 취소되었습니다.";
+        } else {
+            // 3. 없다면? 등록
+            MarketPlaceFavoriteEntity favoriteEntity = MarketPlaceFavoriteEntity.builder()
+                    .userId(user.getId())
+                    .listingId(listingId)
+                    .build();
+            marketPlaceFavoriteRepository.save(favoriteEntity);
+            return "즐겨찾기에 등록되었습니다.";
+        }
+    }
+
+    /** 내 즐겨찾기 목록 상세 조회 */
+    @Transactional(readOnly = true)
+    public List<MarketPlaceListingsDTO> getMyFavoriteList(String token) {
         String loginId = jwtTokenProvider.getLoginIdFromToken(token);
 
         UsersEntity user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
 
-        MarketPlaceFavoriteDTO favoriteDTO = MarketPlaceFavoriteDTO.builder()
-                .userId(user.getId())
-                .listingId(listingId)
-                .build();
-        MarketPlaceFavoriteEntity favoriteEntity = MarketPlaceFavoriteEntity.builder()
-                .userId(favoriteDTO.getUserId())
-                .listingId(favoriteDTO.getListingId())
-                .build();
-        marketPlaceFavoriteRepository.save(favoriteEntity);
-        return "즐겨찾기 등록 성공";
+        List<MarketPlaceFavoriteEntity> favoriteEntities = marketPlaceFavoriteRepository.findByUserId(user.getId());
+
+        if (favoriteEntities.isEmpty()) {
+            return List.of();
+        }
+        return favoriteEntities.stream()
+                .map(fav -> {
+                    try {
+                        //위에 이미 만들어진 getDetailList메소드를 통해 코드 간결화(메소드 재사용)
+                        return this.getDetailList(fav.getListingId());
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
-    public List<MarketPlaceListingsDTO> getMyFavoriteList(String token) {
-        // 1. 토큰으로 유저 식별 및 PK 추출
+    /** 특정 판매글의 즐겨찾기 여부 확인 */
+    @Transactional(readOnly = true)
+    public boolean isFavorite(Long listingId, String token) {
         String loginId = jwtTokenProvider.getLoginIdFromToken(token);
         UsersEntity user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
-        // 2. 해당 유저의 즐겨찾기 ID 리스트 가져오기
-        List<MarketPlaceFavoriteEntity> favorites = marketPlaceFavoriteRepository.findByUserId(user.getId());
-
-        // 3. 즐겨찾기한 판매글 ID들만 추출
-        List<Long> listingIds = favorites.stream()
-                .map(MarketPlaceFavoriteEntity::getListingId)
-                .collect(Collectors.toList());
-
-        if (listingIds.isEmpty()) return List.of();
-
-        // 4. 추출한 ID들로 판매글 상세 정보 조회 (기존에 만든 findById 등을 활용)
-        // 여기서는 간단하게 listingRepository.findAllById를 사용하거나
-        // 기존에 만드신 getDetailList 로직을 루프 돌려 합칠 수 있습니다.
-        return listingIds.stream()
-                .map(this::getDetailList) // 이미 만들어두신 상세 정보 가져오는 메서드 활용
-                .collect(Collectors.toList());
+        // 여기서 existsBy... 를 사용하여 가볍게 존재 여부만 체크!
+        return marketPlaceFavoriteRepository.existsByUserIdAndListingId(user.getId(), listingId);
     }
 
 }

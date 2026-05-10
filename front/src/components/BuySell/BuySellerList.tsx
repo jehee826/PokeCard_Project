@@ -1,32 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../api/axios'; //통신기능
+import api from '../../api/axios';
 import './BuySell.css';
 
-interface MarketCard {
-  listingId: number;
-  sellerId: number;
-  nickname: string;
-  cardId: number;
-  price: number;
-  contactInfo: string;
-  location: string;
-  cardNameKo: string;
-  cardNumber: string;
-  attribute: string;
-  officialImageUrl: string;
-  imageStrings: string[];
+// --- 하위 컴포넌트: 개별 판매글 아이템 ---
+const MarketItemCard = ({ item, navigate, BASE_URL }: any) => {
+  const [isLiked, setIsLiked] = useState(false);
 
-}
+  // 1. 컴포넌트 로드 시 즐겨찾기 상태 확인
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      const token = sessionStorage.getItem('accessToken');
+      if (!token) return;
 
+      try {
+        const response = await api.get('/api/market/is-favorite', {
+          params: { listingId: item.listingId },
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        setIsLiked(response.data); // true 또는 false
+      } catch (error) {
+        console.error("즐찾 상태 확인 실패", error);
+      }
+    };
+    checkFavoriteStatus();
+  }, [item.listingId]);
+
+  // 2. 즐겨찾기 토글 함수
+  const handleFavorite = async (listingId: number) => {
+    const token = sessionStorage.getItem('accessToken');
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      const response = await api.get('/api/market/favorite', {
+        params: { listingId: listingId },
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      // 백엔드 메시지에 따라 상태 반전 (토글)
+      if (response.data.includes("등록")) setIsLiked(true);
+      else if (response.data.includes("취소")) setIsLiked(false);
+      
+      alert(response.data);
+    } catch (error) {
+      console.error("즐겨찾기 처리 실패", error);
+    }
+  };
+
+  return (
+    <div className="item-info">
+      {item.imageStrings && item.imageStrings.length > 0 ? (
+        <div
+          className="item-image"
+          style={{ backgroundImage: `url(${BASE_URL}${item.imageStrings[0]})` }}
+        />
+      ) : (
+        <div className="item-image">사진 없음</div>
+      )}
+      <h3 onClick={() => navigate(`/buysell/detail/${item.listingId}`)}>{item.nickname}</h3>
+      <p style={{ color: 'red' }}>{item.price.toLocaleString()}원</p>
+      
+      {/* 상태에 따라 하트 모양 변경 */}
+      <button 
+        onClick={() => handleFavorite(item.listingId)} 
+        style={{ cursor: 'pointer', fontSize: '1.2rem', border: 'none', background: 'none' }}
+      >
+        {isLiked ? '❤️' : '🤍'}
+      </button>
+    </div>
+  );
+};
+
+// --- 메인 컴포넌트 ---
 const BuySellList = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [items, setItems] = useState<MarketCard[]>([]);
-
+  const [items, setItems] = useState<any[]>([]);
   const BASE_URL = "http://localhost:8080/pokemon/";
 
-  // 페이지 로드 시 DB에서 데이터를 가져오는 useEffect
   useEffect(() => {
     const fetchCards = async () => {
       try {
@@ -34,39 +88,23 @@ const BuySellList = () => {
           params: { cardId: id }
         });
         setItems(response.data);
-        console.log(response.data.imageList);
       } catch (error) {
         console.error("데이터 로딩 실패:", error);
       }
     };
     fetchCards();
-  }, []);
-
-  const handleFavorite = async (listingId: number) => {
-    const token = sessionStorage.getItem('accessToken');
-    if (!token) return;
-
-    try {
-      const response = await api.get('/api/market/favorite', {
-        params: { listingId: listingId },
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      alert(response.data.message || "처리가 완료되었습니다.");
-    } catch (error) {
-      console.error("데이터 로딩 실패:", error);
-    }
-  }
-
+  }, [id]);
 
   return (
     <div className="buysell-container">
       <button onClick={() => navigate('/buysell')} style={{ marginBottom: '20px', cursor: 'pointer', background: 'none', border: 'none', color: '#666' }}>← 돌아가기</button>
+      
       <div className="item-grid">
+        {/* 상단 카드 정보 요약 (첫 번째 아이템 기준) */}
         {items.length > 0 && (
-          <div className="item-card">
+          <div className="item-card main-summary">
             <div
               className="item-image"
-              // DB에서 받아온 imageUrl을 그대로 배경으로 사용
               style={{ backgroundImage: `url(${BASE_URL}${items[0].officialImageUrl})` }}
             />
             <div className="item-info">
@@ -75,28 +113,20 @@ const BuySellList = () => {
             </div>
           </div>
         )}
+
+        {/* 판매글 리스트 루프 */}
         {items.length > 0 ? (
           items.map(item => (
-            <div key={item.listingId} className="item-info" >
-              {item.imageStrings && item.imageStrings.length > 0 ? ( //사용자가 등록한 사진이 있을경우 띄우고 없으면 없다고 띄움
-                <div
-                  className="item-image"
-                  // DB에서 받아온 imageUrl을 그대로 배경으로 사용
-                  style={{ backgroundImage: `url(${BASE_URL}${item.imageStrings[0]})` }} //첫번째 이미지만 보여줌(대표이미지)
-                />
-              ) : (
-                <div
-                  className="item-image"
-                >사진 없음</div>
-              )}
-              <h3 onClick={() => navigate(`/buysell/detail/${item.listingId}`)}>{item.nickname}</h3>
-              <p style={{ color: 'red' }} >{item.price}</p>
-              <button onClick={() => handleFavorite(item.listingId)} > 즐겨찾기 </button>
-            </div>
+            <MarketItemCard 
+              key={item.listingId} 
+              item={item} 
+              navigate={navigate} 
+              BASE_URL={BASE_URL} 
+            />
           ))
         ) : (
           <div className="no-results">
-            <p>No cards found matching your criteria.</p>
+            <p>등록된 판매글이 없습니다.</p>
           </div>
         )}
       </div>

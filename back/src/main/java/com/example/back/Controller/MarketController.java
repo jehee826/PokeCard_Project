@@ -101,9 +101,25 @@ public class MarketController {
     }
 
     @GetMapping("favoritelist")
-    public ResponseEntity<List<MarketPlaceListingsDTO>> getMyFavoriteList(@RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<?> getMyFavoriteList(@RequestHeader("Authorization") String authHeader){
+        // 토큰 검증 및 Bearer 제거
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
+        }
         String token = authHeader.substring(7);
-        List<MarketPlaceListingsDTO> favoriteList = marketService.getMyFavoriteList(token);
-        return ResponseEntity.ok(favoriteList);
+
+        // 서비스 호출
+        List<MarketPlaceListingsDTO> favorites = marketService.getMyFavoriteList(token);
+
+        return ResponseEntity.ok(favorites);
+    }
+
+    @GetMapping("/is-favorite")
+    public ResponseEntity<Boolean> checkFavorite(@RequestParam Long listingId, @RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.ok(false); // 토큰 없으면 당연히 찜 아님
+        }
+        String token = authHeader.substring(7);
+        return ResponseEntity.ok(marketService.isFavorite(listingId, token));
     }
 }
