@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-
+@Slf4j
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -39,30 +40,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String token = getJwtFromRequest(request);
+        log.info("JwtAuthenticationFilter - Request URI: {}, Token: {}", request.getRequestURI(), token != null ? "Present" : "Absent");
 
         // 토큰이 있고 유효한지 확인
-        if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
+        if (StringUtils.hasText(token)) {
+            try {
+                if (tokenProvider.validateToken(token)) {
+                    // 토큰에서 로그인 ID 추출
+                    String username = tokenProvider.getLoginIdFromToken(token);
+                    log.info("JwtAuthenticationFilter - Valid token for user: {}", username);
 
-            // 토큰에서 로그인 ID 추출
-            String username = tokenProvider.getLoginIdFromToken(token);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            // 서비스 로직을 통해 DB에서 UserDetails(신분증) 가져오기
-            // 이 과정이 있어야 컨트롤러의 @AuthenticationPrincipal이 채워짐
-
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-            if (userDetails != null) {
-                // 추출한 UserDetails를 담아 진짜 신분증(Authentication) 생성
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, // 문자열이 아닌 UserDetails 객체가 들어감
-                        null,
-                        userDetails.getAuthorities() // DB에 저장된 실제 권한 사용
-                );
-
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // 5. 시큐리티 금고에 저장
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                } else {
+                    log.warn("JwtAuthenticationFilter - Invalid token provided for URI: {}", request.getRequestURI());
+                }
+            } catch (Exception e) {
+                log.error("JwtAuthenticationFilter - Error processing token: {}", e.getMessage());
+                // 여기서 에러를 던지지 않고 그냥 filterChain을 타게 함으로써 permitAll 경로가 작동하도록 유도
             }
         }
 

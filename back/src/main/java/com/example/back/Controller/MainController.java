@@ -75,8 +75,10 @@ public class MainController {
         }
         String finalImageUrl = officialImageUrl;
 
+        log.info("받은 헤더 토큰값: {}", token);
         // 1. 비로그인 상태 처리
-        if (token == null || !token.startsWith("Bearer ")) {
+        if (token == null || token.isEmpty() || !token.startsWith("Bearer ")) {
+            log.warn("유효한 토큰이 헤더에 포함되지 않았습니다. (token: {})", token);
             return ResponseEntity.ok(new CardsDTO(finalImageUrl, "카드 인식 성공 (유저 정보를 찾을 수 없습니다.)"));
         }
 
@@ -84,6 +86,7 @@ public class MainController {
             // 2. 토큰에서 loginId 추출
             String actualToken = token.substring(7);
             String loginId = tokenProvider.getLoginIdFromToken(actualToken);
+            log.info("추출된 Login ID: {}", loginId);
 
             // 3. 유저 정보 조회 및 도감 처리
             return userRepository.findByLoginId(loginId)
@@ -103,14 +106,16 @@ public class MainController {
                                     .build();
                             userCollectionsRepository.save(newCollection);
                             
+                            log.info("유저 ID {} 의 도감에 카드 ID {} 등록 완료", user.getId(), card.getCardId());
                             return ResponseEntity.ok(new CardsDTO(finalImageUrl, "새로운 카드 인식 성공"));
                         }
                     })
                     .orElseGet(() -> {
+                        log.warn("DB에서 해당 Login ID를 찾을 수 없음: {}", loginId);
                         return ResponseEntity.ok(new CardsDTO(finalImageUrl, "카드 인식 성공 (유저 정보를 찾을 수 없습니다.)"));
                     });
         } catch (Exception e) {
-            log.error("토큰 검증 또는 처리 중 오류 발생: {}", e.getMessage());
+            log.error("토큰 검증 또는 처리 중 오류 발생: {}", e.getMessage(), e);
             return ResponseEntity.ok(new CardsDTO(finalImageUrl, "카드 인식 성공 (유저 정보를 찾을 수 없습니다.)"));
         }
     }

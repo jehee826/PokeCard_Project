@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import { runOcrInference, initService } from './OcrService';
 import styles from './AiCamera.module.css';
 import api from '../../api/axios';
-import axios from 'axios';
 
 
 const AiCamera = () => {
@@ -124,10 +123,21 @@ const AiCamera = () => {
 
   // 3. 서버로 데이터를 보내고 이미지를 받아오는 함수 분리
   const fetchCardDataFromServer = async (ocrResultText: string) => {
+    console.log("현재 세션에 토큰이 있는가?:", sessionStorage.getItem('accessToken'));
+    alert("현재 전송하려는 토큰: " + (sessionStorage.getItem('accessToken') ? "있음" : "없음(null)"));
+    alert(sessionStorage.getItem('accessToken'));
     try {
-      const response = await api.post('/api/main/ai', {
-        cardNumber: ocrResultText // 방금 스캔한 텍스트를 바로 전송
-      });
+      const token = sessionStorage.getItem('accessToken');
+      console.log("AiCamera - Current Token in sessionStorage:", token);
+
+      const response = await api.post('/api/main/ai', 
+        { cardNumber: ocrResultText },
+        {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : ''
+          }
+        }
+      );
       
       const imageUrl = response.data.officialImageUrl;
       
