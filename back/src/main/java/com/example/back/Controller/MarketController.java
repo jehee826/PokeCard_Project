@@ -1,8 +1,9 @@
 package com.example.back.Controller;
 
 import com.example.back.DTO.CardsDTO;
+import com.example.back.DTO.MarketPlaceFavoriteDTO;
 import com.example.back.DTO.MarketPlaceListingsDTO;
-import com.example.back.DTO.UserCollectionsDTO;
+import com.example.back.Entity.MarketPlaceListingsEntity;
 import com.example.back.Service.Market.MarketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,14 +23,24 @@ public class MarketController {
     private final MarketService marketService;
 
     /** 모든리스트를 가져옴 */
-    @GetMapping("/list")
-    public ResponseEntity<List<MarketPlaceListingsDTO>> getMarketCardList(){
+    @GetMapping("/alllist")
+    public ResponseEntity<List<CardsDTO>> getMarketCardList(){
+
+        List<CardsDTO> dtoList = marketService.getAllListings();
+        //로깅
+        log.info("전송할 DTO 리스트 (모든 카드 리스트): {}", dtoList);
+
+        return ResponseEntity.ok(dtoList);
+    }
+
+    /** 해당 카드를 판매하는 판매글들만 가져옴 */
+    @GetMapping("/sellerlist")
+    public ResponseEntity<List<MarketPlaceListingsDTO>> getMarketCardSellerList(@RequestParam Long cardId){
 
         // 서비스호출 -> 모든 리스트 가져오기(cards테이블 조인까지)
-        List<MarketPlaceListingsDTO> dtoList = marketService.getAllListings();
-
-        //잘 넘어오나 확인용 로그
-        //log.info("전송할 DTO 리스트 (카드정보 포함): {}", dtoList);
+        List<MarketPlaceListingsDTO> dtoList = marketService.getSellerListings(cardId);
+        //로깅
+        log.info("전송할 DTO 리스트 (판매글들): {}", dtoList);
 
         return ResponseEntity.ok(dtoList);
     }
@@ -42,11 +53,12 @@ public class MarketController {
         MarketPlaceListingsDTO dto = marketService.getDetailList(listId);
 
         //잘 넘어오나 확인용 로그
-        log.info("전송할 DTO 리스트 (카드정보 포함): {}", dto);
+        log.info("전송할 DTO 리스트 (판매글 세부정보): {}", dto);
 
         return ResponseEntity.ok(dto);
     }
 
+    /** 로그인한 사용자가 보유한 모든 카드를 가져옴 */
     @GetMapping("/mycard")
     public ResponseEntity<?> getMyCardList(@RequestHeader("Authorization") String authHeader){
 
@@ -57,9 +69,13 @@ public class MarketController {
         String token = authHeader.substring(7);
 
         List<CardsDTO> myCard = marketService.getMyCardListings(token);
+
+        log.info("전송할 DTO 리스트(보유카드 리스트): {}", myCard);
+
         return ResponseEntity.ok(myCard);
     }
 
+    /** 판매글 등록 */
     @PostMapping("/register")
     public ResponseEntity<?> registerCard(@ModelAttribute MarketPlaceListingsDTO register, @RequestHeader("Authorization") String authHeader){
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -70,5 +86,24 @@ public class MarketController {
         marketService.saveListing(register, token);
 
         return ResponseEntity.ok("등록성공");
+    }
+
+    @GetMapping("/favorite")
+    public ResponseEntity<?> insertFavorite(@RequestParam Long listingId, @RequestHeader("Authorization") String authHeader){
+        //"Bearer " 문자열 제거 (토큰 값만 추출)
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+        }
+        String token = authHeader.substring(7);
+
+        String resultMessage = marketService.toggleFavorite(listingId, token);
+        return ResponseEntity.ok(resultMessage);
+    }
+
+    @GetMapping("favoritelist")
+    public ResponseEntity<List<MarketPlaceListingsDTO>> getMyFavoriteList(@RequestHeader("Authorization") String authHeader){
+        String token = authHeader.substring(7);
+        List<MarketPlaceListingsDTO> favoriteList = marketService.getMyFavoriteList(token);
+        return ResponseEntity.ok(favoriteList);
     }
 }

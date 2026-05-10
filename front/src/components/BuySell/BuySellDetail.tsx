@@ -11,7 +11,7 @@ interface detailCard {
     cardNameKo: string;
     status: string;
     officialImageUrl: string;
-    imageStrings?: string[]; 
+    imageStrings: string[];
 }
 
 const BuySellDetail = () => {
@@ -31,19 +31,19 @@ const BuySellDetail = () => {
                     params: { listId: id }
                 });
                 setItem(response.data);
-                
+
                 const combined = [
                     response.data.officialImageUrl,
                     ...(response.data.imageStrings || [])
                 ].filter(Boolean); // 혹시 모를 null/undefined 제거
 
                 setImageList(combined);
-                
+
                 // 데이터 로드 시 리스트의 첫 번째 이미지(오피셜)를 기본 선택
                 if (combined.length > 0) {
                     setSelectedImg(combined[0]);
                 }
-                
+
             } catch (error) {
                 console.error("데이터 로딩 실패:", error);
             }
@@ -51,34 +51,34 @@ const BuySellDetail = () => {
         fetchCards();
     }, [id]);
 
-  
+
 
     if (!item) return <div className="buysell-container">조회된 아이템이 없습니다.</div>;
 
     return (
         <div className="buysell-container">
-            <button onClick={() => navigate('/buysell')} style={{ marginBottom: '20px', cursor: 'pointer', background: 'none', border: 'none', color: '#666' }}>← Back to List</button>
+            <button onClick={() => navigate('/buysell')} style={{ marginBottom: '20px', cursor: 'pointer', background: 'none', border: 'none', color: '#666' }}>← 돌아가기</button>
             <div className="detail-container">
                 <div className="detail-image">
                     {imageList.length > 0 ? (
                         <div className="image-gallery">
                             <img src={`${BASE_URL}${selectedImg}`} alt="실물 사진 메인" />
-                            
+
                             <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px' }}>
                                 {imageList.map((img, idx) => (
-                                    <img 
-                                        key={idx} 
-                                        src={`${BASE_URL}${imageList[idx]}`} 
+                                    <img
+                                        key={idx}
+                                        src={`${BASE_URL}${imageList[idx]}`}
                                         // [추가] 클릭 시 selectedImg 상태 업데이트
                                         onClick={() => setSelectedImg(img)}
-                                        style={{ 
-                                            width: '50px', 
-                                            height: '50px', 
+                                        style={{
+                                            width: '50px',
+                                            height: '50px',
                                             objectFit: 'cover',
                                             cursor: 'pointer',
                                             // [추가] 현재 선택된 사진에 테두리 효과 (선택사항)
                                             border: selectedImg === img ? '2px solid #3b82f6' : '1px solid #ddd'
-                                        }} 
+                                        }}
                                         alt={`미리보기 ${idx}`}
                                     />
                                 ))}

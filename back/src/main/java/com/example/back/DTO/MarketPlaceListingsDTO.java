@@ -27,7 +27,9 @@ public class MarketPlaceListingsDTO {
     private String officialImageUrl;
     //이미지 담을 변수
     private List<MultipartFile> images;
-    List<String> imageStrings;
+    private List<String> imageStrings;
+    //유저 닉네임변수
+    private String nickname;
 
 
     public static MarketPlaceListingsDTO toDto(MarketPlaceListingsEntity entity, CardsEntity cardEntity){

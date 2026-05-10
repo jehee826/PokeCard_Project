@@ -61,7 +61,6 @@ const SellRegistration = () => {
             const response = await api.post('/api/market/register', formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    // multipart 전송 시 Content-Type은 axios가 자동 설정하게 두는 것이 좋습니다.
                 }
             });
 

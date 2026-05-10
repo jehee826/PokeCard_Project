@@ -40,7 +40,7 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth /* 어떤 주소로 들어오는 요청을 허용하거나 막을지 정함 */
                 .requestMatchers("/api/public/**").permitAll() /* 로그인이나 회원가입 페이지 /api/auth/** 은 모두 허용 */
-                .requestMatchers("/api/market/list").permitAll() //리스트 보여주기
+                .requestMatchers("/api/market/alllist").permitAll() //리스트 보여주기
                 .requestMatchers("/api/market/detail/**").permitAll() //리스트 상세정보 보여주기
                 .requestMatchers("/pokemon/**").permitAll() //서버(내컴퓨터)에 저장된 이미지들도 보여주기
                 .anyRequest().authenticated() /* 그 외 모든 페이지 요청은 인증 필요 */
