@@ -28,7 +28,7 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // 401 Unauthorized 에러 발생 시 로그아웃 처리 또는 로그인 페이지로 이동
       // sessionStorage.removeItem('accessToken');
-      alert("인증이 필요합니다. 로그인 페이지로 이동합니다.");
+
       // window.location.href = '/Login'; // 필요시 주석 해제
     }
     return Promise.reject(error);

@@ -92,7 +92,7 @@ public class MainController {
             return userRepository.findByLoginId(loginId)
                     .map(user -> {
                         boolean isAlreadyCollected = userCollectionsRepository.existsByUserIdAndCardId(user.getId(), card.getCardId());
-                        
+
                         if (isAlreadyCollected) {
                             return ResponseEntity.ok(new CardsDTO(finalImageUrl, "이미 도감에 등록된 카드입니다."));
                         } else {
@@ -102,12 +102,13 @@ public class MainController {
                                     .cardId(card.getCardId())
                                     .quantity(1)
                                     .conditionGrade("A")
-                                    .acquiredMethod("OCR SCAN")
+                                    .acquiredMethod("PULL")
                                     .build();
                             userCollectionsRepository.save(newCollection);
                             
                             log.info("유저 ID {} 의 도감에 카드 ID {} 등록 완료", user.getId(), card.getCardId());
-                            return ResponseEntity.ok(new CardsDTO(finalImageUrl, "새로운 카드 인식 성공"));
+                            CardsDTO cardsDTO = new CardsDTO(finalImageUrl, "새로운 카드 인식 성공");
+                            return ResponseEntity.ok(cardsDTO);
                         }
                     })
                     .orElseGet(() -> {

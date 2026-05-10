@@ -23,6 +23,11 @@ public class CardsDTO {
         this.officialImageUrl = officialImageUrl;
         this.message = message;
     }
+    public CardsDTO(String officialImageUrl,String cardNameKo, String message) {
+        this.officialImageUrl = officialImageUrl;
+        this.cardNameKo = cardNameKo;
+        this.message = message;
+    }
 
     public static CardsDTO toDto(CardsEntity entity) {
         return CardsDTO.builder()

@@ -2,9 +2,11 @@ import React, { useRef, useState, useEffect } from 'react';
 import { runOcrInference, initService } from './OcrService';
 import styles from './AiCamera.module.css';
 import api from '../../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 
 const AiCamera = () => {
+  const navigate = useNavigate();
   const [result, setResult] = useState("");
   const [status, setStatus] = useState("모델 로딩 중...");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -12,6 +14,7 @@ const AiCamera = () => {
   
   // 1. 서버에서 받은 공식 카드 이미지를 저장할 State 추가
   const [officialImg, setOfficialImg] = useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -141,11 +144,15 @@ const AiCamera = () => {
       
       const imageUrl = response.data.officialImageUrl;
       
+      
       // 서버에서 받은 이미지 URL을 상태에 저장하여 렌더링 유도
       if (imageUrl) {
         setOfficialImg(imageUrl);
       }
-      
+      if (result) {
+        setSearchTerm(result);
+      }
+
       setStatus("CARD DATA RETRIEVED");
       alert(response.data.message || "카드 인식 성공 (프론트)");
 
@@ -154,6 +161,12 @@ const AiCamera = () => {
       const errorMsg = error.response?.data?.message || error.response?.data || "API SERVER ERROR";
       setStatus(errorMsg);
     }
+    
+    
+  };
+  const handleImgClick = () => {
+    // 이동할 경로와 함께 state 전달
+    navigate('/BuySellList', { state: { cardNumber: searchTerm } });
   };
 
   return (
@@ -193,6 +206,8 @@ const AiCamera = () => {
 
       <div className={styles["right-section"]}>
         <h1 className={styles["result-title"]}>POKEMON SCANNER</h1>
+        <h4 className={styles["sub-title"]}>하단 공식 이미지 터치 시 장터로 이동됩니다.</h4>
+
         
         <div style={{ background: '#222', borderRadius: '10px', width: '95%', textAlign: 'left', margin: 'auto', padding: '15px' }}>
           <p style={{ color: '#888', fontSize: '12px', margin: 0 }}>SYSTEM STATUS:</p>
@@ -206,7 +221,7 @@ const AiCamera = () => {
         {officialImg && (
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
             <p style={{ fontSize: '12px', color: '#ffcb05', fontWeight: 'bold' }}>POKEDEX OFFICIAL DATA</p>
-            <img 
+            <img onClick={handleImgClick} // 이미지 클릭 시 장터 페이지로 이동
               src={officialImg} 
               alt="Official Card" 
               style={{ 

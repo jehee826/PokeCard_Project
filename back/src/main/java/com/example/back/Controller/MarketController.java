@@ -29,7 +29,7 @@ public class MarketController {
         List<MarketPlaceListingsDTO> dtoList = marketService.getAllListings();
 
         //잘 넘어오나 확인용 로그
-        //log.info("전송할 DTO 리스트 (카드정보 포함): {}", dtoList);
+        log.info("전송할 DTO 리스트 (카드정보 포함): {}", dtoList);
 
         return ResponseEntity.ok(dtoList);
     }
