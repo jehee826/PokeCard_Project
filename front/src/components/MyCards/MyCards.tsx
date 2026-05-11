@@ -27,10 +27,9 @@ const MyCards = () => {
       const token = sessionStorage.getItem('accessToken');
       if (!token) return;
       try {
-        const response = await api.get('/api/market/mycard', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const response = await api.get('/api/market/mycard');
         setMyCards(response.data);
+
       } catch (error) {
         console.error("내 카드 로딩 실패:", error);
       }

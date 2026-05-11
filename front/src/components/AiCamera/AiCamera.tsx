@@ -134,12 +134,7 @@ const AiCamera = () => {
       console.log("AiCamera - Current Token in sessionStorage:", token);
 
       const response = await api.post('/api/main/ai', 
-        { cardNumber: ocrResultText },
-        {
-          headers: {
-            'Authorization': token ? `Bearer ${token}` : ''
-          }
-        }
+        { cardNumber: ocrResultText }
       );
       
       const imageUrl = response.data.officialImageUrl;

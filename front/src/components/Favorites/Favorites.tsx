@@ -32,9 +32,7 @@ const Favorites = () => {
 
       try {
         // 백엔드 컨트롤러의 @GetMapping("favoritelist") 호출
-        const response = await api.get('/api/market/favoritelist', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const response = await api.get('/api/market/favoritelist');
         
         setFavorites(response.data);
       } catch (error) {

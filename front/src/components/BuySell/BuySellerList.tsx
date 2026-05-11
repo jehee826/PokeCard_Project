@@ -15,8 +15,7 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: any) => {
 
       try {
         const response = await api.get('/api/market/is-favorite', {
-          params: { listingId: item.listingId },
-          headers: { 'Authorization': `Bearer ${token}` }
+          params: { listingId: item.listingId }
         });
         setIsLiked(response.data); // true 또는 false
       } catch (error) {
@@ -36,8 +35,7 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: any) => {
 
     try {
       const response = await api.get('/api/market/favorite', {
-        params: { listingId: listingId },
-        headers: { 'Authorization': `Bearer ${token}` }
+        params: { listingId: listingId }
       });
       
       // 백엔드 메시지에 따라 상태 반전 (토글)
@@ -75,7 +73,7 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: any) => {
 };
 
 // --- 메인 컴포넌트 ---
-const BuySellList = () => {
+const BuySellerList = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [items, setItems] = useState<any[]>([]);
@@ -134,4 +132,4 @@ const BuySellList = () => {
   );
 };
 
-export default BuySellList;
+export default BuySellerList;

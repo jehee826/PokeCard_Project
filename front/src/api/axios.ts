@@ -9,10 +9,12 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = sessionStorage.getItem('accessToken');
-    console.log('Axios Interceptor - Token found:', token ? 'Yes' : 'No');
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-      console.log('Axios Interceptor - Header set:', config.headers['Authorization']);
+      // Axios 1.x 이상에서는 config.headers가 AxiosHeaders 객체일 수 있으므로 안전하게 설정
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log(`[Axios Request] ${config.method?.toUpperCase()} ${config.url} - Token Attached`);
+    } else {
+      console.log(`[Axios Request] ${config.method?.toUpperCase()} ${config.url} - No Token`);
     }
     return config;
   },

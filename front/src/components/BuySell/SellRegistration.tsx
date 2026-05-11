@@ -58,11 +58,7 @@ const SellRegistration = () => {
         });
 
         try {
-            const response = await api.post('/api/market/register', formData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
+            const response = await api.post('/api/market/register', formData);
 
             if (response.status === 200) {
                 alert('판매 등록이 완료되었습니다!');
@@ -80,9 +76,7 @@ const SellRegistration = () => {
             if (!token) return;
             
             try {
-                const response = await api.get('/api/market/mycard', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const response = await api.get('/api/market/mycard');
                 setItems(response.data);
             } catch (error) {
                 console.error("데이터 로딩 실패:", error);
