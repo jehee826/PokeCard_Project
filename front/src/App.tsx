@@ -7,13 +7,13 @@ import PwReset from './components/Login/SignUp,PwReset/PwReset';
 import Favorites from './components/Favorites/Favorites';
 import MyCards from './components/MyCards/MyCards';
 import BuySellList from './components/BuySell/BuySellList';
-import BuySellerList from './components/BuySell/BuySellerList';
 import BuySellDetail from './components/BuySell/BuySellDetail';
 import Payment from './components/BuySell/Payment';
 import TopBar from './components/TopBar/TopBar'
 import SellRegistration from './components/BuySell/SellRegistration';
 import ProtectedRoute from './components/ProtectedRoute';
 import AiCamera from './components/AiCamera/AiCamera';
+import MyDeals from './components/MyDeals/MyDeals';
 
 
 
@@ -48,17 +48,6 @@ const App = () => {
                </ProtectedRoute>
              } 
            />
-            
-            <Route 
-             path="/buysell/seller/:id" 
-             element={
-               <ProtectedRoute>
-                <TopBar/>
-                 <BuySellerList />
-               </ProtectedRoute>
-             } 
-           />
-
             <Route 
              path="/mydeals" 
              element={
@@ -68,6 +57,7 @@ const App = () => {
                </ProtectedRoute>
              } 
            />
+
 
            <Route 
              path="/buysell/detail/:id" 

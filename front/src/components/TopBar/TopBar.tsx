@@ -20,6 +20,9 @@ const TopBar = () => {
       const handleMyCardsClick = () => {
     navigate('/Mycards'); 
   };
+        const handleMyDealsClick = () => {
+    navigate('/Mydeals'); 
+  };
       const handleMarketplaceClick = () => {
     navigate('/buysell'); 
   };
@@ -41,10 +44,10 @@ const TopBar = () => {
           value="내 카드" 
           onClick={handleMyCardsClick} 
         />
-                <input 
+         <input 
           type="button" 
           value="내 거래" 
-          onClick={handleMyCardsClick} 
+          onClick={handleMyDealsClick} 
         />
         <input 
           type="button" 

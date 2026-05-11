@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Card from "../Middle/M/Card.tsx";
+import Card from "../Middle/M/CardCopy.tsx";
 import styles from './MyDeals.module.css';
 
 const MyDeals = () => {
