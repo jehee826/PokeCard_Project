@@ -7,6 +7,7 @@ import PwReset from './components/Login/SignUp,PwReset/PwReset';
 import Favorites from './components/Favorites/Favorites';
 import MyCards from './components/MyCards/MyCards';
 import BuySellList from './components/BuySell/BuySellList';
+import BuySellerList from './components/BuySell/BuySellerList';
 import BuySellDetail from './components/BuySell/BuySellDetail';
 import Payment from './components/BuySell/Payment';
 import TopBar from './components/TopBar/TopBar'
@@ -47,7 +48,16 @@ const App = () => {
                </ProtectedRoute>
              } 
            />
-
+            
+            <Route 
+             path="/buysell/seller/:id" 
+             element={
+               <ProtectedRoute>
+                <TopBar/>
+                 <BuySellerList />
+               </ProtectedRoute>
+             } 
+           />
            <Route 
              path="/buysell/detail/:id" 
              element={

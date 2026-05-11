@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios'; 
 import './BuySell.css';
@@ -8,7 +8,6 @@ interface MyCard {
     cardNumber: string;
     cardNameKo: string;
     officialImageUrl: string;
-    
 }
 
 const SellRegistration = () => {
@@ -17,66 +16,77 @@ const SellRegistration = () => {
     const [price, setPrice] = useState('');
     const [contact, setContact] = useState('');
     const [location, setLocation] = useState('');
+    
+    // 사진 업로드를 위한 상태 추가
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [previews, setPreviews] = useState<string[]>([]);
+
     const navigate = useNavigate();
 
-    //판매글 등록
+    // 사진 선택 시 실행되는 함수
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (files) {
+            const fileArray = Array.from(files);
+            setImageFiles(fileArray);
+
+            // 브라우저용 임시 미리보기 URL 생성
+            const filePreviews = fileArray.map(file => URL.createObjectURL(file));
+            setPreviews(filePreviews);
+        }
+    };
+
     const handleRegister = async () => {
-        // 1. 유효성 검사
-        if (!selectedCardId || !price || !location || !contact) {
-            alert('모든 정보를 입력해주세요.');
+        // 유효성 검사 (사진 포함)
+        if (!selectedCardId || !price || !location || !contact || imageFiles.length === 0) {
+            alert('사진을 포함한 모든 정보를 입력해주세요.');
             return;
         }
 
-       const token = sessionStorage.getItem('accessToken');
+        const token = sessionStorage.getItem('accessToken');
+        
+        // [핵심] JSON 대신 FormData 사용
+        const formData = new FormData();
+        formData.append('cardId', selectedCardId);
+        formData.append('price', price);
+        formData.append('contactInfo', contact);
+        formData.append('location', location);
+
+        // 여러 장의 파일을 'images'라는 키로 추가
+        imageFiles.forEach((file) => {
+            formData.append('images', file);
+        });
 
         try {
-            // 3. 백엔드로 POST 요청
-            const response = await api.post('/api/market/register', {
-                cardId: selectedCardId,
-                price: price,
-                contactInfo: contact,
-                location: location,
-            }, {
+            const response = await api.post('/api/market/register', formData, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
                 }
             });
 
             if (response.status === 200) {
                 alert('판매 등록이 완료되었습니다!');
-                navigate('/buysell'); // 등록 후 목록 페이지로 이동
+                navigate('/buysell');
             }
         } catch (error) {
             console.error("등록 실패:", error);
             alert('등록 중 오류가 발생했습니다.');
-    }
+        }
     };
 
-    //페이지 입장시 백엔드와 연동해 유저가 보유한 카드리스트를 가져옴
     useEffect(() => {
         const fetchCards = async () => {
-            //토큰 꺼내기
             const token = sessionStorage.getItem('accessToken');
-            
-            //토큰이 없으면 리턴
-            if (!token) {
-                console.error("토큰이 없습니다. 로그인이 필요합니다.");
-                return;
-            }
+            if (!token) return;
             
             try {
                 const response = await api.get('/api/market/mycard', {
-                    //토큰 보내기
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
-                //받은 로그인한 유저가 보유중인 카드정보들
                 setItems(response.data);
             } catch (error) {
                 console.error("데이터 로딩 실패:", error);
             }
-            
         };
         fetchCards();
     }, []);
@@ -86,17 +96,33 @@ const SellRegistration = () => {
             <h1 style={{ marginBottom: '30px' }}>판매등록</h1>
             <div className="sell-registration-container">
                 <div className="sell-left">
-                    {selectedCardId ? (
-                        // items 배열에서 현재 선택된(selectedCardId) 카드를 찾아서 그 카드의 이미지를 보여줌
+                    {/* 실물 사진 미리보기가 있으면 먼저 보여주고, 없으면 공식 이미지를 보여줌 */}
+                    {previews.length > 0 ? (
+                        <div className="preview-container">
+                            {previews.map((src, index) => (
+                                <img key={index} src={src} alt={`preview-${index}`} className="upload-preview" />
+                            ))}
+                        </div>
+                    ) : selectedCardId ? (
                         <img 
                             src={items.find(card => String(card.cardId) === String(selectedCardId))?.officialImageUrl} 
                             alt="Preview" 
                         />
                     ) : (
-                        <p className="placeholder-text">카드 미리보기</p>
+                        <p className="placeholder-text">카드 미리보기 (실물 사진 포함)</p>
                     )}
                 </div>
                 <div className="sell-right">
+                    <div className="form-group">
+                        <label>실물 사진 첨부</label>
+                        <input 
+                            type="file" 
+                            accept="image/*" 
+                            multiple 
+                            onChange={handleFileChange}
+                            style={{ marginBottom: '10px' }}
+                        />
+                    </div>
                     <div className="form-group">
                         <label>Select Card</label>
                         <select 
