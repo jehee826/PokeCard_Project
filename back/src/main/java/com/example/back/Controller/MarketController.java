@@ -38,9 +38,12 @@ public class MarketController {
     public ResponseEntity<List<MarketPlaceListingsDTO>> getMarketCardSellerList(@RequestParam Long cardId){
 
         // 서비스호출 -> 모든 리스트 가져오기(cards테이블 조인까지)
-        List<MarketPlaceListingsDTO> dtoList = marketService.getSellerListings(cardId);
-        //로깅
-        log.info("전송할 DTO 리스트 (판매글들): {}", dtoList);
+
+        List<MarketPlaceListingsDTO> dtoList = marketService.getAllListings();
+
+        //잘 넘어오나 확인용 로그
+        log.info("전송할 DTO 리스트 (카드정보 포함): {}", dtoList);
+
 
         return ResponseEntity.ok(dtoList);
     }

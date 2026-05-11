@@ -76,10 +76,6 @@
   pointer-events: none;
 }
 
-.scan-line-idle {
-  /* add idle state if needed */
-}
-
 @keyframes scanning {
   0% { top: 0; }
   100% { top: 100%; }

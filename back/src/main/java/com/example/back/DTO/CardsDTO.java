@@ -17,6 +17,17 @@ public class CardsDTO {
     private String rarityCode;
     private String attribute;
     private String officialImageUrl;
+    private String message;
+
+    public CardsDTO(String officialImageUrl, String message) {
+        this.officialImageUrl = officialImageUrl;
+        this.message = message;
+    }
+    public CardsDTO(String officialImageUrl,String cardNameKo, String message) {
+        this.officialImageUrl = officialImageUrl;
+        this.cardNameKo = cardNameKo;
+        this.message = message;
+    }
 
     public static CardsDTO toDto(CardsEntity entity) {
         return CardsDTO.builder()

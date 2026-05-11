@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import api from '../../api/axios'; //통신기능
 import './BuySell.css';
 
@@ -15,6 +15,7 @@ interface MarketCard {
 }
 
 const BuySellList = () => {
+    const location = useLocation();
     const navigate = useNavigate();
     const [items, setItems] = useState<MarketCard[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -26,6 +27,12 @@ const BuySellList = () => {
 
     // 페이지 로드 시 DB에서 데이터를 가져오는 useEffect
     useEffect(() => {
+        // location.state에서 전달된 cardNumber가 있으면 검색어로 설정
+        const initialSearch = (location.state as any)?.cardNumber || "";
+        if (initialSearch) {
+            setSearchTerm(initialSearch);
+        }
+        
         const fetchCards = async () => {
             try {
                 const response = await api.get('/api/market/alllist');
@@ -35,7 +42,7 @@ const BuySellList = () => {
             }
         };
         fetchCards();
-    }, []);
+    }, [location.state]);
 
     const handleCameraClick = () => {
         fileInputRef.current?.click();

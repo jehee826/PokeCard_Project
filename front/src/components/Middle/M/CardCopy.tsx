@@ -1,14 +1,12 @@
 import styles from '../Middle.module.css';
 import React, { useState } from 'react';
-import  {useNavigate} from 'react-router-dom'
+
 // 1. 전달받는 Props의 타입을 정의합니다. (숫자나 문자열 모두 가능하도록 설정)
 interface CardProps {
-  officialImageUrl: string;
-  cardNumber: string;
+  imageNum: string | number;
 }
 
-const Card: React.FC<CardProps> = ({ cardNumber, officialImageUrl }) => {
-  const navigate = useNavigate();
+const CardCopy: React.FC<CardProps> = ({ imageNum }) => {
   // 2. useState의 제네릭을 사용하여 상태값의 타입을 명확히 지정합니다.
   const [x, setX] = useState<number>(0);
   const [y, setY] = useState<number>(0);
@@ -27,13 +25,9 @@ const Card: React.FC<CardProps> = ({ cardNumber, officialImageUrl }) => {
     setX(0);
     setY(0);
   };
-  const handleClick = () => {
-      navigate('/buysell', { state: { cardNumber: cardNumber } });
-  }
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    event.dataTransfer.setData("image", officialImageUrl);
-    event.dataTransfer.setData("cardNumber", cardNumber);
+    event.dataTransfer.setData("imageNum", imageNum.toString());
   };
 
   return (
@@ -44,13 +38,13 @@ const Card: React.FC<CardProps> = ({ cardNumber, officialImageUrl }) => {
         onDragStart={handleDragStart}
         onMouseMove={mouseMove}
         onMouseLeave={Reset}
-        onClick={handleClick}
+        onClick={Reset}
         style={{
           transform: `rotateX(${x}deg) rotateY(${y}deg)`,
           transition: isHovering 
             ? 'transform 0.2s ease-out' 
             : 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-          backgroundImage: `url(${officialImageUrl})`,
+          backgroundImage: `url(https://cards.image.pokemonkorea.co.kr/data/wmimages/MEGA/M3/M3_${imageNum}.png)`
         }}
       >
         <div 
@@ -69,4 +63,4 @@ const Card: React.FC<CardProps> = ({ cardNumber, officialImageUrl }) => {
   );
 };
 
-export default Card;
+export default CardCopy;

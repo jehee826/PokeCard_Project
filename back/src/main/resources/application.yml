@@ -10,8 +10,8 @@ spring:
 
   datasource:
     url: jdbc:mysql://localhost:3306/pokecard?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
-    username: root #계정이 다름
-    password: jehee826@ # 본인의 MySQL root 계정 비밀번호를 입력하세요!
+    username: sjh4335 #계정이 다름
+    password: 1234 # 본인의 MySQL root 계정 비밀번호를 입력하세요!
 
   h2:
     console:
