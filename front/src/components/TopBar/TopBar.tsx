@@ -41,6 +41,11 @@ const TopBar = () => {
           value="내 카드" 
           onClick={handleMyCardsClick} 
         />
+                <input 
+          type="button" 
+          value="내 거래" 
+          onClick={handleMyCardsClick} 
+        />
         <input 
           type="button" 
           value="장터" 

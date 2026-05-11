@@ -37,8 +37,8 @@ const App = () => {
                  <Favorites />
                </ProtectedRoute>
              } 
-           />
-                      <Route 
+           />                      
+           <Route 
              path="/mycards" 
              element={
                <ProtectedRoute>
@@ -47,13 +47,22 @@ const App = () => {
                </ProtectedRoute>
              } 
            />
+            <Route 
+             path="/mydeals" 
+             element={
+               <ProtectedRoute>
+                <TopBar/>
+                 <MyCards />
+               </ProtectedRoute>
+             } 
+           />
+
 
            <Route 
              path="/buysell/detail/:id" 
              element={
 
                  <BuySellDetail />
-
              } 
            />
            <Route 
