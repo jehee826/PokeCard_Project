@@ -64,13 +64,14 @@ const BuySellDetail = () => {
                         <div className="image-gallery">
                             <img src={`${BASE_URL}${selectedImg}`} alt="실물 사진 메인" />
 
-                            <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px' }}>
+                            <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px', cursor: 'pointer' }}>
                                 {imageList.map((img, idx) => (
                                     <img
                                         key={idx}
                                         src={`${BASE_URL}${imageList[idx]}`}
                                         // [추가] 클릭 시 selectedImg 상태 업데이트
                                         onClick={() => setSelectedImg(img)}
+                                        
                                         style={{
                                             width: '50px',
                                             height: '50px',

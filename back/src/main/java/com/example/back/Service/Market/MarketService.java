@@ -151,7 +151,7 @@ public class MarketService {
         MarketPlaceListingsEntity savedListing = marketPlaceListingsRepository.save(newListing);
 
         if (register.getImages() != null && !register.getImages().isEmpty()) {
-            String uploadDir = "C:/pokemon/upload/";
+            String uploadDir = "C:/pokemon/";
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
 

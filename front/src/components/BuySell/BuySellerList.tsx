@@ -52,13 +52,16 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: any) => {
     <div className="item-info">
       {item.imageStrings && item.imageStrings.length > 0 ? (
         <div
+        onClick={() => navigate(`/buysell/detail/${item.listingId}`)}
           className="item-image"
-          style={{ backgroundImage: `url(${BASE_URL}${item.imageStrings[0]})` }}
+          style={{ backgroundImage: `url(${BASE_URL}${item.imageStrings[0]})`,cursor: 'pointer'}}
         />
       ) : (
         <div className="item-image">사진 없음</div>
       )}
-      <h3 onClick={() => navigate(`/buysell/detail/${item.listingId}`)}>{item.nickname}</h3>
+      <h3 onClick={() => navigate(`/buysell/detail/${item.listingId}`)} style={{ cursor: 'pointer', border: '2px solid #cd6332', padding: '5px', borderRadius: '10px' }}>
+        {item.nickname}
+      </h3>
       <p style={{ color: 'red' }}>{item.price.toLocaleString()}원</p>
       
       {/* 상태에 따라 하트 모양 변경 */}
