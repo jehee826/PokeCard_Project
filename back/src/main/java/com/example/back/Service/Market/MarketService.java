@@ -267,10 +267,27 @@ public class MarketService {
         List<TradeHistoryEntity> entities = tradeHistoryRepository
                 .findByBuyerIdOrSellerIdOrderByTradeDateDesc(user.getId(), user.getId());
 
-        // DTO 리스트로 변환하여 반환
-        return entities.stream()
-                .map(TradeHistoryDTO::toDto)
-                .collect(Collectors.toList());
+
+        return entities.stream().map(entity -> {
+            // 해당 거래에 사용된 카드 상세 정보 조회
+            CardsEntity card = cardsRepository.findById(entity.getCardId()).orElse(null);
+
+            // toDto를 쓰지 않고 여기서 직접 모든 필드를 매핑하여 빌드
+            return TradeHistoryDTO.builder()
+                    .historyId(entity.getHistoryId())
+                    .buyerId(entity.getBuyerId())
+                    .sellerId(entity.getSellerId())
+                    .cardId(entity.getCardId())
+                    .finalPrice(entity.getFinalPrice())
+                    .tradeDate(entity.getTradeDate())
+                    // 카드 정보 합치기 (카드 정보가 없을 경우를 대비해 null 체크 처리)
+                    .cardNumber(card != null ? card.getCardNumber() : "N/A")
+                    .cardNameKo(card != null ? card.getCardNameKo() : "삭제된 카드 정보")
+                    .rarityCode(card != null ? card.getRarityCode() : "-")
+                    .attribute(card != null ? card.getAttribute() : "-")
+                    .officialImageUrl(card != null ? card.getOfficialImageUrl() : "")
+                    .build();
+        }).collect(Collectors.toList());
     }
 
 }

@@ -1,5 +1,6 @@
 # Backend (Spring)
 back/*
+back/src/main/resources/application.yml
 !back/src/
 
 # Frontend (React/Vite)

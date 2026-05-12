@@ -3,14 +3,16 @@ import React, { useState } from 'react';
 
 // 1. 전달받는 Props의 타입을 정의합니다. (숫자나 문자열 모두 가능하도록 설정)
 interface CardProps {
-  imageNum: string | number;
+  imageUrl: string | number;
 }
 
-const CardCopy: React.FC<CardProps> = ({ imageNum }) => {
+const CardCopy: React.FC<CardProps> = ({ imageUrl }) => {
   // 2. useState의 제네릭을 사용하여 상태값의 타입을 명확히 지정합니다.
   const [x, setX] = useState<number>(0);
   const [y, setY] = useState<number>(0);
   const [isHovering, setIsHovering] = useState<boolean>(false);
+
+  const BASE_URL = "http://localhost:8080/pokemon/";
   
   // 3. 마우스 이벤트의 타입을 지정합니다. (div 요소에서 발생하는 마우스 이벤트)
   const mouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -27,7 +29,7 @@ const CardCopy: React.FC<CardProps> = ({ imageNum }) => {
   };
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    event.dataTransfer.setData("imageNum", imageNum.toString());
+    event.dataTransfer.setData("imageNum", imageUrl.toString());
   };
 
   return (
@@ -44,7 +46,7 @@ const CardCopy: React.FC<CardProps> = ({ imageNum }) => {
           transition: isHovering 
             ? 'transform 0.2s ease-out' 
             : 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-          backgroundImage: `url(https://cards.image.pokemonkorea.co.kr/data/wmimages/MEGA/M3/M3_${imageNum}.png)`
+          backgroundImage: `url(${BASE_URL}${imageUrl})`
         }}
       >
         <div 
