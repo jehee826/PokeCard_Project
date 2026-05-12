@@ -64,7 +64,7 @@ const BuySellDetail = () => {
                         <div className="image-gallery">
                             <img src={`${BASE_URL}${selectedImg}`} alt="실물 사진 메인" />
 
-                            <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px', cursor: 'pointer' }}>
+                            <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px'}}>
                                 {imageList.map((img, idx) => (
                                     <img
                                         key={idx}
