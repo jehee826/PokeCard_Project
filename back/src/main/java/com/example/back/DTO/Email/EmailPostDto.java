@@ -1,6 +1,9 @@
 
 package com.example.back.DTO.Email;
 
-public class EmailPostDto {
-}
+import lombok.Getter;
 
+@Getter
+public class EmailPostDto {
+    private String email;
+}

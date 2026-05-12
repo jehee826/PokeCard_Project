@@ -63,8 +63,9 @@ const App = () => {
            <Route 
              path="/buysell/detail/:id" 
              element={
-
+               <ProtectedRoute>
                  <BuySellDetail />
+                </ProtectedRoute>
              } 
            />
            <Route 

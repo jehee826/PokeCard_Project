@@ -1,6 +1,11 @@
 # Backend (Spring)
-back/*
-!back/src/
+back/build/
+back/.gradle/
+back/gradle/
+back/.idea/
+back/bin/
+back/src/main/resources/application.yml
+back/src/test
 
 # Frontend (React/Vite)
 front/node_modules/
