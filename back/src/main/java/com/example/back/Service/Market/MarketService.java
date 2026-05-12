@@ -3,6 +3,7 @@ package com.example.back.Service.Market;
 import com.example.back.DTO.CardsDTO;
 import com.example.back.DTO.MarketPlaceFavoriteDTO;
 import com.example.back.DTO.MarketPlaceListingsDTO;
+import com.example.back.DTO.TradeHistoryDTO;
 import com.example.back.Entity.*;
 import com.example.back.Repository.*;
 import com.example.back.Security.JwtTokenProvider;
@@ -23,12 +24,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MarketService {
 
+
+    private final CardsRepository cardsRepository;
+    private final UsersRepository userRepository;
+    private final UserCollectionsRepository userCollectionsRepository;
     private final MarketPlaceListingsRepository marketPlaceListingsRepository;
     private final MarketPlaceImageRepository marketPlaceImageRepository;
-    private final CardsRepository cardsRepository;
-    private final UserCollectionsRepository userCollectionsRepository;
-    private final UsersRepository userRepository;
     private final MarketPlaceFavoriteRepository marketPlaceFavoriteRepository;
+    private final TradeHistoryRepository tradeHistoryRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     /** 모든 판매글 가져오기 */
@@ -236,6 +239,38 @@ public class MarketService {
 
         // 여기서 existsBy... 를 사용하여 가볍게 존재 여부만 체크!
         return marketPlaceFavoriteRepository.existsByUserIdAndListingId(user.getId(), listingId);
+    }
+
+    @Transactional
+    public void registerPayment(Long sellerId, Long cardId, int finalPrice, String token){
+        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
+        UsersEntity user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+
+        TradeHistoryEntity tradeHistory = TradeHistoryEntity.builder()
+                .buyerId(user.getId())
+                .sellerId(sellerId)
+                .cardId(cardId)
+                .finalPrice(finalPrice)
+                .build();
+
+        tradeHistoryRepository.save(tradeHistory);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TradeHistoryDTO> getMyTradeHistory(String token) {
+        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
+        UsersEntity user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new RuntimeException("유저 없음"));
+
+        // 내가 구매자이거나 판매자인 내역을 모두 가져옴
+        List<TradeHistoryEntity> entities = tradeHistoryRepository
+                .findByBuyerIdOrSellerIdOrderByTradeDateDesc(user.getId(), user.getId());
+
+        // DTO 리스트로 변환하여 반환
+        return entities.stream()
+                .map(TradeHistoryDTO::toDto)
+                .collect(Collectors.toList());
     }
 
 }

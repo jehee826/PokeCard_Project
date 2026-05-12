@@ -16,6 +16,14 @@ public class TradeHistoryDTO {
     private Long cardId;
     private Integer finalPrice;
     private LocalDateTime tradeDate;
+    //카드정보
+    private String cardNumber;
+    private String cardNameKo;
+    private String rarityCode;
+    private String attribute;
+    private String officialImageUrl;
+
+
 
     public static TradeHistoryDTO toDto(TradeHistoryEntity entity) {
         return TradeHistoryDTO.builder()
