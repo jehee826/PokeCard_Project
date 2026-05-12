@@ -11,6 +11,11 @@ interface TradeHistory {
   cardId: number;
   finalPrice: number;
   tradeDate: string;
+  cardNumber: string;
+  cardNameKo: string; 
+  rarityCode: string; 
+  attribute: string;
+  officialImageUrl: string;
 }
 
 const MyDeals = () => {
@@ -28,13 +33,10 @@ const MyDeals = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        setLoading(true);
         const response = await api.get('/api/market/history');
         setTradeList(response.data);
       } catch (error) {
         console.error("거래 내역 로딩 실패:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -120,7 +122,7 @@ const MyDeals = () => {
             filteredCards.map((trade) => (
               <div key={trade.historyId} className={styles['card-item-wrapper']}>
                  {/* Card 컴포넌트에 cardId를 넘겨 이미지 표시 */}
-                <Card imageNum={String(trade.cardId).padStart(3, '0')} />
+                <Card imageUrl={String(trade.officialImageUrl)} />
                 <div className={styles['card-info-overlay']}>
                    <span className={trade.buyerId === myUserId ? styles.tagBuy : styles.tagSell}>
                      {trade.buyerId === myUserId ? "구매" : "판매"}

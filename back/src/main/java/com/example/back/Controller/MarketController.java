@@ -149,6 +149,9 @@ public class MarketController {
         String token = authHeader.substring(7);
 
         List<TradeHistoryDTO> history = marketService.getMyTradeHistory(token);
+
+        log.info("전송할 DTO 리스트(거래내역): {}", history);
+
         return ResponseEntity.ok(history);
     }
 }
