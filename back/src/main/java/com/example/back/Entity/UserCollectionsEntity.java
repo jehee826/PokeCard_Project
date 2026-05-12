@@ -36,6 +36,14 @@ public class UserCollectionsEntity {
     @Column(name = "added_at", updatable = false)
     private LocalDateTime addedAt;
 
+    //JPQL을 위한 필드
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private UsersEntity user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_id", insertable = false, updatable = false)
+    private CardsEntity card;
+
     @PrePersist
     public void prePersist() {
         this.addedAt = LocalDateTime.now();

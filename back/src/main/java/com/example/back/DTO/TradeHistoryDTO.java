@@ -22,6 +22,8 @@ public class TradeHistoryDTO {
     private String rarityCode;
     private String attribute;
     private String officialImageUrl;
+    //해당 내역의 구매자인지 확인
+    private boolean buyer;
 
 
 

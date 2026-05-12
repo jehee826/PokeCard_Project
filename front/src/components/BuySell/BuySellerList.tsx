@@ -3,21 +3,41 @@ import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../api/axios';
 import './BuySell.css';
 
-// --- 하위 컴포넌트: 개별 판매글 아이템 ---
-const MarketItemCard = ({ item, navigate, BASE_URL }: any) => {
-  const [isLiked, setIsLiked] = useState(false);
+interface MarketPlaceListingsDTO {
+  listingId: number;
+  sellerId: number;
+  cardId: number;
+  price: number;
+  contactInfo: string;
+  location: string;
+  cardNameKo: string;
+  cardNumber: string;
+  attribute: string;
+  officialImageUrl: string;
+  nickname: string;
+  owner: boolean;
+  imageStrings: string[];
+}
 
-  // 1. 컴포넌트 로드 시 즐겨찾기 상태 확인
+interface MarketItemCardProps {
+  item: MarketPlaceListingsDTO;
+  navigate: ReturnType<typeof useNavigate>;
+  BASE_URL: string;
+}
+
+// --- 하위 컴포넌트: 개별 판매글 아이템 ---
+const MarketItemCard = ({ item, navigate, BASE_URL }: MarketItemCardProps) => {
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+
   useEffect(() => {
     const checkFavoriteStatus = async () => {
       const token = sessionStorage.getItem('accessToken');
       if (!token) return;
-
       try {
-        const response = await api.get('/api/market/is-favorite', {
+        const response = await api.get<boolean>('/api/market/is-favorite', {
           params: { listingId: item.listingId }
         });
-        setIsLiked(response.data); // true 또는 false
+        setIsLiked(response.data);
       } catch (error) {
         console.error("즐찾 상태 확인 실패", error);
       }
@@ -25,23 +45,18 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: any) => {
     checkFavoriteStatus();
   }, [item.listingId]);
 
-  // 2. 즐겨찾기 토글 함수
   const handleFavorite = async (listingId: number) => {
     const token = sessionStorage.getItem('accessToken');
     if (!token) {
       alert("로그인이 필요합니다.");
       return;
     }
-
     try {
-      const response = await api.get('/api/market/favorite', {
+      const response = await api.get<string>('/api/market/favorite', {
         params: { listingId: listingId }
       });
-      
-      // 백엔드 메시지에 따라 상태 반전 (토글)
       if (response.data.includes("등록")) setIsLiked(true);
       else if (response.data.includes("취소")) setIsLiked(false);
-      
       alert(response.data);
     } catch (error) {
       console.error("즐겨찾기 처리 실패", error);
@@ -52,22 +67,38 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: any) => {
     <div className="item-info">
       {item.imageStrings && item.imageStrings.length > 0 ? (
         <div
-        onClick={() => navigate(`/buysell/detail/${item.listingId}`)}
+          onClick={() => navigate(`/buysell/detail/${item.listingId}`)}
           className="item-image"
-          style={{ backgroundImage: `url(${BASE_URL}${item.imageStrings[0]})`,cursor: 'pointer'}}
+          style={{ backgroundImage: `url(${BASE_URL}${item.imageStrings[0]})`, cursor: 'pointer' }}
         />
       ) : (
         <div className="item-image">사진 없음</div>
       )}
+
       <h3 onClick={() => navigate(`/buysell/detail/${item.listingId}`)} style={{ cursor: 'pointer', border: '2px solid #cd6332', padding: '5px', borderRadius: '10px' }}>
         {item.nickname}
       </h3>
       <p style={{ color: 'red' }}>{item.price.toLocaleString()}원</p>
-      
-      {/* 상태에 따라 하트 모양 변경 */}
-      <button 
-        onClick={() => handleFavorite(item.listingId)} 
-        style={{ cursor: 'pointer', fontSize: '1.2rem', border: 'none', background: 'none' }}
+
+      {/* --- 인터페이스 기반의 정확한 조건부 렌더링 --- */}
+      <div className="button-group">
+        {item.owner === true ? (
+          <>
+            <button onClick={() => alert("예약중 처리 로직")} className="btn-sell">
+              예약중
+            </button>
+            <button onClick={() => alert("판매완료 처리 로직")} className="btn-confirm">
+              판매완료
+            </button>
+          </>
+        ) : (
+          <button className="btn-buy" onClick={() => alert("구매완료 처리 로직")}>구매</button>
+        )}
+      </div>
+
+      <button
+        onClick={() => handleFavorite(item.listingId)}
+        style={{ cursor: 'pointer', fontSize: '1.2rem', border: 'none', background: 'none', marginTop: '10px' }}
       >
         {isLiked ? '❤️' : '🤍'}
       </button>
@@ -77,16 +108,18 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: any) => {
 
 // --- 메인 컴포넌트 ---
 const BuySellerList = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<MarketPlaceListingsDTO[]>([]);
   const BASE_URL = "http://localhost:8080/pokemon/";
 
   useEffect(() => {
     const fetchCards = async () => {
+      const token = sessionStorage.getItem('accessToken');
       try {
-        const response = await api.get('/api/market/sellerlist', {
-          params: { cardId: id }
+        const response = await api.get<MarketPlaceListingsDTO[]>('/api/market/sellerlist', {
+          params: { cardId: id },
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         setItems(response.data);
       } catch (error) {
@@ -99,9 +132,8 @@ const BuySellerList = () => {
   return (
     <div className="buysell-container">
       <button onClick={() => navigate('/buysell')} style={{ marginBottom: '20px', cursor: 'pointer', background: 'none', border: 'none', color: '#666' }}>← 돌아가기</button>
-      
+
       <div className="item-grid">
-        {/* 상단 카드 정보 요약 (첫 번째 아이템 기준) */}
         {items.length > 0 && (
           <div className="item-card main-summary">
             <div
@@ -115,14 +147,13 @@ const BuySellerList = () => {
           </div>
         )}
 
-        {/* 판매글 리스트 루프 */}
         {items.length > 0 ? (
           items.map(item => (
-            <MarketItemCard 
-              key={item.listingId} 
-              item={item} 
-              navigate={navigate} 
-              BASE_URL={BASE_URL} 
+            <MarketItemCard
+              key={item.listingId}
+              item={item}
+              navigate={navigate}
+              BASE_URL={BASE_URL}
             />
           ))
         ) : (

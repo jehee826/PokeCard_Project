@@ -36,11 +36,13 @@ public class MarketController {
 
     /** 해당 카드를 판매하는 판매글들만 가져옴 */
     @GetMapping("/sellerlist")
-    public ResponseEntity<List<MarketPlaceListingsDTO>> getMarketCardSellerList(@RequestParam Long cardId){
+    public ResponseEntity<List<MarketPlaceListingsDTO>> getMarketCardSellerList(@RequestParam Long cardId, @RequestHeader(value = "Authorization", required = false) String authHeader){
 
-        // 서비스호출 -> 모든 리스트 가져오기(cards테이블 조인까지)
+        //토큰이 있으면 추출, 없으면 null
+        String token = (authHeader != null && authHeader.startsWith("Bearer "))
+                ? authHeader.substring(7) : null;
 
-        List<MarketPlaceListingsDTO> dtoList = marketService.getSellerListings(cardId);
+        List<MarketPlaceListingsDTO> dtoList = marketService.getSellerListings(cardId, token);
 
         //잘 넘어오나 확인용 로그
         log.info("전송할 DTO 리스트 (카드정보 포함): {}", dtoList);
@@ -51,10 +53,14 @@ public class MarketController {
 
     /** listId를 받아 검색한뒤 해당하는 하나의 정보만 가져옴 */
     @GetMapping("/detail")
-    public ResponseEntity<MarketPlaceListingsDTO> getMarketCard(@RequestParam Long listId){
+    public ResponseEntity<MarketPlaceListingsDTO> getMarketCard(@RequestParam Long listId, @RequestHeader(value = "Authorization", required = false) String authHeader){
+
+        //토큰이 있으면 추출, 없으면 null
+        String token = (authHeader != null && authHeader.startsWith("Bearer "))
+                ? authHeader.substring(7) : null;
 
         //서비스호출 -> 한개의 판매글만 가져오기
-        MarketPlaceListingsDTO dto = marketService.getDetailList(listId);
+        MarketPlaceListingsDTO dto = marketService.getDetailList(listId, token);
 
         //잘 넘어오나 확인용 로그
         log.info("전송할 DTO 리스트 (판매글 세부정보): {}", dto);

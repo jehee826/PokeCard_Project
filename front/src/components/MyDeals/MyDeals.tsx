@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Card from "../Middle/M/CardCopy.tsx";
 import styles from './MyDeals.module.css';
-import api from "../../api/axios"; // axios 인스턴스 임포트
+import api from "../../api/axios";
 
-// 백엔드 TradeHistoryDTO와 일치하는 인터페이스
 interface TradeHistory {
   historyId: number;
   buyerId: number;
@@ -16,78 +15,48 @@ interface TradeHistory {
   rarityCode: string; 
   attribute: string;
   officialImageUrl: string;
+  buyer: boolean; // 추가된 인터페이스 활용
 }
 
 const MyDeals = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  
-  // 상태 관리: 실제 DB에서 가져온 리스트
+  const [activeTab, setActiveTab] = useState<"All" | "Buy" | "Sell">("All");
   const [tradeList, setTradeList] = useState<TradeHistory[]>([]);
 
-  // 현재 로그인한 사용자의 ID (실제로는 recoil, context, 혹은 decode한 토큰에서 가져와야 함)
-  // 일단 예시로 1번을 내 ID라고 가정합니다.
-  const myUserId = 1; 
-
-  // 데이터 불러오기
   useEffect(() => {
     const fetchHistory = async () => {
+      const token = sessionStorage.getItem('accessToken');
       try {
-        const response = await api.get('/api/market/history');
+        const response = await api.get('/api/market/history', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
         setTradeList(response.data);
       } catch (error) {
         console.error("거래 내역 로딩 실패:", error);
       }
     };
-
     fetchHistory();
   }, []);
 
-  const types = ["Buy", "Sell"]; // 타입을 Grass/Fire 대신 구매/판매로 변경 (일단은 예시)
-
-  // 타입 토글 핸들러 (구매/판매 필터링용으로 활용 가능)
-  const toggleType = (type: string) => {
-    if (type === "All") {
-      setSelectedTypes([]);
-      return;
-    }
-    setSelectedTypes(prev => 
-      prev.includes(type) 
-        ? prev.filter(t => t !== type) 
-        : [...prev, type]
-    );
-  };
-
-  // DB 데이터를 기반으로 필터링
+  // 필터링 로직: trade.buyer 플래그를 직접 사용
   const filteredCards = tradeList.filter(trade => {
-    // 1. 검색어 필터 (카드 ID 기준)
-    const matchesSearch = String(trade.cardId).includes(searchTerm);
+    const matchesSearch = trade.cardNameKo.includes(searchTerm) || String(trade.cardId).includes(searchTerm);
     
-    // 2. 타입 필터 (구매/판매 기준)
-    const isBuy = trade.buyerId === myUserId;
-    const isSell = trade.sellerId === myUserId;
-    
-    let matchesType = true;
-    if (selectedTypes.length > 0) {
-      matchesType = (selectedTypes.includes("Buy") && isBuy) || 
-                    (selectedTypes.includes("Sell") && isSell);
-    }
-    
-    return matchesSearch && matchesType;
+    if (activeTab === "Buy") return matchesSearch && trade.buyer; // 내가 구매자일 때
+    if (activeTab === "Sell") return matchesSearch && !trade.buyer; // 내가 판매자일 때
+    return matchesSearch;
   });
-
 
   return (
     <div className={styles['my-cards-container']}>
       <aside className={styles["sidebar"]}>
         <h2 className={styles["sidebar-title"]}>My Transactions</h2>
-        
         <div className={styles["search-section"]}>
           <h3>Search Card</h3>
           <div className={styles["search-bar"]}>
             <input 
               type="text" 
-              placeholder="Card ID 검색" 
+              placeholder="카드명 또는 ID 검색" 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -95,23 +64,11 @@ const MyDeals = () => {
         </div>
 
         <div className={styles["filter-section"]}>
-          <h3>Filter by Status</h3>
+          <h3>Transaction Type</h3>
           <div className={styles["filter-group"]}>
-            <button 
-              className={selectedTypes.length === 0 ? styles.active : ""}
-              onClick={() => toggleType("All")}
-            >
-              All Records
-            </button>
-            {types.map(type => (
-              <button 
-                key={type}
-                className={selectedTypes.includes(type) ? styles.active : ""}
-                onClick={() => toggleType(type)}
-              >
-                {type === "Buy" ? "구매 내역" : "판매 내역"}
-              </button>
-            ))}
+            <button className={activeTab === "All" ? styles.active : ""} onClick={() => setActiveTab("All")}>전체 내역</button>
+            <button className={activeTab === "Buy" ? styles.active : ""} onClick={() => setActiveTab("Buy")}>구매 내역</button>
+            <button className={activeTab === "Sell" ? styles.active : ""} onClick={() => setActiveTab("Sell")}>판매 내역</button>
           </div>
         </div>
       </aside>
@@ -121,19 +78,20 @@ const MyDeals = () => {
           {filteredCards.length > 0 ? (
             filteredCards.map((trade) => (
               <div key={trade.historyId} className={styles['card-item-wrapper']}>
-                 {/* Card 컴포넌트에 cardId를 넘겨 이미지 표시 */}
                 <Card imageUrl={String(trade.officialImageUrl)} />
                 <div className={styles['card-info-overlay']}>
-                   <span className={trade.buyerId === myUserId ? styles.tagBuy : styles.tagSell}>
-                     {trade.buyerId === myUserId ? "구매" : "판매"}
+                   {/* 💡 trade.buyer 값에 따라 태그 분기 */}
+                   <span className={trade.buyer ? styles.tagBuy : styles.tagSell}>
+                     {trade.buyer ? "구매완료" : "판매완료"}
                    </span>
-                   <p>₩{trade.finalPrice.toLocaleString()}</p>
+                   <p className={styles.priceText}>₩{trade.finalPrice.toLocaleString()}</p>
+                   <small className={styles.dateText}>{trade.tradeDate.split('T')[0]}</small>
                 </div>
               </div>
             ))
           ) : (
             <div className={styles['no-results']}>
-              <p>거래 내역이 없습니다.</p>
+              <p>{activeTab === "Buy" ? "구매한" : activeTab === "Sell" ? "판매한" : "거래"} 내역이 없습니다.</p>
             </div>
           )}
         </div>

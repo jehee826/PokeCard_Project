@@ -1,5 +1,6 @@
 package com.example.back.Repository;
 
+import com.example.back.Entity.CardsEntity;
 import com.example.back.Entity.UserCollectionsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,11 +12,9 @@ public interface UserCollectionsRepository extends JpaRepository<UserCollections
 
     boolean existsByUserIdAndCardId(Long userId, Long cardId);
 
-    @Query(value = "SELECT c.card_id, c.card_number, c.card_name_ko, c.attribute, c.official_image_url " +
-            "FROM user_collections uc " +
-            "JOIN cards c ON uc.card_id = c.card_id " +
-            "WHERE uc.user_id = (SELECT user_id FROM users WHERE login_id = :loginId)",
-            nativeQuery = true)
-    List<Object[]> findMyCardsByLoginId(@Param("loginId") String loginId);
+    //JPQL사용
+    @Query("SELECT uc.card FROM UserCollectionsEntity uc " +
+            "WHERE uc.user.loginId = :loginId")
+    List<CardsEntity> findMyCardsByLoginId(@Param("loginId") String loginId);
 
 }

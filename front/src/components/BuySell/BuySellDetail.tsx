@@ -13,6 +13,7 @@ interface detailCard {
     status: string;
     officialImageUrl: string;
     imageStrings: string[];
+    owner: boolean;
 }
 
 interface payment {
@@ -59,12 +60,12 @@ const BuySellDetail = () => {
     }, [id]);
 
     const handlePayment = () => {
-        if(item == null) return;
+        if (item == null) return;
 
         const paymentData: payment = {
-        sellerId: item.sellerId,
-        cardId: item.cardId,
-        price: item.price
+            sellerId: item.sellerId,
+            cardId: item.cardId,
+            price: item.price
         };
         navigate('/buysell/payment/payment', { state: paymentData });
     }
@@ -89,7 +90,7 @@ const BuySellDetail = () => {
                                         src={`${BASE_URL}${imageList[idx]}`}
                                         // [추가] 클릭 시 selectedImg 상태 업데이트
                                         onClick={() => setSelectedImg(img)}
-                                        
+
                                         style={{
                                             width: '50px',
                                             height: '50px',
@@ -113,7 +114,20 @@ const BuySellDetail = () => {
                     <p style={{ marginBottom: '30px', lineHeight: '1.6' }}>연락처: {item.contactInfo}</p>
                     <div className="detail-price">₩{item.price.toLocaleString()}</div>
                     <div className="button-group">
-                        <button className="btn-buy" onClick={() => handlePayment()}>Buy Now</button>
+                        {item.owner === true ? (
+                            <>
+                                <button onClick={() => alert("예약중 처리 로직")} className="btn-sell">
+                                    예약중
+                                </button>
+                                <button onClick={() => alert("판매완료 처리 로직")} className="btn-confirm">
+                                    판매완료
+                                </button>
+                            </>
+                        ) : (
+                            <button className="btn-buy" onClick={() => handlePayment()}>구매</button>
+                        )}
+
+
                     </div>
                 </div>
             </div>
