@@ -3,6 +3,7 @@ package com.example.back.Controller;
 import com.example.back.DTO.CardsDTO;
 import com.example.back.DTO.MarketPlaceFavoriteDTO;
 import com.example.back.DTO.MarketPlaceListingsDTO;
+import com.example.back.DTO.TradeHistoryDTO;
 import com.example.back.Entity.MarketPlaceListingsEntity;
 import com.example.back.Service.Market.MarketService;
 import lombok.RequiredArgsConstructor;
@@ -124,5 +125,30 @@ public class MarketController {
         }
         String token = authHeader.substring(7);
         return ResponseEntity.ok(marketService.isFavorite(listingId, token));
+    }
+
+    @PostMapping("/payment")
+    public ResponseEntity<?> processPayment(@RequestBody TradeHistoryDTO request,
+            @RequestHeader("Authorization") String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.ok(false); // 토큰 없으면 당연히 찜 아님
+        }
+        String token = authHeader.substring(7);
+
+        marketService.registerPayment(request.getSellerId(), request.getCardId(), request.getFinalPrice(), token);
+
+        return ResponseEntity.ok().body("거래가 완료되었습니다.");
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<TradeHistoryDTO>> getHistory(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String token = authHeader.substring(7);
+
+        List<TradeHistoryDTO> history = marketService.getMyTradeHistory(token);
+        return ResponseEntity.ok(history);
     }
 }

@@ -5,6 +5,7 @@ import './BuySell.css';
 
 interface detailCard {
     sellerId: number;
+    cardId: number;
     price: number;
     contactInfo: string;
     location: string;
@@ -12,6 +13,12 @@ interface detailCard {
     status: string;
     officialImageUrl: string;
     imageStrings: string[];
+}
+
+interface payment {
+    sellerId: number;
+    cardId: number;
+    price: number;
 }
 
 const BuySellDetail = () => {
@@ -50,6 +57,17 @@ const BuySellDetail = () => {
         };
         fetchCards();
     }, [id]);
+
+    const handlePayment = () => {
+        if(item == null) return;
+
+        const paymentData: payment = {
+        sellerId: item.sellerId,
+        cardId: item.cardId,
+        price: item.price
+        };
+        navigate('/buysell/payment/payment', { state: paymentData });
+    }
 
 
 
@@ -95,7 +113,7 @@ const BuySellDetail = () => {
                     <p style={{ marginBottom: '30px', lineHeight: '1.6' }}>연락처: {item.contactInfo}</p>
                     <div className="detail-price">₩{item.price.toLocaleString()}</div>
                     <div className="button-group">
-                        <button className="btn-buy" onClick={() => navigate(`/buysell/payment/${item.sellerId}`)}>Buy Now</button>
+                        <button className="btn-buy" onClick={() => handlePayment()}>Buy Now</button>
                     </div>
                 </div>
             </div>
