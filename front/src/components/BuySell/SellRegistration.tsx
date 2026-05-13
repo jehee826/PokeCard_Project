@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios'; 
 import './BuySell.css';
@@ -24,7 +24,7 @@ const SellRegistration = () => {
     const navigate = useNavigate();
 
     // 사진 선택 시 실행되는 함수
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files) {
             const fileArray = Array.from(files);
@@ -42,8 +42,6 @@ const SellRegistration = () => {
             alert('사진을 포함한 모든 정보를 입력해주세요.');
             return;
         }
-
-        const token = sessionStorage.getItem('accessToken');
         
         // [핵심] JSON 대신 FormData 사용
         const formData = new FormData();

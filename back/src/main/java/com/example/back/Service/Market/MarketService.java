@@ -243,6 +243,14 @@ public class MarketService {
         tradeHistoryRepository.save(tradeHistory);
     }
 
+    /** 판매글의 상태 변경 */
+    @Transactional
+    public void listStatus(Long listId, String status) {
+        MarketPlaceListingsEntity listEntity = marketPlaceListingsRepository.findById(listId)
+                .orElseThrow(() -> new RuntimeException("판매글을 찾을 수 없습니다."));
+        listEntity.setStatus(MarketPlaceListingsEntity.ListingStatus.valueOf(status));
+    }
+
     /** 내가 구매 OR 판매한 내역을 전부 가져옴 */
     @Transactional(readOnly = true)
     public List<TradeHistoryDTO> getMyTradeHistory(String token) {

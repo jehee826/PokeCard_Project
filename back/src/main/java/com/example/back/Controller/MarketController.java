@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j //로그찍기
 @RestController
@@ -23,7 +24,7 @@ public class MarketController {
     //서비스 주입
     private final MarketService marketService;
 
-    /** 모든리스트를 가져옴 */
+    /** 모든리스트 조회 */
     @GetMapping("/alllist")
     public ResponseEntity<List<CardsDTO>> getMarketCardList(){
 
@@ -34,7 +35,7 @@ public class MarketController {
         return ResponseEntity.ok(dtoList);
     }
 
-    /** 해당 카드를 판매하는 판매글들만 가져옴 */
+    /** 해당 카드의 판매글만 조회 */
     @GetMapping("/sellerlist")
     public ResponseEntity<List<MarketPlaceListingsDTO>> getMarketCardSellerList(@RequestParam Long cardId, @RequestHeader(value = "Authorization", required = false) String authHeader){
 
@@ -51,7 +52,7 @@ public class MarketController {
         return ResponseEntity.ok(dtoList);
     }
 
-    /** listId를 받아 검색한뒤 해당하는 하나의 정보만 가져옴 */
+    /** 받은 listId값의 정보 조회 */
     @GetMapping("/detail")
     public ResponseEntity<MarketPlaceListingsDTO> getMarketCard(@RequestParam Long listId, @RequestHeader(value = "Authorization", required = false) String authHeader){
 
@@ -68,7 +69,7 @@ public class MarketController {
         return ResponseEntity.ok(dto);
     }
 
-    /** 로그인한 사용자가 보유한 모든 카드를 가져옴 */
+    /** 로그인한 사용자의 보유카드 조회 */
     @GetMapping("/mycard")
     public ResponseEntity<?> getMyCardList(@RequestHeader("Authorization") String authHeader){
 
@@ -98,6 +99,7 @@ public class MarketController {
         return ResponseEntity.ok("등록성공");
     }
 
+    /** 즐찾 추가/제거 */
     @GetMapping("/favorite")
     public ResponseEntity<?> insertFavorite(@RequestParam Long listingId, @RequestHeader("Authorization") String authHeader){
         //"Bearer " 문자열 제거 (토큰 값만 추출)
@@ -110,6 +112,7 @@ public class MarketController {
         return ResponseEntity.ok(resultMessage);
     }
 
+    /** 즐찾 리스트 조회 */
     @GetMapping("favoritelist")
     public ResponseEntity<?> getMyFavoriteList(@RequestHeader("Authorization") String authHeader){
         // 토큰 검증 및 Bearer 제거
@@ -145,6 +148,17 @@ public class MarketController {
         marketService.registerPayment(request.getSellerId(), request.getCardId(), request.getFinalPrice(), token);
 
         return ResponseEntity.ok().body("거래가 완료되었습니다.");
+    }
+
+    /** 판매완료 요청 */
+    @PostMapping("/sellcomplete")
+    public ResponseEntity<?> sellComplete(@RequestBody Map<String, String> data){
+        Long listId = Long.parseLong(data.get("listId"));
+        String status = data.get("status");
+
+        marketService.listStatus(listId, status);
+
+        return ResponseEntity.ok("상태변경 완료");
     }
 
     @GetMapping("/history")

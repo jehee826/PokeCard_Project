@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @DynamicInsert //null인 필드는 INSERT 쿼리에서 제외 -> DB의 DEFAULT '판매중'이 작동함
 public class MarketPlaceListingsEntity {
 
@@ -48,8 +49,9 @@ public class MarketPlaceListingsEntity {
 
     @Column(name = "sold_at")
     private LocalDateTime soldAt;
-}
 
-    enum ListingStatus { //status에서 쓸 enum리스트 선언
+    public enum ListingStatus { //status에서 쓸 enum리스트
         판매중, 예약중, 판매완료, 취소됨
     }
+}
+

@@ -59,15 +59,20 @@ const BuySellDetail = () => {
         fetchCards();
     }, [id]);
 
-    const handlePayment = () => {
-        if (item == null) return;
-
-        const paymentData: payment = {
-            sellerId: item.sellerId,
-            cardId: item.cardId,
-            price: item.price
-        };
-        navigate('/buysell/payment/payment', { state: paymentData });
+    const handleListStatus = async (id: number, status: string) => {
+        try {
+                const response = await api.post('/api/market/sellcomplete', {
+                     listId: String(id),
+                     status: status
+                });
+                if (response.status === 200) {
+                alert(`${status} 상태변경`);
+                navigate('/buysell');
+            }
+            } catch (error) {
+                console.error("데이터 로딩 실패:", error);
+            }
+            
     }
 
 
@@ -116,15 +121,15 @@ const BuySellDetail = () => {
                     <div className="button-group">
                         {item.owner === true ? (
                             <>
-                                <button onClick={() => alert("예약중 처리 로직")} className="btn-sell">
+                                <button onClick={() => handleListStatus(Number(id), "예약중")} className="btn-sell">
                                     예약중
                                 </button>
-                                <button onClick={() => alert("판매완료 처리 로직")} className="btn-confirm">
+                                <button onClick={() => handleListStatus(Number(id), "판매완료")} className="btn-confirm">
                                     판매완료
                                 </button>
                             </>
                         ) : (
-                            <button className="btn-buy" onClick={() => handlePayment()}>구매</button>
+                            <button className="btn-buy">채팅보내기</button>
                         )}
 
 
