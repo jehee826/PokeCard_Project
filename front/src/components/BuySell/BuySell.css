@@ -223,9 +223,9 @@
     transition: opacity 0.2s;
 }
 
-.btn-buy { background-color: #e3350d; color: white; }
-.btn-sell { background-color: #2a2a2a; color: white; margin-top: 10px; }
-.btn-confirm { background-color: #4caf50; color: white; width: 100%; }
+.btn-buy { background-color: #e3350d; color: white;}
+.btn-sell { background-color: #ffd400; color: white;}
+.btn-confirm { background-color: #4caf50; color: white;}
 
 /* Payment Page */
 .payment-container {

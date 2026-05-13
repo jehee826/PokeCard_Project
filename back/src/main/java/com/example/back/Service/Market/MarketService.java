@@ -34,114 +34,105 @@ public class MarketService {
     private final TradeHistoryRepository tradeHistoryRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    /** token을 통한 유저 인증 */
+    private UsersEntity getAuthenticatedUser(String token) {
+        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
+        return userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new RuntimeException("인증된 유저를 찾을 수 없습니다."));
+    }
+
+    /** 토큰이 있으면 유저 ID를, 없으면 null을 반환 (비로그인 조회 허용) */
+    private Long getUserIdOrNull(String token) {
+        if (token == null || token.isEmpty()) return null;
+        try {
+            return userRepository.findByLoginId(jwtTokenProvider.getLoginIdFromToken(token))
+                    .map(UsersEntity::getId)
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /** 판매글 ID로 이미지 경로 리스트 조회 */
+    private List<String> getListingImages(Long listingId) {
+        return marketPlaceImageRepository.findByListingId(listingId)
+                .stream()
+                .map(MarketPlaceImageEntity::getImagePath)
+                .collect(Collectors.toList());
+    }
+
+    /** CardsEntity -> CardsDTO 변환 */
+    private CardsDTO convertToCardsDTO(CardsEntity card) {
+        return CardsDTO.builder()
+                .cardId(card.getCardId())
+                .cardNumber(card.getCardNumber())
+                .cardNameKo(card.getCardNameKo())
+                .attribute(card.getAttribute())
+                .officialImageUrl(card.getOfficialImageUrl())
+                .build();
+    }
+
     /** 모든 판매글 가져오기 */
     public List<CardsDTO> getAllListings() {
         List<Long> cardId = marketPlaceListingsRepository.getDistinctCardId();
 
-        if (cardId.isEmpty()) {
-            return List.of();
-        }
+        if (cardId.isEmpty()) return List.of();
 
-        List<CardsEntity> cards = cardsRepository.findAllById(cardId);
-
-        return cards.stream().map(card ->
-                CardsDTO.builder()
-                        .cardId(card.getCardId())
-                        .cardNumber(card.getCardNumber())
-                        .cardNameKo(card.getCardNameKo())
-                        .attribute(card.getAttribute())
-                        .officialImageUrl(card.getOfficialImageUrl())
-                        .build()
-        ).collect(Collectors.toList());
+        return cardsRepository.findAllById(cardId).stream()
+                .map(this::convertToCardsDTO)
+                .collect(Collectors.toList());
     }
 
     /** 받은 카드 id의 해당하는 판매글만 가져오기 */
-    public List<MarketPlaceListingsDTO> getSellerListings(Long cardId) {
+    public List<MarketPlaceListingsDTO> getSellerListings(Long cardId, String token) {
+        Long currentUserId = getUserIdOrNull(token);
         List<MarketPlaceListingsEntity> marketEntities = marketPlaceListingsRepository.findByCardId(cardId);
-
-        if (marketEntities.isEmpty()) {
-            return List.of();
-        }
+        if (marketEntities.isEmpty()) return List.of();
 
         CardsEntity card = cardsRepository.findById(cardId).orElse(null);
-        String cardName = (card != null) ? card.getCardNameKo() : "정보 없음";
-        String cardNum = (card != null) ? card.getCardNumber() : "-";
-        String attribute = (card != null) ? card.getAttribute() : "-";
-        String officialImg = (card != null) ? card.getOfficialImageUrl() : "-";
-
-
 
         return marketEntities.stream().map(market -> {
-            System.out.println("판매글 ID: " + market.getListingId());
-            // 추가: 해당 게시글의 이미지 파일명 리스트 조회
-            List<String> imageNames = marketPlaceImageRepository.findByListingId(market.getListingId())
-                    .stream()
-                    .map(MarketPlaceImageEntity::getImagePath)
-                    .collect(Collectors.toList());
             String nickname = userRepository.findById(market.getSellerId())
                     .map(UsersEntity::getNickname)
                     .orElse("알 수 없음");
 
-            return MarketPlaceListingsDTO.builder()
-                    .listingId(market.getListingId())
-                    .sellerId(market.getSellerId())
-                    .nickname(nickname)
-                    .cardId(market.getCardId())
-                    .price(market.getPrice())
-                    .contactInfo(market.getContactInfo())
-                    .location(market.getLocation())
-                    .cardNameKo(cardName)
-                    .cardNumber(cardNum)
-                    .attribute(attribute)
-                    .officialImageUrl(officialImg)
-                    .imageStrings(imageNames)
-
-                    .build();
+            MarketPlaceListingsDTO dto = MarketPlaceListingsDTO.toDto(market, card);
+            dto.setNickname(nickname);
+            dto.setOwner(Objects.equals(market.getSellerId(), currentUserId));
+            dto.setImageStrings(getListingImages(market.getListingId()));
+            return dto;
         }).collect(Collectors.toList());
     }
 
-
-
     /** 받은 listId로 한개의 판매글 정보만 가져오기 (이미지 리스트 포함) */
-    public MarketPlaceListingsDTO getDetailList(Long listId) {
+    public MarketPlaceListingsDTO getDetailList(Long listId, String token) {
+        Long currentUserId = getUserIdOrNull(token);
         MarketPlaceListingsEntity listEntity = marketPlaceListingsRepository.findById(listId)
                 .orElseThrow(() -> new RuntimeException("해당 판매글이 존재하지 않습니다."));
 
         CardsEntity cardEntity = cardsRepository.findById(listEntity.getCardId()).orElse(null);
 
-        // 추가: 이미지 파일명 리스트 조회
-        List<String> imageNames = marketPlaceImageRepository.findByListingId(listId)
-                .stream()
-                .map(MarketPlaceImageEntity::getImagePath)
-                .collect(Collectors.toList());
-
         MarketPlaceListingsDTO dto = MarketPlaceListingsDTO.toDto(listEntity, cardEntity);
-        dto.setImageStrings(imageNames); // DTO에 세팅
+        dto.setImageStrings(getListingImages(listId)); // DTO에 세팅
+        dto.setOwner(dto.getSellerId().equals(currentUserId));
 
         return dto;
     }
 
+    /** 토큰을통해 알아낸 사용자의 보유 카드리스트를 가져옴 */
     public List<CardsDTO> getMyCardListings(String token){
-        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
-        List<Object[]> results = userCollectionsRepository.findMyCardsByLoginId(loginId);
+        UsersEntity user = getAuthenticatedUser(token);
+        List<CardsEntity> results = userCollectionsRepository.findMyCardsByLoginId(user.getLoginId());
 
-        return results.stream().map(result ->
-                CardsDTO.builder()
-                        .cardId(((Number) result[0]).longValue())
-                        .cardNumber((String) result[1])
-                        .cardNameKo((String) result[2])
-                        .attribute((String) result[3])
-                        .officialImageUrl((String) result[4])
-                        .build()
-        ).collect(Collectors.toList());
+        //JPQL사용한 메소드
+        return results.stream()
+                .map(this::convertToCardsDTO).collect(Collectors.toList());
     }
 
     /** 판매글 저장 (파일 시스템 저장 및 DB 경로 기록) */
     @Transactional // DB 작업과 파일 저장이 한 묶음으로 처리되도록 추가
     public void saveListing(MarketPlaceListingsDTO register, String token){
-        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
-        UsersEntity user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new RuntimeException("해당 아이디를 가진 유저가 없습니다."));
+        UsersEntity user = getAuthenticatedUser(token);
 
         MarketPlaceListingsEntity newListing = MarketPlaceListingsEntity.builder()
                 .sellerId(user.getId())
@@ -181,9 +172,7 @@ public class MarketService {
 
     @Transactional // DB 작업과 파일 저장이 한 묶음으로 처리되도록 추가
     public String toggleFavorite(Long listingId, String token) {
-        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
-        UsersEntity user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
+        UsersEntity user = getAuthenticatedUser(token);
 
         // 1. 이미 즐겨찾기가 되어 있는지 확인
         Optional<MarketPlaceFavoriteEntity> existingFavorite =
@@ -207,10 +196,7 @@ public class MarketService {
     /** 내 즐겨찾기 목록 상세 조회 */
     @Transactional(readOnly = true)
     public List<MarketPlaceListingsDTO> getMyFavoriteList(String token) {
-        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
-
-        UsersEntity user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
+        UsersEntity user = getAuthenticatedUser(token);
 
         List<MarketPlaceFavoriteEntity> favoriteEntities = marketPlaceFavoriteRepository.findByUserId(user.getId());
 
@@ -221,7 +207,7 @@ public class MarketService {
                 .map(fav -> {
                     try {
                         //위에 이미 만들어진 getDetailList메소드를 통해 코드 간결화(메소드 재사용)
-                        return this.getDetailList(fav.getListingId());
+                        return this.getDetailList(fav.getListingId(), token);
                     } catch (Exception e) {
                         return null;
                     }
@@ -233,9 +219,7 @@ public class MarketService {
     /** 특정 판매글의 즐겨찾기 여부 확인 */
     @Transactional(readOnly = true)
     public boolean isFavorite(Long listingId, String token) {
-        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
-        UsersEntity user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+        UsersEntity user = getAuthenticatedUser(token);
 
         // 여기서 existsBy... 를 사용하여 가볍게 존재 여부만 체크!
         return marketPlaceFavoriteRepository.existsByUserIdAndListingId(user.getId(), listingId);
@@ -243,9 +227,11 @@ public class MarketService {
 
     @Transactional
     public void registerPayment(Long sellerId, Long cardId, int finalPrice, String token){
-        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
-        UsersEntity user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+        UsersEntity user = getAuthenticatedUser(token);
+
+        if (user.getId().equals(sellerId)) {
+            throw new RuntimeException("본인의 상품은 구매할 수 없습니다.");
+        }
 
         TradeHistoryEntity tradeHistory = TradeHistoryEntity.builder()
                 .buyerId(user.getId())
@@ -257,11 +243,10 @@ public class MarketService {
         tradeHistoryRepository.save(tradeHistory);
     }
 
+    /** 내가 구매 OR 판매한 내역을 전부 가져옴 */
     @Transactional(readOnly = true)
     public List<TradeHistoryDTO> getMyTradeHistory(String token) {
-        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
-        UsersEntity user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new RuntimeException("유저 없음"));
+        UsersEntity user = getAuthenticatedUser(token);
 
         // 내가 구매자이거나 판매자인 내역을 모두 가져옴
         List<TradeHistoryEntity> entities = tradeHistoryRepository
@@ -277,6 +262,7 @@ public class MarketService {
                     .historyId(entity.getHistoryId())
                     .buyerId(entity.getBuyerId())
                     .sellerId(entity.getSellerId())
+                    .buyer(entity.getBuyerId().equals(user.getId()))
                     .cardId(entity.getCardId())
                     .finalPrice(entity.getFinalPrice())
                     .tradeDate(entity.getTradeDate())
