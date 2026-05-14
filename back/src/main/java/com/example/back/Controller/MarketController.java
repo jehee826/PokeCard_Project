@@ -81,6 +81,10 @@ public class MarketController {
 
         List<CardsDTO> myCard = marketService.getMyCardListings(token);
 
+        if (myCard == null || myCard.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("보유하신 카드가 없습니다.");
+        }
+
         log.info("전송할 DTO 리스트(보유카드 리스트): {}", myCard);
 
         return ResponseEntity.ok(myCard);

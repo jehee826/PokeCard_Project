@@ -16,12 +16,6 @@ interface detailCard {
     owner: boolean;
 }
 
-interface payment {
-    sellerId: number;
-    cardId: number;
-    price: number;
-}
-
 const BuySellDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
