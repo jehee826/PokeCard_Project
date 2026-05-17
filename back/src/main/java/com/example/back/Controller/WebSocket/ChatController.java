@@ -4,6 +4,7 @@ import com.example.back.DTO.WebSocket.ChatMessageDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,15 +20,11 @@ public class ChatController {
     }
 
     /**
-     * Message 엔드포인트로 데이터와 함께 호출을 하면 "/sub/message"를 수신하는 사용자에게 메시지를 전달합니다.
-     *
-     * @param chatMessageDto
-     * @return
+     * 특정 채팅방(/pub/chat/{roomId})으로 메시지를 보내면 해당 방을 구독하는 사용자들에게 전달합니다.
      */
-    @MessageMapping("/messages")
-    public ChatMessageDto send2(@RequestBody ChatMessageDto chatMessageDto) {
-        template.convertAndSend("/sub/message", chatMessageDto);
-        log.info(chatMessageDto.getContent());// 구독중인 모든 사용자에게 메시지를 전달합니다.
-        return chatMessageDto;
+    @MessageMapping("/chat/{roomId}")
+    public void sendMessage(@DestinationVariable String roomId, @RequestBody ChatMessageDto chatMessageDto) {
+        log.info("Message to room {}: {}", roomId, chatMessageDto.getContent());
+        template.convertAndSend("/sub/chat/" + roomId, chatMessageDto);
     }
 }

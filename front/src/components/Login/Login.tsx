@@ -36,7 +36,8 @@ const Login = () => {
             });
 
             const token = response.data.token;
-            login(token);
+            const loginId = response.data.loginId;
+            login(token, loginId);
             
             alert((response.data).message || "로그인 성공");
             sessionStorage.removeItem('login_pw');
