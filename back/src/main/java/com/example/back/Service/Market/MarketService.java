@@ -101,11 +101,11 @@ public class MarketService {
     }
 
 
-
     /** 받은 listId로 한개의 판매글 정보만 가져오기 (이미지 리스트 포함) */
     public MarketPlaceListingsDTO getDetailList(Long listId) {
         MarketPlaceListingsEntity listEntity = marketPlaceListingsRepository.findById(listId)
                 .orElseThrow(() -> new RuntimeException("해당 판매글이 존재하지 않습니다."));
+
 
         CardsEntity cardEntity = cardsRepository.findById(listEntity.getCardId()).orElse(null);
 

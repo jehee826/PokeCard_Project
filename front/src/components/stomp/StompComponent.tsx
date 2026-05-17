@@ -14,11 +14,13 @@ interface StompComponentProps {
 }
 
 const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponentId }) => {
+	const accessToken = sessionStorage.getItem("accessToken");
 	const { loginId } = useAuth();
 	const { opponentId: paramOpponentId } = useParams<{ opponentId: string }>();
 	const opponentId = propOpponentId || paramOpponentId;
 
-	const SERVER_URL = 'http://localhost:8080/ws-stomp'; // STOMP 연결 엔드포인트
+	// const SERVER_URL = 'http://localhost:8080/ws-stomp'; // STOMP 연결 엔드포인트
+	const SERVER_URL = `https://thrower-unnerve-tux.ngrok-free.dev/ws-stomp?token=${accessToken}`; // STOMP 연결 엔드포인트
 	
 	// 두 사용자의 ID를 정렬하여 유일한 방 ID 생성 (예: userA_userB)
 	const roomId = useMemo(() => {

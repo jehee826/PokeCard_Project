@@ -68,7 +68,16 @@ const BuySellDetail = () => {
         };
         navigate('/buysell/payment/payment', { state: paymentData });
     }
+    const handleContact = () => {
+        if(item == null) return;
 
+        const paymentData: payment = {
+        sellerId: item.sellerId,
+        cardId: item.cardId,
+        price: item.price
+        };
+        navigate('/buysell/payment/payment', { state: paymentData });
+    }
 
 
     if (!item) return <div className="buysell-container">조회된 아이템이 없습니다.</div>;
@@ -114,6 +123,7 @@ const BuySellDetail = () => {
                     <div className="detail-price">₩{item.price.toLocaleString()}</div>
                     <div className="button-group">
                         <button className="btn-buy" onClick={() => handlePayment()}>Buy Now</button>
+                        <button className="btn-buy" onClick={() => handleContact()}>연락하기</button>
                     </div>
                 </div>
             </div>

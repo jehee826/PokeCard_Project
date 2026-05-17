@@ -32,7 +32,7 @@ const App = () => {
           <Route path="/buysell" element={<><TopBar/><BuySellList/></>}/>
           <Route path="/AiCamera" element={<><TopBar/><AiCamera/></>}/>
           <Route 
-             path="/chat/:opponentId" 
+             path="/Chat/:opponentId" 
              element={
                <ProtectedRoute>
                 <TopBar/>
