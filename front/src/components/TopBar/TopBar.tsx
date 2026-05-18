@@ -5,6 +5,7 @@ import { useAuth } from '../AuthContext';
 const TopBar = () => {
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuth();
+  const { loginId } = useAuth();
 
   const handleLoginClick = () => {
     navigate('/Login'); 
@@ -15,7 +16,7 @@ const TopBar = () => {
     navigate('/');
   };
       const handleChatClick = () => {
-    navigate('/Chat'); 
+    navigate(`/Chat/${loginId}`); 
   };
     const handleFavoriteClick = () => {
     navigate('/Favorites'); 

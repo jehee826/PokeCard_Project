@@ -14,13 +14,13 @@ interface StompComponentProps {
 }
 
 const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponentId }) => {
-	const accessToken = sessionStorage.getItem("accessToken");
+	// const accessToken = sessionStorage.getItem("accessToken");
 	const { loginId } = useAuth();
 	const { opponentId: paramOpponentId } = useParams<{ opponentId: string }>();
 	const opponentId = propOpponentId || paramOpponentId;
 
-	// const SERVER_URL = 'http://localhost:8080/ws-stomp'; // STOMP 연결 엔드포인트
-	const SERVER_URL = `https://thrower-unnerve-tux.ngrok-free.dev/ws-stomp?token=${accessToken}`; // STOMP 연결 엔드포인트
+	const SERVER_URL = 'http://localhost:8080/ws-stomp'; // STOMP 연결 엔드포인트
+	// const SERVER_URL = `https://thrower-unnerve-tux.ngrok-free.dev/ws-stomp?token=${accessToken}`; // STOMP 연결 엔드포인트
 	
 	// 두 사용자의 ID를 정렬하여 유일한 방 ID 생성 (예: userA_userB)
 	const roomId = useMemo(() => {
@@ -147,7 +147,10 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 	}
 
 	return (
-		<div style={{}}>
+		<div className='stomp-container'>
+			<aside style={{ position: 'absolute', top: 10, left: 10 }}>
+				가나다라
+			</aside>
 			{!isEnterChat ? (
 				<div
 					style={{
@@ -158,7 +161,7 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 						textAlign: 'center',
 					}}>
 					<h2>{opponentId}님과 대화를 시작하시겠습니까?</h2>
-					<button onClick={stompHandler.connect}>대화 시작</button>
+					<button style={{borderRadius: '10px', backgroundColor: '#007bff', color: '#fff', border: 'none', padding: '10px 20px', cursor: 'pointer'}}onClick={stompHandler.connect}>대화 시작</button>
 				</div>
 			) : (
 				<div
@@ -190,6 +193,9 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 							overflowY: 'auto',
 							backgroundColor: '#f5d682',
 							border: '1px solid red',
+							marginLeft: 20,
+							marginRight: 20,
+							borderRadius: '20px',
 							margin: 20,
 							padding: 10
 						}}>

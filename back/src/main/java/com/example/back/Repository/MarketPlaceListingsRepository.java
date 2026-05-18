@@ -14,7 +14,7 @@ public interface MarketPlaceListingsRepository extends JpaRepository<MarketPlace
 
     List<MarketPlaceListingsEntity> findByCardId(Long cardId);
 
-    @Query("SELECT u.loginId FROM User u WHERE u.id = :sellerId")
-    List<String> findLoginIdBySellerId(@Param("sellerId") Long sellerId);
+//    @Query("SELECT u.loginId FROM User u WHERE u.id = :sellerId")
+//    List<String> findLoginIdBySellerId(@Param("sellerId") Long sellerId);
 }
 

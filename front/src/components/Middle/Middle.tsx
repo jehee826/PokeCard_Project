@@ -46,7 +46,7 @@ const Middle = () => {
   //   { id: "007", type: "Water" }, { id: "008", type: "Water" }, { id: "009", type: "Water" },
   //   { id: "010", type: "Bug" }, { id: "011", type: "Bug" }, { id: "012", type: "Bug" },
   // ];
-
+const BASE_URL = "http://localhost:8080/pokemon/";
   const types = ["악", "초", "불", "벌레", "드래곤", "격투", "풀", "물", "번개", "에스퍼", "얼음", "고스트", "노말"];
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -76,6 +76,7 @@ const Middle = () => {
         : [...prev, type]
     );
   };
+
 
   // 검색 및 복수 필터링 로직
   const filteredCards = fullCardList.filter(card => {
@@ -189,7 +190,7 @@ const Middle = () => {
         <div className={styles["right-panel"]}>
           {filteredCards.length > 0 ? (
             filteredCards.map((card) => (
-              <Card key={card.cardNumber} cardNumber={card.cardNumber} officialImageUrl={card.officialImageUrl} />
+              <Card key={card.cardNumber} cardNumber={card.cardNumber} officialImageUrl={`url(${BASE_URL}${card.officialImageUrl})`} />
             ))
           ) : (
             <div className={styles["no-results"]}>
