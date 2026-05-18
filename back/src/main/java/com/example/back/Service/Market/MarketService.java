@@ -107,16 +107,31 @@ public class MarketService {
     /** 받은 listId로 한개의 판매글 정보만 가져오기 (이미지 리스트 포함) */
     public MarketPlaceListingsDTO getDetailList(Long listId, String token) {
         Long currentUserId = getUserIdOrNull(token);
+
         MarketPlaceListingsEntity listEntity = marketPlaceListingsRepository.findById(listId)
                 .orElseThrow(() -> new RuntimeException("해당 판매글이 존재하지 않습니다."));
+        CardsEntity cardEntity = cardsRepository.findById(listEntity.getCardId())
+                .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다."));
+        UsersEntity user = userRepository.findById(listEntity.getSellerId())
+                .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
 
-        CardsEntity cardEntity = cardsRepository.findById(listEntity.getCardId()).orElse(null);
+        return MarketPlaceListingsDTO.builder()
+                .listingId(listEntity.getListingId())
+                .sellerId(listEntity.getSellerId())
+                .loginId(user.getLoginId())
+                .nickname(user.getNickname())
+                .cardId(listEntity.getCardId())
+                .price(listEntity.getPrice())
+                .contactInfo(listEntity.getContactInfo())
+                .location(listEntity.getLocation())
+                .cardNameKo(cardEntity.getCardNameKo())
+                .cardNumber(cardEntity.getCardNumber())
+                .attribute(cardEntity.getAttribute())
+                .officialImageUrl(cardEntity.getOfficialImageUrl())
 
-        MarketPlaceListingsDTO dto = MarketPlaceListingsDTO.toDto(listEntity, cardEntity);
-        dto.setImageStrings(getListingImages(listId)); // DTO에 세팅
-        dto.setOwner(dto.getSellerId().equals(currentUserId));
-
-        return dto;
+                .imageStrings(getListingImages(listId))
+                .owner(listEntity.getSellerId().equals(currentUserId))
+                .build();
     }
 
     /** 토큰을통해 알아낸 사용자의 보유 카드리스트를 가져옴 */

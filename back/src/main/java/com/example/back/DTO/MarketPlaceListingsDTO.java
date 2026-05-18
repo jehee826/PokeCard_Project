@@ -28,7 +28,8 @@ public class MarketPlaceListingsDTO {
     //이미지 담을 변수
     private List<MultipartFile> images;
     private List<String> imageStrings;
-    //유저 닉네임변수
+    //유저 정보 변수
+    private String loginId;
     private String nickname;
     //내글 확인 변수
     private boolean owner;

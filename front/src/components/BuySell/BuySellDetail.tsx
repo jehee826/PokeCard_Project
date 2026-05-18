@@ -4,7 +4,10 @@ import api from '../../api/axios';
 import './BuySell.css';
 
 interface detailCard {
+    listingId: number;
     sellerId: number;
+    loginId: number;
+    nickname: string;
     cardId: number;
     price: number;
     contactInfo: string;
@@ -109,6 +112,7 @@ const BuySellDetail = () => {
                 </div>
                 <div className="detail-info">
                     <h2>{item.cardNameKo}</h2>
+                    <h5>작성자: {item.nickname}</h5>
                     <p style={{ color: '#666', marginBottom: '10px' }}>거래장소: {item.location}</p>
                     <p style={{ marginBottom: '30px', lineHeight: '1.6' }}>연락처: {item.contactInfo}</p>
                     <div className="detail-price">₩{item.price.toLocaleString()}</div>
@@ -123,7 +127,7 @@ const BuySellDetail = () => {
                                 </button>
                             </>
                         ) : (
-                            <button className="btn-buy">채팅보내기</button>
+                            <button onClick={() => (alert("유저정보: " + item.loginId + item.nickname))} className="btn-buy">채팅보내기</button>
                         )}
 
 
