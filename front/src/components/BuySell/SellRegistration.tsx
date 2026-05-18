@@ -17,12 +17,12 @@ const SellRegistration = () => {
     const [price, setPrice] = useState('');
     const [contact, setContact] = useState('');
     const [location, setLocation] = useState('');
-
-    // 사진 업로드를 위한 상태 추가
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
 
     const navigate = useNavigate();
+
+    const BASE_URL = 'http://localhost:8080/pokemon/';
 
     // 사진 선택 시 실행되는 함수
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,7 +104,7 @@ const SellRegistration = () => {
                         </div>
                     ) : selectedCardId ? (
                         <img
-                            src={items.find(card => String(card.cardId) === String(selectedCardId))?.officialImageUrl}
+                            src={`${BASE_URL}${items.find(card => String(card.cardId) === String(selectedCardId))?.officialImageUrl}`}
                             alt="Preview"
                         />
                     ) : (

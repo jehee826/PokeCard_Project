@@ -92,7 +92,7 @@ public class MarketController {
 
     /** 판매글 등록 */
     @PostMapping("/register")
-    public ResponseEntity<?> registerCard(@ModelAttribute MarketPlaceListingsDTO register, @RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<?> registerList(@ModelAttribute MarketPlaceListingsDTO register, @RequestHeader("Authorization") String authHeader){
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
         }
@@ -101,6 +101,13 @@ public class MarketController {
         marketService.saveListing(register, token);
 
         return ResponseEntity.ok("등록성공");
+    }
+
+    @PostMapping("edit")
+    public ResponseEntity<?> editList(@RequestParam Long listingId, @ModelAttribute MarketPlaceListingsDTO editDTO){
+        marketService.editList(listingId, editDTO);
+
+        return ResponseEntity.ok("수정성공");
     }
 
     /** 즐찾 추가/제거 */

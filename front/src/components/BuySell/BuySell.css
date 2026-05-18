@@ -213,7 +213,7 @@
     gap: 20px;
 }
 
-.btn-buy, .btn-sell, .btn-confirm {
+.btn-buy, .btn-sell, .btn-confirm, .btn-edit {
     padding: 15px 40px;
     border-radius: 10px;
     border: none;
@@ -226,6 +226,7 @@
 .btn-buy { background-color: #e3350d; color: white;}
 .btn-sell { background-color: #ffd400; color: white;}
 .btn-confirm { background-color: #4caf50; color: white;}
+.btn-edit { background-color: #4834b6; color: white;}
 
 /* Payment Page */
 .payment-container {

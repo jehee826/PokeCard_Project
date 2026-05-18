@@ -128,7 +128,6 @@ public class MarketService {
                 .cardNumber(cardEntity.getCardNumber())
                 .attribute(cardEntity.getAttribute())
                 .officialImageUrl(cardEntity.getOfficialImageUrl())
-
                 .imageStrings(getListingImages(listId))
                 .owner(listEntity.getSellerId().equals(currentUserId))
                 .build();
@@ -173,6 +172,52 @@ public class MarketService {
 
                     MarketPlaceImageEntity imageEntity = MarketPlaceImageEntity.builder()
                             .listingId(savedListing.getListingId())
+                            .imagePath(savedFileName)
+                            .build();
+
+                    marketPlaceImageRepository.save(imageEntity);
+
+                } catch (IOException e) {
+                    throw new RuntimeException("파일 저장 중 오류가 발생했습니다.", e);
+                }
+            }
+        }
+    }
+
+    /** 판매글 수정 */
+    @Transactional
+    public void editList(Long listingId, MarketPlaceListingsDTO editDTO){
+        MarketPlaceListingsEntity originList = marketPlaceListingsRepository.findById(listingId)
+                .orElseThrow(() -> new RuntimeException("해당 게시글이 존재하지 않습니다"));
+        originList.setCardId(editDTO.getCardId());
+        originList.setPrice(editDTO.getPrice());
+        originList.setContactInfo(editDTO.getContactInfo());
+        originList.setLocation(editDTO.getLocation());
+
+        //이미지 수정
+        if (editDTO.getImages() != null && !editDTO.getImages().isEmpty()) {
+            String uploadDir = "C:/pokemon/";
+            List<MarketPlaceImageEntity> oldImages = marketPlaceImageRepository.findByListingId(listingId);
+            for (MarketPlaceImageEntity img : oldImages) {
+                File oldFile = new File(uploadDir + img.getImagePath());
+                if (oldFile.exists()) {
+                    oldFile.delete(); // 로컬 파일 삭제
+                }
+                marketPlaceImageRepository.delete(img); // DB 삭제
+            }
+
+            File dir = new File(uploadDir);
+            if (!dir.exists()) dir.mkdirs();
+
+            for (MultipartFile file : editDTO.getImages()) {
+                String originalFileName = file.getOriginalFilename();
+                String savedFileName = "upload/" + UUID.randomUUID().toString() + "_" + originalFileName;
+
+                try {
+                    file.transferTo(new File(uploadDir + savedFileName));
+
+                    MarketPlaceImageEntity imageEntity = MarketPlaceImageEntity.builder()
+                            .listingId(originList.getListingId())
                             .imagePath(savedFileName)
                             .build();
 

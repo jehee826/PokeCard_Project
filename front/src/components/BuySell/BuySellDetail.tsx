@@ -125,6 +125,9 @@ const BuySellDetail = () => {
                                 <button onClick={() => handleListStatus(Number(id), "판매완료")} className="btn-confirm">
                                     판매완료
                                 </button>
+                                <button onClick={() => navigate(`/buysell/edit/${item.listingId}`)} className="btn-edit">
+                                    글 수정
+                                </button>
                             </>
                         ) : (
                             <button onClick={() => (alert("유저정보: " + item.loginId + item.nickname))} className="btn-buy">채팅보내기</button>
