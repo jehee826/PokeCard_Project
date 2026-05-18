@@ -148,9 +148,6 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 
 	return (
 		<div className='stomp-container'>
-			<aside style={{ position: 'absolute', top: 10, left: 10 }}>
-				가나다라
-			</aside>
 			{!isEnterChat ? (
 				<div
 					style={{
