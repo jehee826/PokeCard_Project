@@ -139,7 +139,7 @@ const BuySellDetail = () => {
                                 </button>
                             </>
                         ) : (
-                            <button onClick={() => (alert("유저정보: " + item.loginId + item.nickname))} className="btn-buy">채팅보내기</button>
+                            <button onClick={() => { alert("유저정보: " + item.loginId + item.nickname); navigate(`/chat/${item.loginId}`); }} className="btn-buy">채팅보내기</button>
                         )}
 
 

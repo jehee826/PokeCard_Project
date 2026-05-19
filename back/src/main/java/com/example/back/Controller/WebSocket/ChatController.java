@@ -27,4 +27,5 @@ public class ChatController {
         log.info("Message to room {}: {}", roomId, chatMessageDto.getContent());
         template.convertAndSend("/sub/chat/" + roomId, chatMessageDto);
     }
+
 }

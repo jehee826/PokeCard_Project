@@ -30,6 +30,7 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 	const PUB_ENDPOINT = `/pub/chat/${roomId}`;
 	const SUB_ENDPOINT = `/sub/chat/${roomId}`;
 
+
 	const [wsClient, setWsClient] = useState<Client>();
 	const [isEnterChat, setIsEnterChat] = useState<boolean>(false);
 	const [messages, setMessages] = useState<MessagesType[]>([]);
