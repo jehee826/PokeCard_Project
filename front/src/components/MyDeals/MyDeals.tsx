@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Card from "../Middle/M/CardCopy.tsx";
+import Card from "../Middle/M/Card.tsx";
 import styles from './MyDeals.module.css';
 import api from "../../api/axios";
 
@@ -78,10 +78,9 @@ const MyDeals = () => {
           {filteredCards.length > 0 ? (
             filteredCards.map((trade) => (
               <div key={trade.historyId} className={styles['card-item-wrapper']}>
-                <Card imageUrl={String(trade.officialImageUrl)} />
+                <Card officialImageUrl={String(trade.officialImageUrl)} />
                 <div className={styles['card-info-overlay']}>
-                   {/* 💡 trade.buyer 값에 따라 태그 분기 */}
-                   <span className={trade.buyer ? styles.tagBuy : styles.tagSell}>
+                   <span style={{ fontWeight: 'bold', fontSize: '14px' }}>
                      {trade.buyer ? "구매완료" : "판매완료"}
                    </span>
                    <p className={styles.priceText}>₩{trade.finalPrice.toLocaleString()}</p>
