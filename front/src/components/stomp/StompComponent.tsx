@@ -4,6 +4,7 @@ import SockJS from 'sockjs-client';
 import { useAuth } from '../AuthContext';
 import { useParams } from 'react-router-dom';
 import styles from './StompComponent.module.css';
+import api from '../../api/axios';
 
 interface MessagesType {
 	sender: string; // 보내는 주체
@@ -99,6 +100,7 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 						body: JSON.stringify({ ...messageObj, sender: loginId, roomId: roomId }),
 					});
 					setMessageObj({ content: '', sender: loginId });
+					handleStartChat();
 				}
 			},
 			disconnect: () => {
@@ -119,6 +121,22 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 			}
 		};
 	}, [wsClient]);
+	const handleStartChat = async () => {
+    try {
+      // 2. 백엔드에 대화방 생성 및 첫 알림 메시지 전송 요청
+      await api.post('/api/chat/request', {
+        roomId: roomId,
+        senderId: loginId,
+        receiverId: '111', // 실제로는 opponentId로 대체되어야 함
+        message: `${loginId}님이 대화를 요청하셨습니다!`
+      });
+      
+      // 3. 내 화면은 곧바로 해당 대화방으로 이동시킵니다.
+      window.location.href = `/chat/${roomId}`;
+    } catch (error) {
+      console.error('대화 요청 실패:', error);
+    }
+  };
 
 
 	return (

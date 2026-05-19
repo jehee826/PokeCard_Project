@@ -6,7 +6,7 @@ import './BuySell.css';
 interface detailCard {
     listingId: number;
     sellerId: number;
-    loginId: number;
+    loginId: string;
     nickname: string;
     cardId: number;
     price: number;
@@ -71,6 +71,24 @@ const BuySellDetail = () => {
             }
             
     }
+   
+    const handleStartChat = async () => {
+        try {
+        // 2. 백엔드에 대화방 생성 및 첫 알림 메시지 전송 요청
+        await api.post('/api/chat/request', {
+            roomId: roomId,
+            senderId: loginId,
+            receiverId: '111', // 실제로는 opponentId로 대체되어야 함
+            message: `${loginId}님이 대화를 요청하셨습니다!`
+        });
+        
+        // 3. 내 화면은 곧바로 해당 대화방으로 이동시킵니다.
+        window.location.href = `/chat/${roomId}`;
+        } catch (error) {
+        console.error('대화 요청 실패:', error);
+        }
+    };
+    
     const handleContact = () => {
         if(item == null) return;
 
@@ -139,7 +157,7 @@ const BuySellDetail = () => {
                                 </button>
                             </>
                         ) : (
-                            <button onClick={() => { alert("유저정보: " + item.loginId + item.nickname); navigate(`/chat/${item.loginId}`); }} className="btn-buy">채팅보내기</button>
+                            <button onClick={() => { alert("유저정보: " + item.loginId + item.nickname); navigate(`/chat/${item.loginId}`);  handleStartChat(); }} className="btn-buy">채팅보내기</button>
                         )}
 
 

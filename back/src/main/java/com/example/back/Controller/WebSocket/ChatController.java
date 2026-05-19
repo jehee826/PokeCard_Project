@@ -26,6 +26,7 @@ public class ChatController {
     public void sendMessage(@DestinationVariable String roomId, @RequestBody ChatMessageDto chatMessageDto) {
         log.info("Message to room {}: {}", roomId, chatMessageDto.getContent());
         template.convertAndSend("/sub/chat/" + roomId, chatMessageDto);
+
     }
 
 }
