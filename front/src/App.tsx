@@ -12,6 +12,7 @@ import BuySellDetail from './components/BuySell/BuySellDetail';
 import Payment from './components/BuySell/Payment';
 import TopBar from './components/TopBar/TopBar'
 import SellRegistration from './components/BuySell/SellRegistration';
+import SellEdit from './components/BuySell/SellEdit';
 import ProtectedRoute from './components/ProtectedRoute';
 import AiCamera from './components/AiCamera/AiCamera';
 import MyDeals from './components/MyDeals/MyDeals';
@@ -100,6 +101,14 @@ const App = () => {
              element={
                <ProtectedRoute>
                  <SellRegistration />
+               </ProtectedRoute>
+             } 
+           />
+           <Route 
+             path="/buysell/edit/:id" 
+             element={
+               <ProtectedRoute>
+                 <SellEdit />
                </ProtectedRoute>
              } 
            />

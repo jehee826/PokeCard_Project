@@ -1,7 +1,8 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/axios'; 
+import api from '../../api/axios';
 import './BuySell.css';
+import axios from 'axios';
 
 interface MyCard {
     cardId: number;
@@ -16,15 +17,15 @@ const SellRegistration = () => {
     const [price, setPrice] = useState('');
     const [contact, setContact] = useState('');
     const [location, setLocation] = useState('');
-    
-    // 사진 업로드를 위한 상태 추가
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
 
     const navigate = useNavigate();
 
+    const BASE_URL = 'http://localhost:8080/pokemon/';
+
     // 사진 선택 시 실행되는 함수
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files) {
             const fileArray = Array.from(files);
@@ -43,8 +44,6 @@ const SellRegistration = () => {
             return;
         }
 
-        const token = sessionStorage.getItem('accessToken');
-        
         // [핵심] JSON 대신 FormData 사용
         const formData = new FormData();
         formData.append('cardId', selectedCardId);
@@ -52,7 +51,6 @@ const SellRegistration = () => {
         formData.append('contactInfo', contact);
         formData.append('location', location);
 
-        // 여러 장의 파일을 'images'라는 키로 추가
         imageFiles.forEach((file) => {
             formData.append('images', file);
         });
@@ -74,12 +72,19 @@ const SellRegistration = () => {
         const fetchCards = async () => {
             const token = sessionStorage.getItem('accessToken');
             if (!token) return;
-            
+
             try {
                 const response = await api.get('/api/market/mycard');
                 setItems(response.data);
             } catch (error) {
-                console.error("데이터 로딩 실패:", error);
+                if (axios.isAxiosError(error)) {
+                    if (error.response && error.response.status === 404) {
+                        alert(error.response.data);
+                        navigate('/buysell');
+                    } else {
+                        console.error("기타 로딩 실패:", error);
+                    }
+                }
             }
         };
         fetchCards();
@@ -98,9 +103,9 @@ const SellRegistration = () => {
                             ))}
                         </div>
                     ) : selectedCardId ? (
-                        <img 
-                            src={items.find(card => String(card.cardId) === String(selectedCardId))?.officialImageUrl} 
-                            alt="Preview" 
+                        <img
+                            src={`${BASE_URL}${items.find(card => String(card.cardId) === String(selectedCardId))?.officialImageUrl}`}
+                            alt="Preview"
                         />
                     ) : (
                         <p className="placeholder-text">카드 미리보기 (실물 사진 포함)</p>
@@ -109,18 +114,18 @@ const SellRegistration = () => {
                 <div className="sell-right">
                     <div className="form-group">
                         <label>실물 사진 첨부</label>
-                        <input 
-                            type="file" 
-                            accept="image/*" 
-                            multiple 
+                        <input
+                            type="file"
+                            accept="image/*"
+                            multiple
                             onChange={handleFileChange}
                             style={{ marginBottom: '10px' }}
                         />
                     </div>
                     <div className="form-group">
                         <label>Select Card</label>
-                        <select 
-                            value={selectedCardId} 
+                        <select
+                            value={selectedCardId}
                             onChange={(e) => setSelectedCardId(e.target.value)}
                         >
                             <option value="">-- 보유카드 --</option>
@@ -131,24 +136,24 @@ const SellRegistration = () => {
                     </div>
                     <div className="form-group">
                         <label>가격</label>
-                        <input 
+                        <input
                             type="number"
-                            step="100" 
-                            placeholder="가격입력" 
+                            step="100"
+                            placeholder="가격입력"
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
                         />
                         <label>거래장소</label>
-                        <input 
-                            type="text" 
-                            placeholder="거래장소" 
+                        <input
+                            type="text"
+                            placeholder="거래장소"
                             value={location}
                             onChange={(e) => setLocation(e.target.value)}
                         />
                         <label>연락처</label>
-                        <input 
-                            type="text" 
-                            placeholder="연락처" 
+                        <input
+                            type="text"
+                            placeholder="연락처"
                             value={contact}
                             onChange={(e) => setContact(e.target.value)}
                         />

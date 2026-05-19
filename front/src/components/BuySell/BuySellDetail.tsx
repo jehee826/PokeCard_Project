@@ -4,7 +4,10 @@ import api from '../../api/axios';
 import './BuySell.css';
 
 interface detailCard {
+    listingId: number;
     sellerId: number;
+    loginId: number;
+    nickname: string;
     cardId: number;
     price: number;
     contactInfo: string;
@@ -14,12 +17,6 @@ interface detailCard {
     officialImageUrl: string;
     imageStrings: string[];
     owner: boolean;
-}
-
-interface payment {
-    sellerId: number;
-    cardId: number;
-    price: number;
 }
 
 const BuySellDetail = () => {
@@ -59,15 +56,20 @@ const BuySellDetail = () => {
         fetchCards();
     }, [id]);
 
-    const handlePayment = () => {
-        if(item == null) return;
-
-        const paymentData: payment = {
-        sellerId: item.sellerId,
-        cardId: item.cardId,
-        price: item.price
-        };
-        navigate('/buysell/payment/payment', { state: paymentData });
+    const handleListStatus = async (id: number, status: string) => {
+        try {
+                const response = await api.post('/api/market/sellcomplete', {
+                     listId: String(id),
+                     status: status
+                });
+                if (response.status === 200) {
+                alert(`${status} 상태변경`);
+                navigate('/buysell');
+            }
+            } catch (error) {
+                console.error("데이터 로딩 실패:", error);
+            }
+            
     }
     const handleContact = () => {
         if(item == null) return;
@@ -119,12 +121,28 @@ const BuySellDetail = () => {
                 </div>
                 <div className="detail-info">
                     <h2>{item.cardNameKo}</h2>
+                    <h5>작성자: {item.nickname}</h5>
                     <p style={{ color: '#666', marginBottom: '10px' }}>거래장소: {item.location}</p>
                     <p style={{ marginBottom: '30px', lineHeight: '1.6' }}>연락처: {item.contactInfo}</p>
                     <div className="detail-price">₩{item.price.toLocaleString()}</div>
                     <div className="button-group">
-                        <button className="btn-buy" onClick={() => handlePayment()}>Buy Now</button>
-                        <button className="btn-buy" onClick={() => handleContact()}>연락하기</button>
+                        {item.owner === true ? (
+                            <>
+                                <button onClick={() => handleListStatus(Number(id), "예약중")} className="btn-sell">
+                                    예약중
+                                </button>
+                                <button onClick={() => handleListStatus(Number(id), "판매완료")} className="btn-confirm">
+                                    판매완료
+                                </button>
+                                <button onClick={() => navigate(`/buysell/edit/${item.listingId}`)} className="btn-edit">
+                                    글 수정
+                                </button>
+                            </>
+                        ) : (
+                            <button onClick={() => (alert("유저정보: " + item.loginId + item.nickname))} className="btn-buy">채팅보내기</button>
+                        )}
+
+
                     </div>
                 </div>
             </div>

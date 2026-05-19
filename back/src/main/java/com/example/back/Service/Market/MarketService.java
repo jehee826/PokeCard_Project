@@ -104,24 +104,34 @@ public class MarketService {
         }).collect(Collectors.toList());
     }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> develop
     /** 받은 listId로 한개의 판매글 정보만 가져오기 (이미지 리스트 포함) */
     public MarketPlaceListingsDTO getDetailList(Long listId, String token) {
         Long currentUserId = getUserIdOrNull(token);
+
         MarketPlaceListingsEntity listEntity = marketPlaceListingsRepository.findById(listId)
                 .orElseThrow(() -> new RuntimeException("해당 판매글이 존재하지 않습니다."));
+        CardsEntity cardEntity = cardsRepository.findById(listEntity.getCardId())
+                .orElseThrow(() -> new RuntimeException("해당 카드가 존재하지 않습니다."));
+        UsersEntity user = userRepository.findById(listEntity.getSellerId())
+                .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
 
-
-        CardsEntity cardEntity = cardsRepository.findById(listEntity.getCardId()).orElse(null);
-
-        MarketPlaceListingsDTO dto = MarketPlaceListingsDTO.toDto(listEntity, cardEntity);
-        dto.setImageStrings(getListingImages(listId)); // DTO에 세팅
-        dto.setOwner(dto.getSellerId().equals(currentUserId));
-
-        return dto;
+        return MarketPlaceListingsDTO.builder()
+                .listingId(listEntity.getListingId())
+                .sellerId(listEntity.getSellerId())
+                .loginId(user.getLoginId())
+                .nickname(user.getNickname())
+                .cardId(listEntity.getCardId())
+                .price(listEntity.getPrice())
+                .contactInfo(listEntity.getContactInfo())
+                .location(listEntity.getLocation())
+                .cardNameKo(cardEntity.getCardNameKo())
+                .cardNumber(cardEntity.getCardNumber())
+                .attribute(cardEntity.getAttribute())
+                .officialImageUrl(cardEntity.getOfficialImageUrl())
+                .imageStrings(getListingImages(listId))
+                .owner(listEntity.getSellerId().equals(currentUserId))
+                .build();
     }
 
     /** 토큰을통해 알아낸 사용자의 보유 카드리스트를 가져옴 */
@@ -163,6 +173,52 @@ public class MarketService {
 
                     MarketPlaceImageEntity imageEntity = MarketPlaceImageEntity.builder()
                             .listingId(savedListing.getListingId())
+                            .imagePath(savedFileName)
+                            .build();
+
+                    marketPlaceImageRepository.save(imageEntity);
+
+                } catch (IOException e) {
+                    throw new RuntimeException("파일 저장 중 오류가 발생했습니다.", e);
+                }
+            }
+        }
+    }
+
+    /** 판매글 수정 */
+    @Transactional
+    public void editList(Long listingId, MarketPlaceListingsDTO editDTO){
+        MarketPlaceListingsEntity originList = marketPlaceListingsRepository.findById(listingId)
+                .orElseThrow(() -> new RuntimeException("해당 게시글이 존재하지 않습니다"));
+        originList.setCardId(editDTO.getCardId());
+        originList.setPrice(editDTO.getPrice());
+        originList.setContactInfo(editDTO.getContactInfo());
+        originList.setLocation(editDTO.getLocation());
+
+        //이미지 수정
+        if (editDTO.getImages() != null && !editDTO.getImages().isEmpty()) {
+            String uploadDir = "C:/pokemon/";
+            List<MarketPlaceImageEntity> oldImages = marketPlaceImageRepository.findByListingId(listingId);
+            for (MarketPlaceImageEntity img : oldImages) {
+                File oldFile = new File(uploadDir + img.getImagePath());
+                if (oldFile.exists()) {
+                    oldFile.delete(); // 로컬 파일 삭제
+                }
+                marketPlaceImageRepository.delete(img); // DB 삭제
+            }
+
+            File dir = new File(uploadDir);
+            if (!dir.exists()) dir.mkdirs();
+
+            for (MultipartFile file : editDTO.getImages()) {
+                String originalFileName = file.getOriginalFilename();
+                String savedFileName = "upload/" + UUID.randomUUID().toString() + "_" + originalFileName;
+
+                try {
+                    file.transferTo(new File(uploadDir + savedFileName));
+
+                    MarketPlaceImageEntity imageEntity = MarketPlaceImageEntity.builder()
+                            .listingId(originList.getListingId())
                             .imagePath(savedFileName)
                             .build();
 
@@ -246,6 +302,14 @@ public class MarketService {
                 .build();
 
         tradeHistoryRepository.save(tradeHistory);
+    }
+
+    /** 판매글의 상태 변경 */
+    @Transactional
+    public void listStatus(Long listId, String status) {
+        MarketPlaceListingsEntity listEntity = marketPlaceListingsRepository.findById(listId)
+                .orElseThrow(() -> new RuntimeException("판매글을 찾을 수 없습니다."));
+        listEntity.setStatus(MarketPlaceListingsEntity.ListingStatus.valueOf(status));
     }
 
     /** 내가 구매 OR 판매한 내역을 전부 가져옴 */
