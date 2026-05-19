@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Card from "../Middle/M/Card.tsx";
 import api from '../../api/axios'; 
 import styles from './MyCards.module.css';

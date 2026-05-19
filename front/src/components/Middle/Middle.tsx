@@ -49,7 +49,6 @@ const Middle = () => {
     fetchCards();
   }, []);
 
-  const BASE_URL = "http://localhost:8080/pokemon/";
   const types = ["악", "초", "불", "벌레", "드래곤", "격투", "풀", "물", "번개", "에스퍼", "얼음", "고스트", "노말"];
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
