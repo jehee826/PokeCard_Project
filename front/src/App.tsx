@@ -16,6 +16,7 @@ import SellEdit from './components/BuySell/SellEdit';
 import ProtectedRoute from './components/ProtectedRoute';
 import AiCamera from './components/AiCamera/AiCamera';
 import MyDeals from './components/MyDeals/MyDeals';
+import StompComponent from './components/Stomp/StompComponent';
 
 
 
@@ -31,6 +32,15 @@ const App = () => {
           <Route path="/pwreset" element={<PwReset />} />
           <Route path="/buysell" element={<><TopBar/><BuySellList/></>}/>
           <Route path="/AiCamera" element={<><TopBar/><AiCamera/></>}/>
+          <Route 
+             path="/Chat/:opponentId" 
+             element={
+               <ProtectedRoute>
+                <TopBar/>
+                 <StompComponent />
+               </ProtectedRoute>
+             } 
+           />
 
            <Route 
              path="/favorites" 
@@ -64,8 +74,9 @@ const App = () => {
            <Route 
              path="/buysell/detail/:id" 
              element={
-
+               <ProtectedRoute>
                  <BuySellDetail />
+                </ProtectedRoute>
              } 
            />
            <Route 

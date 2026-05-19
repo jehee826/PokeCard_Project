@@ -61,7 +61,12 @@ public class MarketController {
                 ? authHeader.substring(7) : null;
 
         //서비스호출 -> 한개의 판매글만 가져오기
+<<<<<<< HEAD
         MarketPlaceListingsDTO dto = marketService.getDetailList(listId, token);
+=======
+        MarketPlaceListingsDTO dto = marketService.getDetailList(listId);
+//        String sellerId = marketService.getSellerLoginId(listId);
+>>>>>>> develop
 
         //잘 넘어오나 확인용 로그
         log.info("전송할 DTO 리스트 (판매글 세부정보): {}", dto);

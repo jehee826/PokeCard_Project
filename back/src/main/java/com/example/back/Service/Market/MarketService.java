@@ -104,6 +104,7 @@ public class MarketService {
         }).collect(Collectors.toList());
     }
 
+
     /** 받은 listId로 한개의 판매글 정보만 가져오기 (이미지 리스트 포함) */
     public MarketPlaceListingsDTO getDetailList(Long listId, String token) {
         Long currentUserId = getUserIdOrNull(token);

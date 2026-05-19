@@ -71,7 +71,16 @@ const BuySellDetail = () => {
             }
             
     }
+    const handleContact = () => {
+        if(item == null) return;
 
+        const paymentData: payment = {
+        sellerId: item.sellerId,
+        cardId: item.cardId,
+        price: item.price
+        };
+        navigate('/buysell/payment/payment', { state: paymentData });
+    }
 
 
     if (!item) return <div className="buysell-container">조회된 아이템이 없습니다.</div>;
@@ -85,7 +94,7 @@ const BuySellDetail = () => {
                         <div className="image-gallery">
                             <img src={`${BASE_URL}${selectedImg}`} alt="실물 사진 메인" />
 
-                            <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px', cursor: 'pointer' }}>
+                            <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px'}}>
                                 {imageList.map((img, idx) => (
                                     <img
                                         key={idx}
