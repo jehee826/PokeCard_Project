@@ -5,6 +5,7 @@ import { useAuth } from '../AuthContext';
 const TopBar = () => {
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuth();
+  const { loginId } = useAuth();
 
   const handleLoginClick = () => {
     navigate('/Login'); 
@@ -13,6 +14,9 @@ const TopBar = () => {
   const handleLogoutClick = () => {
     logout();
     navigate('/');
+  };
+      const handleChatClick = () => {
+    navigate(`/Chat/${loginId}`); 
   };
     const handleFavoriteClick = () => {
     navigate('/Favorites'); 
@@ -36,6 +40,11 @@ const TopBar = () => {
       <div className={styles["topBar-buttons"]}>
         <input 
           type="button" 
+          value="대화 목록" 
+          onClick={handleChatClick} 
+        />
+        <input 
+          type="button" 
           value="관심 카드" 
           onClick={handleFavoriteClick} 
         />
@@ -49,11 +58,11 @@ const TopBar = () => {
           value="내 거래" 
           onClick={handleMyDealsClick} 
         />
-        <input 
-          type="button" 
-          value="장터" 
-          onClick={handleMarketplaceClick} 
-        />
+          <input 
+            type="button" 
+            value="장터" 
+            onClick={handleMarketplaceClick} 
+          />
 
         {isLoggedIn ? (
           <input 

@@ -29,8 +29,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       // 401 Unauthorized 에러 발생 시 로그아웃 처리 또는 로그인 페이지로 이동
-      // sessionStorage.removeItem('accessToken');
-      alert("인증 오류: 로그인 세션이 만료되었거나 유효하지 않습니다. 다시 로그인해주세요." + sessionStorage.getItem('accessToken'));
+      sessionStorage.removeItem('accessToken');
+      // alert("인증 오류: 로그인 세션이 만료되었거나 유효하지 않습니다. 다시 로그인해주세요." + sessionStorage.getItem('accessToken'));
 
       // window.location.href = '/Login'; // 필요시 주석 해제
     }

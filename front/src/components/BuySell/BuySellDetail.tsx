@@ -60,16 +60,25 @@ const BuySellDetail = () => {
     }, [id]);
 
     const handlePayment = () => {
-        if (item == null) return;
+        if(item == null) return;
 
         const paymentData: payment = {
-            sellerId: item.sellerId,
-            cardId: item.cardId,
-            price: item.price
+        sellerId: item.sellerId,
+        cardId: item.cardId,
+        price: item.price
         };
         navigate('/buysell/payment/payment', { state: paymentData });
     }
+    const handleContact = () => {
+        if(item == null) return;
 
+        const paymentData: payment = {
+        sellerId: item.sellerId,
+        cardId: item.cardId,
+        price: item.price
+        };
+        navigate('/buysell/payment/payment', { state: paymentData });
+    }
 
 
     if (!item) return <div className="buysell-container">조회된 아이템이 없습니다.</div>;
@@ -83,7 +92,7 @@ const BuySellDetail = () => {
                         <div className="image-gallery">
                             <img src={`${BASE_URL}${selectedImg}`} alt="실물 사진 메인" />
 
-                            <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px', cursor: 'pointer' }}>
+                            <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px'}}>
                                 {imageList.map((img, idx) => (
                                     <img
                                         key={idx}
@@ -114,20 +123,8 @@ const BuySellDetail = () => {
                     <p style={{ marginBottom: '30px', lineHeight: '1.6' }}>연락처: {item.contactInfo}</p>
                     <div className="detail-price">₩{item.price.toLocaleString()}</div>
                     <div className="button-group">
-                        {item.owner === true ? (
-                            <>
-                                <button onClick={() => alert("예약중 처리 로직")} className="btn-sell">
-                                    예약중
-                                </button>
-                                <button onClick={() => alert("판매완료 처리 로직")} className="btn-confirm">
-                                    판매완료
-                                </button>
-                            </>
-                        ) : (
-                            <button className="btn-buy" onClick={() => handlePayment()}>구매</button>
-                        )}
-
-
+                        <button className="btn-buy" onClick={() => handlePayment()}>Buy Now</button>
+                        <button className="btn-buy" onClick={() => handleContact()}>연락하기</button>
                     </div>
                 </div>
             </div>
