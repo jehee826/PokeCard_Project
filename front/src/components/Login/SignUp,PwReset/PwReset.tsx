@@ -1,6 +1,6 @@
 import api from '../../../api/axios';
 import axios from 'axios';
-import styles from '../../../App.module.css';
+import styles from './SignUp_PwReset.module.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 

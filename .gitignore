@@ -1,10 +1,23 @@
 # Backend (Spring)
+<<<<<<< HEAD
 back/*
+back/src/main/resources/application.yml
+=======
+back/*         
+>>>>>>> develop
 !back/src/
+back/src/main/resources/application.yml      
 
 # Frontend (React/Vite)
 front/node_modules/
 front/dist/
+front/vite.config.js
+front/.env
+front/eslint.config.js
+front/package-lock.json
+front/pakage.json
+front/tsconfig.json
+front/tsconfig.node.json
 
 # IDE & OS
 .idea/

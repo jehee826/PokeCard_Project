@@ -1,91 +1,89 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import Card from "../Middle/M/Card.tsx";
-import './MyCards.css';
+import api from '../../api/axios'; 
+import styles from './MyCards.module.css';
+
+interface MyCard {
+  cardId: number;
+  cardNumber: string;
+  cardNameKo: string;
+  officialImageUrl: string; // DB에 저장된 파일명 (예: "001.png")
+  attribute: string;
+}
 
 const MyCards = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [myCards, setMyCards] = useState<MyCard[]>([]);
+  
+  const types = ["Grass", "Fire", "Water", "Bug", "Dragon", "Normal"];
 
-  // 카드 데이터베이스 (예시 데이터)
-  const fullCardList = [
-    { id: "001", type: "Grass" }, { id: "002", type: "Grass" }, { id: "003", type: "Grass" },
-    { id: "004", type: "Fire" }, { id: "005", type: "Fire" }, { id: "006", type: "Fire" },
-    { id: "007", type: "Water" }, { id: "008", type: "Water" }, { id: "009", type: "Water" },
-    { id: "010", type: "Bug" }, { id: "011", type: "Bug" }, { id: "012", type: "Bug" },
-  ];
+  useEffect(() => {
+    const fetchMyCards = async () => {
+      const token = sessionStorage.getItem('accessToken');
+      if (!token) return;
+      try {
+        const response = await api.get('/api/market/mycard');
+        setMyCards(response.data);
+      } catch (error) {
+        console.error("내 카드 로딩 실패:", error);
+      }
+    };
+    fetchMyCards();
+  }, []);
 
-  const types = ["Grass", "Fire", "Water", "Bug", "Dragon"];
-
-  // 타입 토글 핸들러
   const toggleType = (type: string) => {
-    if (type === "All") {
-      setSelectedTypes([]);
-      return;
-    }
-    setSelectedTypes(prev => 
-      prev.includes(type) 
-        ? prev.filter(t => t !== type) 
-        : [...prev, type]
-    );
+    if (type === "All") { setSelectedTypes([]); return; }
+    setSelectedTypes(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
   };
 
-  // 검색 및 복수 필터링 로직
-  const filteredCards = fullCardList.filter(card => {
-    const matchesSearch = card.id.includes(searchTerm);
-    const matchesType = selectedTypes.length === 0 || selectedTypes.includes(card.type);
+  const filteredCards = myCards.filter(card => {
+    const matchesSearch = card.cardNumber.includes(searchTerm) || card.cardNameKo.includes(searchTerm);
+    const matchesType = selectedTypes.length === 0 || selectedTypes.includes(card.attribute);
     return matchesSearch && matchesType;
   });
 
   return (
-    <div className="my-cards-container">
-      {/* 왼쪽 사이드바: 검색 및 필터 */}
-      <aside className="sidebar">
-        <h2 className="sidebar-title">My Collection</h2>
-        
-        <div className="search-section">
+    <div className={styles['my-cards-container']}>
+      <aside className={styles["sidebar"]}>
+        <h2 className={styles["sidebar-title"]}>My Collection</h2>
+        <div className={styles["search-section"]}>
           <h3>Search</h3>
-          <div className="search-bar">
+          <div className={styles["search-bar"]}>
             <input 
               type="text" 
-              placeholder="Card ID (001~012)" 
+              placeholder="Card ID or Name" 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
-
-        <div className="filter-section">
+        <div className={styles["filter-section"]}>
           <h3>Filter by Type</h3>
-          <div className="filter-group">
-            <button 
-              className={selectedTypes.length === 0 ? "active" : ""}
-              onClick={() => toggleType("All")}
-            >
-              All Types
-            </button>
+          <div className={styles["filter-group"]}>
+            <button className={selectedTypes.length === 0 ? styles.active : ""} onClick={() => toggleType("All")}>All Types</button>
             {types.map(type => (
-              <button 
-                key={type}
-                className={selectedTypes.includes(type) ? "active" : ""}
-                onClick={() => toggleType(type)}
-              >
-                {type}
-              </button>
+              <button key={type} className={selectedTypes.includes(type) ? styles.active : ""} onClick={() => toggleType(type)}>{type}</button>
             ))}
           </div>
         </div>
       </aside>
 
-      {/* 오른쪽 메인 콘텐츠: 카드 그리드 */}
-      <main className="cards-display">
-        <div className="cards-grid">
+      <main className={styles['cards-display']}>
+        <div className={styles['cards-grid']}>
           {filteredCards.length > 0 ? (
             filteredCards.map((card) => (
-              <Card key={card.id} imageNum={card.id} />
+              <div key={card.cardId} className={styles.cardWrapper}>
+                <Card officialImageUrl={card.officialImageUrl} />
+                <div className={styles.cardInfo} style={{ marginTop: '12px', textAlign: 'center' }}>
+                  <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{card.cardNameKo}</div>
+                  <div style={{ color: '#888', fontSize: '12px' }}>{card.cardNumber}</div>
+                </div>
+              </div>
             ))
           ) : (
-            <div className="no-results">
-              <p>No cards found matching your criteria.</p>
+            <div className={styles['no-results']}>
+              <p>보유한 카드가 없습니다.</p>
             </div>
           )}
         </div>

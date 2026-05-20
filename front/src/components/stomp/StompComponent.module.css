@@ -1,0 +1,261 @@
+.stompContainer{
+    width: 100%;
+    height: 630px;
+    margin: 0 auto;
+    
+    padding: 30px;
+    background-color: #f9f3d4;
+}
+.chatContainer {
+    width: 100%;
+    max-width: 550px;
+    height: 600px;
+    margin-top: 30px;
+    margin: 0px auto;
+    background-color: #FFFFFF;
+    border: 3px solid #3D2314;
+    border-radius: 40px; /* More rounded */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 15px 35px rgba(61, 35, 20, 0.2);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    
+}
+
+.chatWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chatHeader {
+    padding: 20px 25px;
+    background-color: #ffe74c;
+    color: #3D2314;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 4px solid #3D2314;
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+}
+
+.pikachuIcon {
+    width: 30px;
+    height: 30px;
+    background-color: #FF0000;
+    border-radius: 50%;
+    border: 3px solid #3D2314;
+    position: relative;
+    box-shadow: inset -2px -2px 0 rgba(0,0,0,0.1);
+}
+
+.pikachuIcon::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    top: 4px;
+    left: 4px;
+}
+
+.disconnectButton {
+    background-color: #3D2314;
+    color: #ffe74c;
+    border: none;
+    padding: 7px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.disconnectButton:hover {
+    background-color: #222222;
+    transform: scale(1.05);
+}
+
+.messageList {
+    flex: 1;
+    overflow-y: auto;
+    padding: 25px;
+    background-color: #FFF9D0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    scrollbar-width: thin;
+    scrollbar-color: #3D2314 transparent;
+}
+
+.messageList::-webkit-scrollbar {
+    width: 8px;
+}
+
+.messageList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.messageList::-webkit-scrollbar-thumb {
+    background-color: #3D2314;
+    border-radius: 10px;
+    border: 2px solid #FFF9D0;
+}
+
+.messageItem {
+    max-width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.myMessage {
+    align-self: flex-end;
+}
+
+.otherMessage {
+    align-self: flex-start;
+}
+
+.senderName {
+    font-size: 0.8rem;
+    color: #3D2314;
+    margin-bottom: 6px;
+    margin-left: 8px;
+    font-weight: 700;
+    opacity: 0.8;
+}
+
+.bubble {
+    padding: 14px 20px;
+    border-radius: 24px;
+    font-size: 1rem;
+    line-height: 1.6;
+    word-break: break-word;
+    box-shadow: 0 4px 12px rgba(61, 35, 20, 0.08);
+    position: relative;
+}
+
+.myBubble {
+    background-color: #ffe74c;
+    color: #3D2314;
+    border-bottom-right-radius: 4px;
+    border: 3px solid #3D2314;
+}
+
+.otherBubble {
+    background-color: #FFFFFF;
+    color: #222222;
+    border: 3px solid #3D2314;
+    border-bottom-left-radius: 4px;
+}
+
+.inputSection {
+    padding: 20px 25px;
+    background-color: #ffe74c;
+    border-top: 3px solid #3D2314;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.chatInput {
+    flex: 1;
+    padding: 15px 22px;
+    border: 3px solid #3D2314;
+    border-radius: 30px;
+    outline: none;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background-color: #FFFFFF;
+}
+
+.chatInput:focus {
+    border-color: #FF0000;
+    box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.1);
+}
+
+.sendButton {
+    background-color: #FF0000;
+    color: white;
+    border: 3px solid #3D2314;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.sendButton:hover {
+    background-color: #e60000;
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+}
+
+.sendButton:active {
+    transform: translateY(0) scale(0.95);
+}
+
+.emptyState {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    text-align: center;
+    background-color: #fee960;
+}
+
+.pikachuIconLarge {
+    width: 100px;
+    height: 100px;
+    background-color: #FF0000;
+    border-radius: 50%;
+    border: 5px solid #3D2314;
+    margin-bottom: 30px;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.pikachuIconLarge::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    top: 20px;
+    left: 20px;
+}
+
+.startChatButton {
+    margin-top: 30px;
+    background-color: #FF0000;
+    color: white;
+    border: 4px solid #3D2314;
+    padding: 18px 45px;
+    border-radius: 60px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #3D2314;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.startChatButton:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 0 #3D2314;
+    background-color: #e60000;
+}
+
+.startChatButton:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #3D2314;
+}
+
+

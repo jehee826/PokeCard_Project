@@ -23,6 +23,7 @@ const Login = () => {
 
     const handleReset = () => {
         setId('');
+        setPw('');
         sessionStorage.removeItem('login_id');
     };
 
@@ -30,12 +31,13 @@ const Login = () => {
         if (!isOn) return;
         try {
             const response = await api.post('/api/public/login', {
-                username: id,
+                loginId: id,
                 password: pw
             });
 
             const token = response.data.token;
-            login(token);
+            const loginId = response.data.loginId;
+            login(token, loginId);
             
             alert((response.data).message || "로그인 성공");
             sessionStorage.removeItem('login_pw');

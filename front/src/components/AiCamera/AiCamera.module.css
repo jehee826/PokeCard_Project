@@ -1,0 +1,146 @@
+/* 도감 전체 컨테이너 */
+.pokedex-container {
+  width: 95%;            /* 너비를 80%에서 95%로 늘려 여백 최소화 */
+  max-width: 500px;
+  height: auto;          /* 고정 높이 1800px 삭제 -> 내용물에 맞게 자동 조절 */
+  min-height: 100vh;     /* 대신 최소 높이를 화면 전체 높이로 설정 */
+  margin: 10px auto;
+  padding-bottom: 30px;  /* 하단 여백 추가 */
+  background-color: #e3350d;
+  border: 8px solid #a12208; /* 테두리 살짝 축소 */
+  border-radius: 25px;
+  overflow-y: auto;      /* 세로 스크롤 허용 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 도감 상단 대형 파란 램프 */
+.pokedex-container::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 35px;
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle, #51adff 20%, #005691 100%);
+  border: 6px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 25px #51adff;
+  z-index: 20;
+}
+
+/* 왼쪽 패널: 카메라 디스플레이 영역 */
+.left-panel {
+  background-color: #2a2a2a;
+  width: 90%;            /* 고정 대신 비율로 변경 */
+  height: auto;          /* 높이 자동 */
+  margin: 70px auto 20px auto;
+  padding: 15px 0 30px 0; /* 내부 여백 추가 */
+  border: 5px solid #555;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 실제 카메라 영상 스크린 */
+.screen {
+  width: 90%;            /* 400px 고정 대신 90%로 변경 (옆잘림 방지) */
+  aspect-ratio: 400 / 558; /* 원래 의도한 비율 유지 */
+  height: auto;          /* 높이는 비율에 맞춰 자동 계산 */
+  background-color: #1a1a1a;
+  border: 4px solid #333;
+  margin: 20px auto;
+  border-radius: 10px;
+  position: relative;
+}
+
+/* 스캔 라인 애니메이션 */
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(81, 173, 255, 0.6);
+  box-shadow: 0 0 15px #51adff;
+  z-index: 10;
+  animation: scanning 2.5s linear infinite;
+}
+
+@keyframes scanning {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+/* LED 표시등 */
+.status-leds {
+  position: absolute;
+  top: 15px;
+  right: 30px;
+  display: flex;
+  gap: 10px;
+}
+
+.led {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #000;
+}
+.led-red { background-color: #ff3e3e; box-shadow: 0 0 5px #ff3e3e; }
+.led-blink { animation: led-blink 1s step-end infinite; }
+
+@keyframes led-blink { 50% { opacity: 0.3; } }
+
+/* 하단 장식 요소 */
+.panel-deco {
+  position: absolute;
+  bottom: 15px;
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.d-pad { width: 50px; height: 50px; position: relative; }
+.d-btn { position: absolute; background-color: #333; border: 1px solid #111; }
+.up { width: 15px; height: 15px; left: 17px; top: 0; }
+.down { width: 15px; height: 15px; left: 17px; bottom: 0; }
+.left { width: 15px; height: 15px; top: 17px; left: 0; }
+.right { width: 15px; height: 15px; top: 17px; right: 0; }
+
+.round-btns { display: flex; gap: 8px; }
+.r-btn { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #111; }
+.btn-blue { background-color: #2c5ba7; }
+.btn-yellow { background-color: #eecf1a; }
+
+/* 오른쪽 섹션: 분석 결과창 */
+.right-section {
+  width: 90%;            /* 80%에서 90%로 확장 */
+  padding: 20px;         /* 패딩 축소 */
+  background-color: #333;
+  margin: 10px auto;
+  border-radius: 10px;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.result-title {
+  font-size: 1.5rem;    /* 모바일에 맞춰 글자 크기 축소 */
+  text-align: center;
+}
+.sub-title {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-top: 5px;
+  text-align: center;
+}
+.capture-preview {
+  width: 100%;          /* 부모 너비에 맞춤 */
+  max-width: 250px;
+  height: auto;
+}

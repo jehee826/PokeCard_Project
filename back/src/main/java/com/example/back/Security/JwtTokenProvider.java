@@ -20,19 +20,21 @@ public class JwtTokenProvider {/* 신분증 발급 및 진위 판독기 */
         this.expirationTime = expirationTime;
     }
 
-    public String generateToken(String username) {
+    /** 로그인한 사용자의 id를 받아 토큰만들기 */
+    public String generateToken(String loginId) {
         Date now = new Date(); /* 현재 시간 선언*/
         Date expiryDate = new Date(now.getTime() + expirationTime); /* 만료 시간 선언 */
 
         return Jwts.builder() /* 암호화 */
-                .setSubject(username) /* 토큰에 사용자 이름 담기 */
+                .setSubject(loginId) /* 토큰에 사용자 이름 담기 */
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String getUsernameFromToken(String token) {
+    /** 토큰받아서 사용자 id리턴 */
+    public String getLoginIdFromToken(String token) {
 
         return Jwts.parserBuilder() /* 복호화 */
                 .setSigningKey(key) /* 비교를 위해 원본 키 불러오기 */
@@ -42,6 +44,7 @@ public class JwtTokenProvider {/* 신분증 발급 및 진위 판독기 */
                 .getSubject();
     }
 
+    /** 토큰 유효검사 */
     public boolean validateToken(String token) { /* JwtAuthenticationFilter에서 유효한지 호출 */
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);

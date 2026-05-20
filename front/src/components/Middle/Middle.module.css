@@ -76,10 +76,6 @@
   pointer-events: none;
 }
 
-.scan-line-idle {
-  /* add idle state if needed */
-}
-
 @keyframes scanning {
   0% { top: 0; }
   100% { top: 100%; }
@@ -289,10 +285,6 @@
   color: #888;
   font-size: 0.9rem;
   margin-top: 10px;
-}
-
-.loading-spinner {
-  /* add spinner styles if needed */
 }
 
 .no-results {
