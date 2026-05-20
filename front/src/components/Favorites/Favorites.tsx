@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Favorites.module.css';
 import api from '../../api/axios'; // 설정하신 axios 인스턴스

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { runOcrInference, initService } from './OcrService';
 import styles from './AiCamera.module.css';
 import api from '../../api/axios';

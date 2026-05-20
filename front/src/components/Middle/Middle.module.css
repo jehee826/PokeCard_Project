@@ -287,10 +287,6 @@
   margin-top: 10px;
 }
 
-.loading-spinner {
-  /* add spinner styles if needed */
-}
-
 .no-results {
   grid-column: 1 / -1;
   text-align: center;

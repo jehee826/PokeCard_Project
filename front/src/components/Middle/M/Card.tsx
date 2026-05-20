@@ -1,18 +1,18 @@
 import styles from '../Middle.module.css';
 import React, { useState } from 'react';
-import  {useNavigate} from 'react-router-dom'
 // 1. 전달받는 Props의 타입을 정의합니다. (숫자나 문자열 모두 가능하도록 설정)
 interface CardProps {
   officialImageUrl: string;
-  cardNumber: string;
+  cardId?: number;
+  onClick?: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ cardNumber, officialImageUrl }) => {
-  const navigate = useNavigate();
-  // 2. useState의 제네릭을 사용하여 상태값의 타입을 명확히 지정합니다.
+const Card = ({ cardId, officialImageUrl, onClick }:CardProps) => {
   const [x, setX] = useState<number>(0);
   const [y, setY] = useState<number>(0);
   const [isHovering, setIsHovering] = useState<boolean>(false);
+
+   const BASE_URL = "http://localhost:8080/pokemon/";
   
   // 3. 마우스 이벤트의 타입을 지정합니다. (div 요소에서 발생하는 마우스 이벤트)
   const mouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -28,12 +28,17 @@ const Card: React.FC<CardProps> = ({ cardNumber, officialImageUrl }) => {
     setY(0);
   };
   const handleClick = () => {
-      navigate('/buysell', { state: { cardNumber: cardNumber } });
+      if(onClick) {
+        onClick();
+      } else {
+        Reset();
+      }
+      
   }
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    event.dataTransfer.setData("image", officialImageUrl);
-    event.dataTransfer.setData("cardNumber", cardNumber);
+    event.dataTransfer.setData("image", BASE_URL+officialImageUrl);
+    event.dataTransfer.setData("cardId", String(cardId));
   };
 
   return (
@@ -50,7 +55,7 @@ const Card: React.FC<CardProps> = ({ cardNumber, officialImageUrl }) => {
           transition: isHovering 
             ? 'transform 0.2s ease-out' 
             : 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-          backgroundImage: `url(${officialImageUrl})`,
+          backgroundImage: `url(${BASE_URL}${officialImageUrl})`,
         }}
       >
         <div 

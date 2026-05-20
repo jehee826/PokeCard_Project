@@ -71,17 +71,6 @@ const BuySellDetail = () => {
             }
             
     }
-    const handleContact = () => {
-        if(item == null) return;
-
-        const paymentData: payment = {
-        sellerId: item.sellerId,
-        cardId: item.cardId,
-        price: item.price
-        };
-        navigate('/buysell/payment/payment', { state: paymentData });
-    }
-
 
     if (!item) return <div className="buysell-container">조회된 아이템이 없습니다.</div>;
 

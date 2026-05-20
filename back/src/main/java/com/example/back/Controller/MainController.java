@@ -36,8 +36,10 @@ public class MainController {
         this.userCollectionsRepository = userCollectionsRepository;
         this.userRepository = userRepository;
         this.tokenProvider = tokenProvider;
-    }    @GetMapping("/ency")
-    public ResponseEntity<List<CardsEntity>> getAllCardList(){
+    }
+
+    @GetMapping("/ency")
+    public ResponseEntity<List<CardsEntity>> getAllCardList() {
 
         // 서비스호출 -> 모든 리스트 가져오기(cards테이블 조인까지)
         List<CardsEntity> cardList = cardsRepository.findAll();
@@ -119,7 +121,7 @@ public class MainController {
                                     .acquiredMethod("PULL")
                                     .build();
                             userCollectionsRepository.save(newCollection);
-                            
+
                             log.info("유저 ID {} 의 도감에 카드 ID {} 등록 완료", user.getId(), card.getCardId());
                             CardsDTO cardsDTO = new CardsDTO(finalImageUrl, "새로운 카드 인식 성공");
                             return ResponseEntity.ok(cardsDTO);
