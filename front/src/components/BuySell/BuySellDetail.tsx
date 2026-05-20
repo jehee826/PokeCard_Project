@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import './BuySell.css';
+import { useAuth } from '../AuthContext';
 
 interface detailCard {
     listingId: number;
@@ -20,6 +21,7 @@ interface detailCard {
 }
 
 const BuySellDetail = () => {
+    const { loginId } = useAuth();
     const { id } = useParams();
     const navigate = useNavigate();
     const [item, setItem] = useState<detailCard>();
@@ -71,24 +73,52 @@ const BuySellDetail = () => {
             }
             
     }
-   
-    const handleStartChat = async () => {
-        try {
-        // 2. 백엔드에 대화방 생성 및 첫 알림 메시지 전송 요청
-        await api.post('/api/chat/request', {
-            roomId: roomId,
-            senderId: loginId,
-            receiverId: '111', // 실제로는 opponentId로 대체되어야 함
-            message: `${loginId}님이 대화를 요청하셨습니다!`
-        });
-        
-        // 3. 내 화면은 곧바로 해당 대화방으로 이동시킵니다.
-        window.location.href = `/chat/${roomId}`;
-        } catch (error) {
-        console.error('대화 요청 실패:', error);
-        }
+   const roomId = useMemo(() => {
+    if (!loginId || !item.loginId) return '';
+    return [loginId, item.loginId].sort().join('_');
+  }, [loginId, item.loginId]);
+
+  const handleStartChatting = () => {
+    // 웹소켓 연결 상태 확인
+    if (!stompClient || !stompClient.connected) {
+      alert("알림 서버와 연결이 일시적으로 끊어졌습니다. 잠시 후 다시 시도해 주세요.");
+      return;
+    }
+
+    // 백엔드로 보낼 웹소켓 페이로드 구성
+    const payload = {
+      roomId: roomId,
+      senderId: loginId,      // 구매자
+      receiverId: item.loginId,   // 판매자
+      message: `장터에서 새로운 문의가 도착했습니다!`
     };
-    
+
+    // 💡 Axios.post 대신 웹소켓 publish를 사용해 직접 백엔드로 밀어 넣습니다.
+    stompClient.publish({
+      destination: '/pub/chat/room/request', // 백엔드의 @MessageMapping 주소
+      body: JSON.stringify(payload),
+    });
+
+    // 전송 후 구매자는 해당 채팅방 페이지로 즉시 이동시킵니다.
+    navigate(`/chat/${roomId}`);
+  };
+    // const handleStartChat = async () => {
+    //     try {
+    //     // 2. 백엔드에 대화방 생성 및 첫 알림 메시지 전송 요청
+    //     await api.post('/api/chat/request', {
+    //         roomId: roomId,
+    //         senderId: loginId,
+    //         receiverId: '111', // 실제로는 opponentId로 대체되어야 함
+    //         message: `${loginId}님이 대화를 요청하셨습니다!`
+    //     });
+        
+    //     // 3. 내 화면은 곧바로 해당 대화방으로 이동시킵니다.
+    //     window.location.href = `/chat/${roomId}`;
+    //     } catch (error) {
+    //     console.error('대화 요청 실패:', error);
+    //     }
+    // };
+
     const handleContact = () => {
         if(item == null) return;
 
@@ -157,7 +187,7 @@ const BuySellDetail = () => {
                                 </button>
                             </>
                         ) : (
-                            <button onClick={() => { alert("유저정보: " + item.loginId + item.nickname); navigate(`/chat/${item.loginId}`);  handleStartChat(); }} className="btn-buy">채팅보내기</button>
+                            <button onClick={() => { alert("유저정보: " + item.loginId + item.nickname); navigate(`/chat/${item.loginId}`);  {handleStartChatting} /*handleStartChat();*/ }} className="btn-buy">채팅보내기</button>
                         )}
 
 
