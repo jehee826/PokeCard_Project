@@ -52,51 +52,47 @@ const TopBar = () => {
   };
 
 
-    // 1. 최신 Client 객체 생성 및 설정
+
 useEffect(() => {
-    // 💡 [수정 포인트 2] 비로그인 상태이거나 loginId가 없으면 웹소켓을 연결하지 않습니다.
+    //비로그인 상태이거나 loginId가 없으면 웹소켓을 연결하지 않음
     if (!isLoggedIn || !loginId) return;
 
-    // 1. 최신 Client 객체 생성 및 설정 (useEffect 내부로 이동)
+
     const stompClient = new Client({
       brokerURL: 'ws://localhost:8080/ws', 
       webSocketFactory: () => new SockJS('http://localhost:8080/ws-stomp'),
       debug: (str) => console.log(`[STOMP] ${str}`),
       onConnect: (frame) => {
-        console.log('알림 서비스 연결 성공');
+        console.log('알림 연결 성공');
 
-        // 2. 내 로그인 ID 전용 알림 채널 상시 구독 시작!
+
         stompClient.subscribe(`/sub/notice/${loginId}`, (frame) => {
           const payload = JSON.parse(frame.body);
           
-          // 3. 예외 처리: 만약 상대방이 이미 그 대화방(/Chat/룸ID) 안에 들어가 있다면 알림을 무시합니다.
           const currentPath = window.location.pathname;
           if (currentPath.includes(payload.sender)) {
             return; 
           }
 
-          // 4. 대화방 밖에 있다면 안 읽은 알림 카운트를 올리고 팝업을 띄웁니다.
           setUnreadCount((prev) => prev + 1);
           setLastSenderId(payload.sender);
           
-          if (window.confirm(`[대화 요청] ${payload.sender}님이 대화를 요청했습니다. 이동하시겠습니까?`)) {
+          if (window.confirm(`[대화 요청] ${payload.sender}님이 대화를 요청했습니다.`)) {
             navigate(`/Chat/${payload.sender}`);
             setUnreadCount(0);
           }
         });
       },
       onStompError: (frame) => {
-        console.error('STOMP 프로토콜 에러:', frame.headers['message']);
+        console.error('STOMP 에러:', frame.headers['message']);
       }
     });
 
-    // 5. 실제로 웹소켓 연결을 활성화(시작)합니다.
     stompClient.activate();
 
-    // 6. 클린업 함수: 컴포넌트가 언마운트되거나 loginId/isLoggedIn이 바뀔 때 연결을 해제합니다.
     return () => {
       if (stompClient) {
-        console.log('알림 서비스 연결 종료');
+        console.log('알림 연결 종료');
         stompClient.deactivate();
       }
     };

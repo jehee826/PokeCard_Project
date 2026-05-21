@@ -46,7 +46,7 @@ const BuySellDetail = () => {
 
                 setImageList(combined);
 
-                // 데이터 로드 시 리스트의 첫 번째 이미지(오피셜)를 기본 선택
+
                 if (combined.length > 0) {
                     setSelectedImg(combined[0]);
                 }
@@ -83,16 +83,16 @@ const roomId = (() => {
         if (!loginId || !item) return;
 
         try {
-            // 1. 백엔드에 대화방 알림 메시지 전송 요청
+
             await api.post('/api/chat/request', {
                 roomId: roomId,
                 sender: loginId,
                 receiver: item.loginId,
-                message: `${loginId}님이 대화를 요청하셨습니다!`,
+                message: `${loginId}님이 대화를 요청하셨습니다.`,
                 content: `장터 아이템 [${item.cardNameKo}]에 대한 문의입니다.`
             });
             
-            // 2. 내 화면은 곧바로 해당 대화방으로 이동시킵니다.
+
             navigate(`/Chat/${item.loginId}`);
         } catch (error) {
             console.error('대화 요청 실패:', error);
