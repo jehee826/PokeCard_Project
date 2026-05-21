@@ -46,7 +46,7 @@ const Middle = () => {
   //   { id: "007", type: "Water" }, { id: "008", type: "Water" }, { id: "009", type: "Water" },
   //   { id: "010", type: "Bug" }, { id: "011", type: "Bug" }, { id: "012", type: "Bug" },
   // ];
-const BASE_URL = "http://localhost:8080/pokemon/";
+
   const types = ["악", "초", "불", "벌레", "드래곤", "격투", "풀", "물", "번개", "에스퍼", "얼음", "고스트", "노말"];
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -56,9 +56,9 @@ const BASE_URL = "http://localhost:8080/pokemon/";
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const image = event.dataTransfer.getData("image");
-    const cardNumber = event.dataTransfer.getData("cardNumber");
+    const cardId = event.dataTransfer.getData("cardId");
     setSelectedCard(image);
-    setSelectedCardNum(cardNumber);
+    setSelectedCardNum(cardId);
   };
     const AiCamera = () => {
     navigate('/AiCamera'); 
@@ -75,6 +75,9 @@ const BASE_URL = "http://localhost:8080/pokemon/";
         ? prev.filter(t => t !== type) 
         : [...prev, type]
     );
+  };
+    const handleSellerList = (cardId : number) => {
+    navigate(`/buysell/seller/${cardId}`, { state: { cardId: cardId } });
   };
 
 
@@ -190,7 +193,7 @@ const BASE_URL = "http://localhost:8080/pokemon/";
         <div className={styles["right-panel"]}>
           {filteredCards.length > 0 ? (
             filteredCards.map((card) => (
-              <Card key={card.cardNumber} cardNumber={card.cardNumber} officialImageUrl={`url(${BASE_URL}${card.officialImageUrl})`} />
+              <Card key={card.cardId} cardId={card.cardId} officialImageUrl={card.officialImageUrl} onClick={() => handleSellerList(card.cardId)} />
             ))
           ) : (
             <div className={styles["no-results"]}>
