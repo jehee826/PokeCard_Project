@@ -19,10 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
         @PostMapping("/request")
         public ResponseEntity<String> requestChat(@RequestBody ChatMessageDto request) {
-            // 1. 받는 사람(상대방)의 개인 알림 채널 주소 정의
+
             String destination = "/sub/notice/" + request.getReceiver();
 
-            // 2. 상대방의 TopBar가 읽을 수 있도록 웹소켓으로 알림 데이터 전송
             template.convertAndSend(destination, request);
 
             return ResponseEntity.ok("대화 요청 및 알림 발송 완료");

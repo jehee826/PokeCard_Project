@@ -117,7 +117,6 @@ const roomId = (() => {
                                     <img
                                         key={idx}
                                         src={`${BASE_URL}${imageList[idx]}`}
-                                        // [추가] 클릭 시 selectedImg 상태 업데이트
                                         onClick={() => setSelectedImg(img)}
 
                                         style={{
@@ -125,7 +124,6 @@ const roomId = (() => {
                                             height: '50px',
                                             objectFit: 'cover',
                                             cursor: 'pointer',
-                                            // [추가] 현재 선택된 사진에 테두리 효과 (선택사항)
                                             border: selectedImg === img ? '2px solid #3b82f6' : '1px solid #ddd'
                                         }}
                                         alt={`미리보기 ${idx}`}
