@@ -73,62 +73,32 @@ const BuySellDetail = () => {
             }
             
     }
-   const roomId = useMemo(() => {
-    if (!loginId || !item.loginId) return '';
+const roomId = (() => {
+    if (!loginId || !item?.loginId) return '';
     return [loginId, item.loginId].sort().join('_');
-  }, [loginId, item.loginId]);
+})();
+    
 
-  const handleStartChatting = () => {
-    // 웹소켓 연결 상태 확인
-    if (!stompClient || !stompClient.connected) {
-      alert("알림 서버와 연결이 일시적으로 끊어졌습니다. 잠시 후 다시 시도해 주세요.");
-      return;
-    }
+    const handleStartChat = async () => {
+        if (!loginId || !item) return;
 
-    // 백엔드로 보낼 웹소켓 페이로드 구성
-    const payload = {
-      roomId: roomId,
-      senderId: loginId,      // 구매자
-      receiverId: item.loginId,   // 판매자
-      message: `장터에서 새로운 문의가 도착했습니다!`
+        try {
+            // 1. 백엔드에 대화방 알림 메시지 전송 요청
+            await api.post('/api/chat/request', {
+                roomId: roomId,
+                sender: loginId,
+                receiver: item.loginId,
+                message: `${loginId}님이 대화를 요청하셨습니다!`,
+                content: `장터 아이템 [${item.cardNameKo}]에 대한 문의입니다.`
+            });
+            
+            // 2. 내 화면은 곧바로 해당 대화방으로 이동시킵니다.
+            navigate(`/Chat/${item.loginId}`);
+        } catch (error) {
+            console.error('대화 요청 실패:', error);
+            alert('대화 요청 중 오류가 발생했습니다.');
+        }
     };
-
-    // 💡 Axios.post 대신 웹소켓 publish를 사용해 직접 백엔드로 밀어 넣습니다.
-    stompClient.publish({
-      destination: '/pub/chat/room/request', // 백엔드의 @MessageMapping 주소
-      body: JSON.stringify(payload),
-    });
-
-    // 전송 후 구매자는 해당 채팅방 페이지로 즉시 이동시킵니다.
-    navigate(`/chat/${roomId}`);
-  };
-    // const handleStartChat = async () => {
-    //     try {
-    //     // 2. 백엔드에 대화방 생성 및 첫 알림 메시지 전송 요청
-    //     await api.post('/api/chat/request', {
-    //         roomId: roomId,
-    //         senderId: loginId,
-    //         receiverId: '111', // 실제로는 opponentId로 대체되어야 함
-    //         message: `${loginId}님이 대화를 요청하셨습니다!`
-    //     });
-        
-    //     // 3. 내 화면은 곧바로 해당 대화방으로 이동시킵니다.
-    //     window.location.href = `/chat/${roomId}`;
-    //     } catch (error) {
-    //     console.error('대화 요청 실패:', error);
-    //     }
-    // };
-
-    const handleContact = () => {
-        if(item == null) return;
-
-        const paymentData: payment = {
-        sellerId: item.sellerId,
-        cardId: item.cardId,
-        price: item.price
-        };
-        navigate('/buysell/payment/payment', { state: paymentData });
-    }
 
 
     if (!item) return <div className="buysell-container">조회된 아이템이 없습니다.</div>;
@@ -187,7 +157,7 @@ const BuySellDetail = () => {
                                 </button>
                             </>
                         ) : (
-                            <button onClick={() => { alert("유저정보: " + item.loginId + item.nickname); navigate(`/chat/${item.loginId}`);  {handleStartChatting} /*handleStartChat();*/ }} className="btn-buy">채팅보내기</button>
+                            <button onClick={handleStartChat} className="btn-buy">채팅보내기</button>
                         )}
 
 

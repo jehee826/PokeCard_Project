@@ -10,6 +10,8 @@ const TopBar = () => {
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuth();
   const { loginId } = useAuth();
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [lastSenderId, setLastSenderId] = useState<string | null>(null);
 
   const handleLoginClick = () => {
     navigate('/Login'); 
@@ -19,8 +21,19 @@ const TopBar = () => {
     logout();
     navigate('/');
   };
-      const handleChatClick = () => {
+  
+  const handleChatClick = () => {
     navigate(`/Chat/${loginId}`); 
+  };
+
+  const handleNotificationClick = () => {
+    if (lastSenderId) {
+      navigate(`/Chat/${lastSenderId}`);
+      setUnreadCount(0);
+      setLastSenderId(null);
+    } else {
+      handleChatClick();
+    }
   };
     const handleFavoriteClick = () => {
     navigate('/Favorites'); 
@@ -39,25 +52,14 @@ const TopBar = () => {
   };
 
 
-    // 1. 웹소켓 연결
-//     const stompClient = new Client({
-//   brokerURL: 'ws://localhost:8080/ws', // 웹소켓 네이티브 주소
-//   webSocketFactory: () => new SockJS('http://localhost:8080/ws-stomp'), // SockJS 폴백용
-//   onConnect: () => {
-//     console.log('연결 성공');
-//   }
-// });
-  const [unreadCount, setUnreadCount] = useState(0);
-
-    useEffect(() => {
-    if (!loginId) return;
-
     // 1. 최신 Client 객체 생성 및 설정
+useEffect(() => {
+    // 💡 [수정 포인트 2] 비로그인 상태이거나 loginId가 없으면 웹소켓을 연결하지 않습니다.
+    if (!isLoggedIn || !loginId) return;
+
+    // 1. 최신 Client 객체 생성 및 설정 (useEffect 내부로 이동)
     const stompClient = new Client({
-      // 스프링 부트 서버의 웹소켓 엔드포인트 주소
       brokerURL: 'ws://localhost:8080/ws', 
-      
-      // SockJS를 사용해야 하는 브라우저 환경을 위한 폴백(Fallback) 설정
       webSocketFactory: () => new SockJS('http://localhost:8080/ws-stomp'),
       debug: (str) => console.log(`[STOMP] ${str}`),
       onConnect: (frame) => {
@@ -67,22 +69,22 @@ const TopBar = () => {
         stompClient.subscribe(`/sub/notice/${loginId}`, (frame) => {
           const payload = JSON.parse(frame.body);
           
-          // 3. 예외 처리: 만약 상대방이 이미 그 대화방(/chat/룸ID) 안에 들어가 있다면 알림을 무시합니다.
+          // 3. 예외 처리: 만약 상대방이 이미 그 대화방(/Chat/룸ID) 안에 들어가 있다면 알림을 무시합니다.
           const currentPath = window.location.pathname;
-          if (currentPath.includes(payload.roomId)) {
+          if (currentPath.includes(payload.sender)) {
             return; 
           }
 
           // 4. 대화방 밖에 있다면 안 읽은 알림 카운트를 올리고 팝업을 띄웁니다.
           setUnreadCount((prev) => prev + 1);
+          setLastSenderId(payload.sender);
           
-          // 알림창을 누르면 해당 채팅방으로 이동할 수 있도록 구성 가능
-          if (window.confirm(`[대화 요청] ${payload.senderId}님이 대화를 요청했습니다. 이동하시겠습니까?`)) {
-            window.location.href = `/chat/${payload.roomId}`;
+          if (window.confirm(`[대화 요청] ${payload.sender}님이 대화를 요청했습니다. 이동하시겠습니까?`)) {
+            navigate(`/Chat/${payload.sender}`);
+            setUnreadCount(0);
           }
         });
       },
-
       onStompError: (frame) => {
         console.error('STOMP 프로토콜 에러:', frame.headers['message']);
       }
@@ -91,26 +93,27 @@ const TopBar = () => {
     // 5. 실제로 웹소켓 연결을 활성화(시작)합니다.
     stompClient.activate();
 
-    // 6. 클린업 함수: 컴포넌트가 언마운트되거나 loginId가 바뀔 때 연결을 안전하게 해제합니다.
+    // 6. 클린업 함수: 컴포넌트가 언마운트되거나 loginId/isLoggedIn이 바뀔 때 연결을 해제합니다.
     return () => {
       if (stompClient) {
-        stompClient.deactivate(); // 최신 버전은 disconnect() 대신 deactivate()를 권장합니다.
+        console.log('알림 서비스 연결 종료');
+        stompClient.deactivate();
       }
     };
-  }, [loginId]);
+  }, [loginId, isLoggedIn]);
 
   return (
     <div className={styles["topBar"]}>
       <img className={styles["main_icon"]} src="/lightPokeLogo.png" alt="로고" onClick={mainHandleClick}/>
-      <div className="top-bar" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', background: '#e0e0e0' }}>
-      <h2>My App</h2>
-      <div>
-        <span>🔔 알림 {unreadCount}개</span>
-        <span style={{ marginLeft: '10px' }}>{loginId}님 정방문</span>
-      </div>
-    </div>
       
       <div className={styles["topBar-buttons"]}>
+        {isLoggedIn && (
+          <div className={styles["notification-container"]} onClick={handleNotificationClick}>
+            <span className={styles["bell-icon"]}>🔔</span>
+            {unreadCount > 0 && <span className={styles["badge"]}>{unreadCount}</span>}
+          </div>
+        )}
+
         <input 
           type="button" 
           value="대화 목록" 
