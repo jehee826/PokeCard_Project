@@ -3,6 +3,7 @@ import { AuthProvider } from './components/AuthContext';
 import MainPage from "./components/MainPage";
 import Login from './components/Login/Login';
 import SignUp from './components/Login/SignUp,PwReset/SignUp';
+import MyPage from './components/MyPage/MyPage';
 import PwReset from './components/Login/SignUp,PwReset/PwReset';
 import Favorites from './components/Favorites/Favorites';
 import MyCards from './components/MyCards/MyCards';
@@ -109,6 +110,14 @@ const App = () => {
              element={
                <ProtectedRoute>
                  <SellEdit />
+               </ProtectedRoute>
+             } 
+           />
+           <Route 
+             path="/mypage" 
+             element={
+               <ProtectedRoute>
+                 <MyPage />
                </ProtectedRoute>
              } 
            />
