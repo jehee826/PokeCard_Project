@@ -4,6 +4,7 @@ import SockJS from 'sockjs-client';
 import { useAuth } from '../AuthContext';
 import { useParams } from 'react-router-dom';
 import styles from './StompComponent.module.css';
+import api from '../../api/axios';
 
 interface MessagesType {
 	sender: string; // 보내는 주체
@@ -29,6 +30,7 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 
 	const PUB_ENDPOINT = `/pub/chat/${roomId}`;
 	const SUB_ENDPOINT = `/sub/chat/${roomId}`;
+
 
 	const [wsClient, setWsClient] = useState<Client>();
 	const [isEnterChat, setIsEnterChat] = useState<boolean>(false);
@@ -98,6 +100,7 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 						body: JSON.stringify({ ...messageObj, sender: loginId, roomId: roomId }),
 					});
 					setMessageObj({ content: '', sender: loginId });
+					
 				}
 			},
 			disconnect: () => {
@@ -118,6 +121,7 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 			}
 		};
 	}, [wsClient]);
+
 
 
 	return (

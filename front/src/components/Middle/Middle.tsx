@@ -60,7 +60,7 @@ const Middle = () => {
     const image = event.dataTransfer.getData("image");
     const cardNumber = event.dataTransfer.getData("cardId");
     setSelectedCard(image);
-    setSelectedCardNum(cardNumber);
+    setSelectedCardNum(cardId);
   };
   const AiCamera = () => {
     navigate('/AiCamera');

@@ -37,7 +37,6 @@ const Favorites = () => {
         setFavorites(response.data);
       } catch (error) {
         console.error("즐겨찾기 목록 로드 실패:", error);
-      } finally {
       }
     };
 

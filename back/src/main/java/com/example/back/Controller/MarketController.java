@@ -90,7 +90,7 @@ public class MarketController {
         return ResponseEntity.ok(myCard);
     }
 
-    /** 판매글 등록 */
+    /** 판매글 등록 컨트롤러 */
     @PostMapping("/register")
     public ResponseEntity<?> registerList(@ModelAttribute MarketPlaceListingsDTO register, @RequestHeader("Authorization") String authHeader){
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -103,6 +103,7 @@ public class MarketController {
         return ResponseEntity.ok("등록성공");
     }
 
+    /** 판매글 수정 컨트롤러 */
     @PostMapping("edit")
     public ResponseEntity<?> editList(@RequestParam Long listingId, @ModelAttribute MarketPlaceListingsDTO editDTO){
         marketService.editList(listingId, editDTO);
@@ -124,7 +125,7 @@ public class MarketController {
     }
 
     /** 즐찾 리스트 조회 */
-    @GetMapping("favoritelist")
+    @GetMapping("/favoritelist")
     public ResponseEntity<?> getMyFavoriteList(@RequestHeader("Authorization") String authHeader){
         // 토큰 검증 및 Bearer 제거
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -138,6 +139,7 @@ public class MarketController {
         return ResponseEntity.ok(favorites);
     }
 
+    /** 즐찾 여부 확인 */
     @GetMapping("/is-favorite")
     public ResponseEntity<Boolean> checkFavorite(@RequestParam Long listingId, @RequestHeader("Authorization") String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -147,19 +149,19 @@ public class MarketController {
         return ResponseEntity.ok(marketService.isFavorite(listingId, token));
     }
 
-    @PostMapping("/payment")
-    public ResponseEntity<?> processPayment(@RequestBody TradeHistoryDTO request,
-            @RequestHeader("Authorization") String authHeader) {
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.ok(false); // 토큰 없으면 당연히 찜 아님
-        }
-        String token = authHeader.substring(7);
-
-        marketService.registerPayment(request.getSellerId(), request.getCardId(), request.getFinalPrice(), token);
-
-        return ResponseEntity.ok().body("거래가 완료되었습니다.");
-    }
+//    @PostMapping("/payment")
+//    public ResponseEntity<?> processPayment(@RequestBody TradeHistoryDTO request,
+//            @RequestHeader("Authorization") String authHeader) {
+//
+//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//            return ResponseEntity.ok(false); // 토큰 없으면 당연히 찜 아님
+//        }
+//        String token = authHeader.substring(7);
+//
+//        marketService.registerPayment(request.getSellerId(), request.getCardId(), request.getFinalPrice(), token);
+//
+//        return ResponseEntity.ok().body("거래가 완료되었습니다.");
+//    }
 
     /** 판매완료 요청 */
     @PostMapping("/sellcomplete")
@@ -172,6 +174,7 @@ public class MarketController {
         return ResponseEntity.ok("상태변경 완료");
     }
 
+    /** 거래내역 조회 */
     @GetMapping("/history")
     public ResponseEntity<List<TradeHistoryDTO>> getHistory(@RequestHeader("Authorization") String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {

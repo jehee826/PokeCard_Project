@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import './BuySell.css';
+import { useAuth } from '../AuthContext';
 
 interface detailCard {
     listingId: number;
     sellerId: number;
-    loginId: number;
+    loginId: string;
     nickname: string;
     cardId: number;
     price: number;
@@ -20,6 +21,7 @@ interface detailCard {
 }
 
 const BuySellDetail = () => {
+    const { loginId } = useAuth();
     const { id } = useParams();
     const navigate = useNavigate();
     const [item, setItem] = useState<detailCard>();
@@ -44,7 +46,7 @@ const BuySellDetail = () => {
 
                 setImageList(combined);
 
-                // 데이터 로드 시 리스트의 첫 번째 이미지(오피셜)를 기본 선택
+
                 if (combined.length > 0) {
                     setSelectedImg(combined[0]);
                 }
@@ -71,6 +73,33 @@ const BuySellDetail = () => {
             }
             
     }
+const roomId = (() => {
+    if (!loginId || !item?.loginId) return '';
+    return [loginId, item.loginId].sort().join('_');
+})();
+    
+
+    const handleStartChat = async () => {
+        if (!loginId || !item) return;
+
+        try {
+
+            await api.post('/api/chat/request', {
+                roomId: roomId,
+                sender: loginId,
+                receiver: item.loginId,
+                message: `${loginId}님이 대화를 요청하셨습니다.`,
+                content: `장터 아이템 [${item.cardNameKo}]에 대한 문의입니다.`
+            });
+            
+
+            navigate(`/Chat/${item.loginId}`);
+        } catch (error) {
+            console.error('대화 요청 실패:', error);
+            alert('대화 요청 중 오류가 발생했습니다.');
+        }
+    };
+
 
     if (!item) return <div className="buysell-container">조회된 아이템이 없습니다.</div>;
 
@@ -88,7 +117,6 @@ const BuySellDetail = () => {
                                     <img
                                         key={idx}
                                         src={`${BASE_URL}${imageList[idx]}`}
-                                        // [추가] 클릭 시 selectedImg 상태 업데이트
                                         onClick={() => setSelectedImg(img)}
 
                                         style={{
@@ -96,7 +124,6 @@ const BuySellDetail = () => {
                                             height: '50px',
                                             objectFit: 'cover',
                                             cursor: 'pointer',
-                                            // [추가] 현재 선택된 사진에 테두리 효과 (선택사항)
                                             border: selectedImg === img ? '2px solid #3b82f6' : '1px solid #ddd'
                                         }}
                                         alt={`미리보기 ${idx}`}
@@ -128,7 +155,7 @@ const BuySellDetail = () => {
                                 </button>
                             </>
                         ) : (
-                            <button onClick={() => (alert("유저정보: " + item.loginId + item.nickname))} className="btn-buy">채팅보내기</button>
+                            <button onClick={handleStartChat} className="btn-buy">채팅보내기</button>
                         )}
 
 

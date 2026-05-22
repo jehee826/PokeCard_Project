@@ -43,6 +43,7 @@ const SignUp = () => {
                 <div className={styles.loginTitle}>
                     <input 
                         className={styles.loginInput} 
+                        type='email'
                         onChange={(e) => setEmail(e.target.value)} 
                         placeholder="EMAIL" 
                     />
