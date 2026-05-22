@@ -90,4 +90,4 @@ const MyCards = () => {
       </main>
     </div>
   );
-}
+};export default MyCards;
