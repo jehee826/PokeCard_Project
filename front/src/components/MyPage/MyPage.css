@@ -1,0 +1,310 @@
+/* BuySell.css */
+.buysell-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.buysell-header {
+    display: flex;
+    max-width: 6000px;
+    justify-content: center;
+    align-items: center;
+    margin: 15px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 상단 섹션 중앙 정렬 */
+.buysell-top-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.buysell-top-section h1 {
+    margin: 0 0 30px 0;
+    font-size: 2.5rem;
+    color: #333;
+}
+
+.controls-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Search & Filter Group */
+.search-filter-group {
+    display: flex;
+    align-items: center;
+    width: 420px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    padding: 5px 15px;
+    margin: 35px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s;
+}
+
+.search-filter-group:focus-within {
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.search-input-wrapper input {
+    border: none;
+    padding: 10px 15px;
+    width: 250px;
+    font-size: 0.95rem;
+    outline: none;
+    background: transparent;
+}
+
+.filter-select-wrapper {
+    position: relative;
+    padding-left: 10px;
+    border-left: 1px solid #eee;
+}
+
+.filter-select-wrapper select {
+    border: none;
+    padding: 10px 30px 10px 10px;
+    font-size: 0.9rem;
+    outline: none;
+    background: transparent;
+    cursor: pointer;
+    appearance: none;
+}
+
+.filter-select-wrapper::after {
+    content: "▼";
+    font-size: 0.7rem;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #666;
+}
+
+.camera-btn {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.camera-btn:hover {
+    background-color: #f5f5f5;
+    color: #e3350d;
+}
+
+.btn-sell-small {
+    padding: 12px 25px;
+    background-color: #2a2a2a;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-sell-small:hover {
+    background-color: #444;
+    transform: scale(1.05);
+}
+
+/* List Page */
+.item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.item-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+}
+
+.item-image {
+    width: 100%;
+    aspect-ratio: 2/2.8;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 15px;
+}
+
+.item-info {
+    text-align: center;
+}
+
+.item-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e3350d;
+}
+
+/* Detail Page */
+.detail-container {
+    display: flex;
+    gap: 50px;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.detail-image {
+    flex: 1;
+    max-width: 400px;
+}
+
+.detail-image img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.detail-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.detail-info h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.detail-price {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #e3350d;
+    margin-bottom: 30px;
+}
+
+.button-group {
+    display: flex;
+    gap: 20px;
+}
+
+.btn-buy, .btn-sell, .btn-confirm, .btn-edit {
+    padding: 15px 40px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-buy { background-color: #e3350d; color: white;}
+.btn-sell { background-color: #ffd400; color: white;}
+.btn-confirm { background-color: #4caf50; color: white;}
+.btn-edit { background-color: #4834b6; color: white;}
+
+/* Payment Page */
+.payment-container {
+    max-width: 500px;
+    margin: 50px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.payment-details {
+    margin: 30px 0;
+    text-align: left;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Sell Registration */
+.sell-registration-container {
+    display: flex;
+    gap: 40px;
+    width: 1000px;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.sell-left {
+    width:300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #ccc;
+    border-radius: 17px;
+    min-height: 200px;
+    max-height: 420px;
+}
+
+.sell-left img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;  /* 박스 높이를 넘지 않음 */
+    object-fit: contain; /* 이미지가 잘리지 않고 상자 안에 쏙 들어가게 함 */
+    border-radius: 10px;
+}
+
+.sell-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group select, .form-group input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    font-size: 1rem;
+}
+
+.placeholder-text {
+    color: #999;
+    font-style: italic;
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    color: #999;
+}

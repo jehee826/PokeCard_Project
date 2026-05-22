@@ -126,8 +126,7 @@ const SellRegistration = () => {
                         <label>Select Card</label>
                         <select
                             value={selectedCardId}
-                            onChange={(e) => setSelectedCardId(e.target.value)}
-                        >
+                            onChange={(e) => setSelectedCardId(e.target.value)}>
                             <option value="">-- 보유카드 --</option>
                             {items.map(card => (
                                 <option key={card.cardNumber} value={card.cardId}>{card.cardNameKo} (#{card.cardNumber})</option>

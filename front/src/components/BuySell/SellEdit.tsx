@@ -38,7 +38,7 @@ const SellEdit = () => {
 
   const BASE_URL = 'http://localhost:8080/pokemon/';
 
-  // 사진 선택 시 실행되는 함수
+  //이미지 변경시 실행
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -51,6 +51,7 @@ const SellEdit = () => {
     }
   };
 
+  //폼 내용 변경시 실행
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
@@ -66,14 +67,14 @@ const SellEdit = () => {
     });
   };
 
-  const handleRegister = async () => {
+  //수정내용 등록
+  const handleEdit = async () => {
     // 유효성 검사 (사진 포함)
     if (!item?.cardId || !item?.price || !item?.location || !item.contactInfo) {
       alert('모든 정보를 입력해주세요.')
       return;
     }
 
-    // [핵심] JSON 대신 FormData 사용
     const formData = new FormData();
     formData.append('cardId', String(item.cardId));
     formData.append('price', String(item.price));
@@ -201,7 +202,7 @@ const SellEdit = () => {
               onChange={handleChange}
             />
           </div>
-          <button className="btn-buy" onClick={handleRegister}>등록</button>
+          <button className="btn-buy" onClick={handleEdit}>등록</button>
           <button className="btn-sell" onClick={() => navigate(`/buysell/detail/${id}`)}>취소</button>
         </div>
       </div>

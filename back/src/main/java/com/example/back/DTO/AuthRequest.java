@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +19,8 @@ public class AuthRequest {
     private String password;
     private String nickname;
     private String profileImgUrl;
+    //이미지 저장용 변수
+    private MultipartFile images;
 
     public UsersEntity toEntity() {
         return UsersEntity.builder()
