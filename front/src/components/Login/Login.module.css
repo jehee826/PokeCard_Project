@@ -233,7 +233,7 @@
   box-shadow: 0 4px 0 rgba(0,0,0,0.2);
 }
 
-.btn-a { background-color: var(--poke-blue); } /* Blue for A */
+.btn-a { background-color: #ead945; } /* Blue for A */
 .btn-b { background-color: #495057; } /* Gray for B */
 
 .btn-a:active, 
