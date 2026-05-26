@@ -1,27 +1,35 @@
 :root {
-  /* Pokémon Signature Colors */
+  /* Pokémon Signature Colors - Red Focused */
   --poke-red: #FF5350;
   --poke-red-dark: #D32F2F;
-  --poke-blue: #3D7DCA;
-  --poke-blue-dark: #003A70;
+  --poke-red-deep: #C53030;
   --poke-yellow: #FFCB05;
   
-  /* Light Theme Palette (80% of UI) */
+  /* Unified Theme Palette (Red Focus) */
+  --market-accent: #E53E3E; 
+  --market-gold: #D4AF37; 
+  --market-success: #27AE60;
+  
+  /* Light Palette (80%) */
   --bg-light: #F7F9FC;
   --bg-white: #FFFFFF;
   --border-light: #E2E8F0;
   --text-main: #2D3748;
   --text-muted: #718096;
   
-  /* Dark Accents (20% of UI) */
-  --bg-dark-accent: #1A202C; /* Deep charcoal for headers/sidebars */
+  /* Dark Palette (20%) - Deep Reds & Charcoals */
+  --bg-dark-accent: #1A0505; /* Very dark red-black */
   --text-on-dark: #FFFFFF;
-  --border-dark-accent: #2D3748;
+  --border-dark-accent: #2D1A1A;
+  
+  /* Semantic Variables (Mapped to Red) */
+  --poke-blue: var(--poke-red);
+  --poke-blue-dark: var(--poke-red-dark);
   
   /* Effects */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 10px 25px rgba(229, 62, 62, 0.15); /* Red-tinted shadow */
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -58,5 +66,5 @@ button, input[type="button"] {
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #A0AEC0;
+  background: var(--poke-red);
 }

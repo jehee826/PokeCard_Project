@@ -105,60 +105,87 @@ const roomId = (() => {
 
     return (
         <div className="buysell-container">
-            <button onClick={() => navigate('/buysell')} style={{ marginBottom: '20px', cursor: 'pointer', background: 'none', border: 'none', color: '#666' }}>← 돌아가기</button>
+            <button onClick={() => navigate('/buysell')} style={{ marginBottom: '20px', cursor: 'pointer', background: 'none', border: 'none', color: 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                목록으로 돌아가기
+            </button>
+            
             <div className="detail-container">
                 <div className="detail-image">
                     {imageList.length > 0 ? (
                         <div className="image-gallery">
-                            <img src={`${BASE_URL}${selectedImg}`} alt="실물 사진 메인" />
+                            <div className="main-image-wrapper" style={{ position: 'relative', width: '100%', aspectRatio: '2/2.8', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#f8fafc', border: '1px solid var(--border-light)' }}>
+                                <img 
+                                    src={`${BASE_URL}${selectedImg}`} 
+                                    alt="실물 사진 메인" 
+                                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                />
+                            </div>
 
-                            <div className="small-previews" style={{ display: 'flex', gap: '5px', marginTop: '10px'}}>
+                            <div className="small-previews" style={{ display: 'flex', gap: '10px', marginTop: '15px', flexWrap: 'wrap' }}>
                                 {imageList.map((img, idx) => (
-                                    <img
+                                    <div 
                                         key={idx}
-                                        src={`${BASE_URL}${imageList[idx]}`}
                                         onClick={() => setSelectedImg(img)}
-
                                         style={{
-                                            width: '50px',
-                                            height: '50px',
-                                            objectFit: 'cover',
+                                            width: '60px',
+                                            height: '60px',
+                                            borderRadius: '8px',
+                                            overflow: 'hidden',
                                             cursor: 'pointer',
-                                            border: selectedImg === img ? '2px solid #3b82f6' : '1px solid #ddd'
+                                            border: selectedImg === img ? '2px solid var(--market-accent)' : '1px solid var(--border-light)',
+                                            transition: 'all 0.2s'
                                         }}
-                                        alt={`미리보기 ${idx}`}
-                                    />
+                                    >
+                                        <img
+                                            src={`${BASE_URL}${img}`}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            alt={`미리보기 ${idx}`}
+                                        />
+                                    </div>
                                 ))}
                             </div>
                         </div>
                     ) : (
-                        <img src={item.officialImageUrl} alt="공식 이미지" />
+                        <div className="main-image-wrapper" style={{ width: '100%', aspectRatio: '2/2.8', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#f8fafc', border: '1px solid var(--border-light)' }}>
+                            <img src={item.officialImageUrl} alt="공식 이미지" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        </div>
                     )}
                 </div>
+
                 <div className="detail-info">
-                    <h2>{item.cardNameKo}</h2>
-                    <h5>작성자: {item.nickname}</h5>
-                    <p style={{ color: '#666', marginBottom: '10px' }}>거래장소: {item.location}</p>
-                    <p style={{ marginBottom: '30px', lineHeight: '1.6' }}>연락처: {item.contactInfo}</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                        <h2 style={{ margin: 0 }}>{item.cardNameKo}</h2>
+                        <span style={{ backgroundColor: item.status === '판매중' ? '#e6fffa' : '#fff5f5', color: item.status === '판매중' ? '#319795' : '#e53e3e', padding: '4px 12px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700 }}>
+                            {item.status}
+                        </span>
+                    </div>
+                    
+                    <h5 style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>판매자: <span style={{ color: 'var(--market-accent)' }}>{item.nickname}</span></h5>
+                    
+                    <div style={{ backgroundColor: '#f7fafc', padding: '20px', borderRadius: '12px', marginBottom: '30px' }}>
+                        <p style={{ margin: '0 0 10px 0', fontSize: '0.95rem' }}><strong>📍 거래장소:</strong> {item.location}</p>
+                        <p style={{ margin: 0, fontSize: '0.95rem' }}><strong>📱 연락처:</strong> {item.contactInfo}</p>
+                    </div>
+
                     <div className="detail-price">₩{item.price.toLocaleString()}</div>
-                    <div className="button-group">
+                    
+                    <div className="button-group" style={{ marginTop: '40px', gap: '15px' }}>
                         {item.owner === true ? (
                             <>
-                                <button onClick={() => handleListStatus(Number(id), "예약중")} className="btn-sell">
-                                    예약중
+                                <button onClick={() => handleListStatus(Number(id), "예약중")} className="btn-sell" style={{ padding: '15px' }}>
+                                    예약중으로 변경
                                 </button>
-                                <button onClick={() => handleListStatus(Number(id), "판매완료")} className="btn-confirm">
-                                    판매완료
+                                <button onClick={() => handleListStatus(Number(id), "판매완료")} className="btn-confirm" style={{ padding: '15px' }}>
+                                    판매 완료 확정
                                 </button>
-                                <button onClick={() => navigate(`/buysell/edit/${item.listingId}`)} className="btn-edit">
-                                    글 수정
+                                <button onClick={() => navigate(`/buysell/edit/${item.listingId}`)} className="btn-edit" style={{ padding: '15px' }}>
+                                    게시글 수정
                                 </button>
                             </>
                         ) : (
-                            <button onClick={handleStartChat} className="btn-buy">채팅보내기</button>
+                            <button onClick={handleStartChat} className="btn-buy" style={{ padding: '18px', fontSize: '1.1rem' }}>채팅으로 문의하기</button>
                         )}
-
-
                     </div>
                 </div>
             </div>
