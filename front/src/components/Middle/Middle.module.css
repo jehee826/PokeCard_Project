@@ -1,79 +1,76 @@
-/* 전체 컨테이너: 도감 외형 */
+/* Balanced Light & Dark Pokédex */
 .middle {
   width: 1250px;
-  height: 850px; /* 전체 높이 확장 */
-  margin: 20px auto;
+  height: 850px; 
+  margin: 40px auto;
   display: flex !important;
-  background-color: #e3350d;
-  border: 12px solid #a12208;
-  border-radius: 25px;
+  background-color: var(--poke-red);
+  border: 10px solid var(--poke-red-dark);
+  border-radius: 35px;
   overflow: hidden;
-  box-shadow: 0 10px 50px rgba(0,0,0,0.5), inset 0 0 30px rgba(0,0,0,0.3);
+  box-shadow: var(--shadow-lg);
   position: relative;
-  align-items: stretch; /* 좌우 자식 요소들이 같은 높이를 갖도록 설정 */
+  align-items: stretch;
 }
 
-/* 도감 상단 대형 램프 */
 .middle::before {
   content: "";
   position: absolute;
   top: 15px;
   left: 35px;
-  width: 60px;
-  height: 60px;
-  background: radial-gradient(circle, #51adff 20%, #005691 100%);
-  border: 6px solid #fff;
+  width: 55px;
+  height: 55px;
+  background: radial-gradient(circle, #7cc7ff 20%, var(--poke-blue) 100%);
+  border: 4px solid #fff;
   border-radius: 50%;
-  box-shadow: 0 0 25px #51adff;
+  box-shadow: 0 0 15px rgba(124, 199, 255, 0.6);
   z-index: 20;
 }
 
-/* 왼쪽 패널: 스캔 화면 영역 */
 .left-panel {
   flex: 1;
-  background-color: #2a2a2a;
-  margin: 100px 20px 30px 40px; /* 상단 여백을 늘려 램프가 가리지 않게 함 */
-  border: 5px solid #555;
-  border-radius: 15px 15px 15px 15px;
+  background-color: #E2E8F0;; /* Bright panel */
+  margin: 100px 20px 30px 40px; 
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   overflow: hidden;
-  box-shadow: inset 0 0 20px #000;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
   padding-bottom: 90px;
 }
 
-/* 화면 내부 실제 디스플레이 */
+/* Internal Screen: Dark Contrast (The 20% dark part) */
 .card-info, .drop-placeholder {
   width: 92%;
   height: 85%;
-  background-color: #1a1a1a;
-  border: 4px solid #333;
-  margin-top: 30px;
-  border-radius: 10px;
+  background-color: #1a202c; 
+  border: 1px solid #000;
+  margin-top: 40px;
+  border-radius: 12px;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding: 12px;
+  justify-content: center;
+  padding: 20px;
   overflow: hidden;
-  box-shadow: inset 0 0 50px rgba(0,0,0,1);
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
 }
 
-/* 스캔 라인 애니메이션 */
 .scan-line {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 4px;
-  background: rgba(81, 173, 255, 0.6);
-  box-shadow: 0 0 15px #51adff;
+  height: 2px;
+  background: var(--poke-blue);
+  box-shadow: 0 0 10px var(--poke-blue);
   z-index: 5;
-  animation: scanning 2.5s linear infinite;
-  pointer-events: none;
+  animation: scanning 3s linear infinite;
+  opacity: 0.5;
 }
 
 @keyframes scanning {
@@ -81,46 +78,33 @@
   100% { top: 100%; }
 }
 
-/* 화면 광택(Glare) */
-.screen-glare {
-  position: absolute;
-  top: 0; left: 0;
-  width: 200%; height: 100%;
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 50%);
-  pointer-events: none;
-  z-index: 10;
-  transform: translateX(-50%);
-}
-
-/* LED 표시등 */
 .status-leds {
   position: absolute;
   top: 15px;
-  right: 30px;
+  right: 25px;
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .led {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  border: 2px solid #000;
+  border: 1px solid rgba(0,0,0,0.1);
 }
-.led.red { background-color: #ff3e3e; box-shadow: 0 0 5px #ff3e3e; }
-.led.yellow { background-color: #ffd93e; }
-.led.green { background-color: #3eff3e; }
-.led.blink { animation: led-blink 1s step-end infinite; }
+.led.red { background-color: #ff5252; }
+.led.yellow { background-color: #ffd740; }
+.led.green { background-color: #69f0ae; }
+.led.blink { animation: led-blink 1.5s step-end infinite; }
 
 @keyframes led-blink {
-  50% { opacity: 0.3; }
+  50% { opacity: 0.4; }
 }
 
-/* 하단 데코레이션 버튼들 */
 .panel-deco-bottom {
   position: absolute;
-  bottom: 20px;
-  width: 90%;
+  bottom: 25px;
+  width: 85%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -128,168 +112,155 @@
 
 .d-pad {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
 }
 
-.d-btn {
-  position: absolute;
-  background-color: #333;
-  border: 2px solid #222;
-}
-.d-btn.up { width: 20px; height: 20px; left: 20px; top: 0; border-radius: 4px 4px 0 0; }
-.d-btn.down { width: 20px; height: 20px; left: 20px; bottom: 0; border-radius: 0 0 4px 4px; }
-.d-btn.left { width: 20px; height: 20px; top: 20px; left: 0; border-radius: 4px 0 0 4px; }
-.d-btn.right { width: 20px; height: 20px; top: 20px; right: 0; border-radius: 0 4px 4px 0; }
+.d-btn { background-color: #4a5568; position: absolute; }
+.d-btn.up { width: 16px; height: 16px; left: 17px; top: 0; border-radius: 3px 3px 0 0; }
+.d-btn.down { width: 16px; height: 16px; left: 17px; bottom: 0; border-radius: 0 0 3px 3px; }
+.d-btn.left { width: 16px; height: 16px; top: 17px; left: 0; border-radius: 3px 0 0 3px; }
+.d-btn.right { width: 16px; height: 16px; top: 17px; right: 0; border-radius: 0 3px 3px 0; }
 
-.speaker-vents {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.speaker-vents span {
-  width: 40px;
-  height: 4px;
-  background-color: #111;
-  border-radius: 2px;
-}
+.speaker-vents { display: flex; flex-direction: column; gap: 4px; }
+.speaker-vents span { width: 35px; height: 3px; background-color: #e2e8f0; border-radius: 1.5px; }
 
-.round-btns {
-  display: flex;
-  gap: 10px;
-}
+.round-btns { display: flex; gap: 8px; }
 .r-btn {
-  width: 25px;
-  height: 25px;
+  width: 32px; height: 32px;
   border-radius: 50%;
-  border: 3px solid #222;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: var(--transition-normal);
 }
-.r-btn.blue { background-color: #2c5ba7; }
-.r-btn.yellow { background-color: #eecf1a; }
+.r-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+.r-btn.blue { background-color: var(--poke-blue); }
+.r-btn.yellow { background-color: var(--poke-yellow); color: var(--text-main); }
 
-/* 텍스트 스타일 */
+/* Internal Screen Typography */
 .system-ready {
-  color: #51adff;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 1.4rem;
-  letter-spacing: 2px;
-  animation: pulse 2s infinite;
+  color: var(--poke-blue);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
 }
 
 .scanning-text {
-  color: #ffcb05;
-  text-shadow: 2px 2px #000;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.info-image {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px 0;
+  color: var(--poke-red);
+  font-size: 0.9rem;
+  font-weight: 800;
   margin-bottom: 15px;
-  flex-shrink: 0;
 }
 
 .info-image img {
-  max-width: 80%;
-  max-height: 250px;
+  max-width: 90%;
+  max-height: 220px;
   object-fit: contain;
-  border: 4px solid #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(81, 173, 255, 0.4);
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .info-text {
   width: 100%;
   background: rgba(255, 255, 255, 0.05);
-  padding: 12px;
-  border-radius: 8px;
-  border-left: 4px solid #3eff3e;
-  margin-bottom: 0;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
 }
 
 .info-row {
   display: flex;
-  gap: 10px;
-  margin-bottom: 6px;
-  font-family: monospace;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 0.85rem;
 }
-.info-row .label { color: #888; }
-.info-row .value { color: #fff; font-weight: bold; }
-.info-row .value.active { color: #3eff3e; text-shadow: 0 0 5px #3eff3e; }
+.info-row .label { color: #a0aec0; }
+.info-row .value { color: white; font-weight: 700; }
+.info-row .value.active { color: #69f0ae; }
 
-.description {
-  margin-top: 8px;
-  font-size: 0.82rem;
-  color: #bbb;
-  line-height: 1.5;
-  font-family: 'Courier New', Courier, monospace;
-}
-
-/* 오른쪽 전체 섹션 */
+/* Right Section: Bright & Clean */
 .right-section {
   flex: 1.5;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  background-color: #333;
-  margin: 100px 40px 30px 15px; /* 왼쪽 패널과 상하 마진 일치 */
-  border-radius: 10px;
-  box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
-  overflow: hidden;
+  padding: 30px;
+  background-color: #E2E8F0;
+  margin: 100px 40px 30px 15px; 
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
   z-index: 5;
   gap: 20px;
+}
+
+.controls { 
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.search-bar input { 
+  width: 100%; 
+  padding: 12px 20px; 
+  border-radius: 12px; 
+  border: 1px solid #e2e8f0; 
+  background-color: #f8fafc; 
+  color: var(--text-main); 
+  font-weight: 500;
+  outline: none; 
+}
+
+.search-bar input:focus {
+  border-color: var(--poke-red);
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(255, 83, 80, 0.1);
+}
+
+.filter-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-group button { 
+  padding: 6px 14px; 
+  border: 1px solid #e2e8f0; 
+  background: white; 
+  color: var(--text-muted); 
+  border-radius: 20px; 
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.filter-group button.active { 
+  background: var(--poke-red); 
+  color: white; 
+  border-color: var(--poke-red);
 }
 
 .right-panel {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 20px;
   overflow-y: auto;
-  padding-right: 10px;
 }
 
-/* 컨트롤 스타일 */
-.controls { padding-bottom: 20px; border-bottom: 2px solid #444; }
-.controls {
-  display: flex;
-  flex-direction: column; /* 자식들을 세로로 나열 */
-  gap: 2px;              /* 서치바와 필터 사이의 간격 */
-  align-items: center;
-
+.cardTitle { width: 100%; aspect-ratio: 200 / 270; perspective: 1000px; }
+.card { 
+  width: 100%; height: 100%; 
+  background-size: contain; 
+  background-repeat: no-repeat; 
+  background-position: center; 
+  border-radius: 10px; 
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
-.search-bar input { width: 440px; padding: 12px; border-radius: 5px; border: 2px solid #ffcb05; background-color: #222; color: #ffcb05; margin-bottom: 15px; font-family: monospace; outline: none; }
-.filter-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-.filter-group button { padding: 8px 15px; border: 1px solid #ffcb05; background: transparent; color: #ffcb05; cursor: pointer; border-radius: 5px; transition: 0.2s; font-family: monospace; }
-.filter-group button.active { background: #ffcb05; color: #222; font-weight: bold; }
-
-/* 카드 스타일 */
-.cardTitle { width: 100%; aspect-ratio: 200 / 270; perspective: 1200px; }
-.card { width: 96.5%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; border: 0px; border-radius: 10px; cursor: grab; position: relative; overflow: hidden; }
-.overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; transition: opacity 0.3s; }
-
-/* 스크롤바 (오른쪽 리스트) */
-.right-panel::-webkit-scrollbar { width: 8px; }
-.right-panel::-webkit-scrollbar-thumb { background: #ffcb05; border-radius: 10px; }
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-.hint-text {
-  color: #888;
-  font-size: 0.9rem;
-  margin-top: 10px;
-}
+.card:hover { transform: translateY(-5px); }
 
 .no-results {
   grid-column: 1 / -1;
   text-align: center;
-  color: #ffcb05;
-  padding: 40px;
+  color: var(--text-muted);
+  padding: 60px 0;
+  font-weight: 600;
 }

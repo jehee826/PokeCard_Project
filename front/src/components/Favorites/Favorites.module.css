@@ -1,20 +1,20 @@
 .favorites-container {
-  padding: 20px;
-  max-width: 700px;
+  padding: 40px 20px;
+  max-width: 900px;
   margin: 0 auto;
-  font-family: 'Noto Sans KR', sans-serif;
-  background-color: #fdfdfd;
+  background-color: transparent;
   min-height: 80vh;
 }
 
 .favorites-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
 .favorites-header h2 {
-  color: #333;
-  font-size: 1.8rem;
+  color: var(--text-main);
+  font-size: 2rem;
+  font-weight: 800;
   position: relative;
   display: inline-block;
 }
@@ -22,138 +22,140 @@
 .favorites-header h2::after {
   content: '';
   position: absolute;
-  bottom: -10px;
+  bottom: -8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 60%;
+  width: 50px;
   height: 4px;
-  background-color: #ffcb05; /* Pokemon Yellow */
+  background-color: var(--poke-red);
   border-radius: 2px;
 }
 
 .tabs {
   display: flex;
-  margin-bottom: 25px;
-  border-radius: 15px;
+  margin-bottom: 30px;
+  background: white;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: 2px solid #ffcb05;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  padding: 5px;
 }
 
 .tab {
   flex: 1;
   text-align: center;
-  padding: 14px;
+  padding: 12px;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 1.1rem;
-  transition: all 0.3s ease;
-  background-color: #fff;
-  color: #777;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: var(--transition-fast);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+}
+
+.tab:hover {
+  background-color: var(--bg-light);
 }
 
 .tab.buy.active {
-  background-color: #ff4d4f;
+  background-color: var(--poke-red);
   color: white;
+  box-shadow: 0 4px 10px rgba(255, 83, 80, 0.2);
 }
 
 .tab.sell.active {
-  background-color: #1890ff;
+  background-color: var(--poke-blue);
   color: white;
+  box-shadow: 0 4px 10px rgba(61, 125, 202, 0.2);
 }
 
 .favorites-list {
-  display: flex;
-  flex-wrap: wrap;       /* 공간 부족 시 다음 줄로 */
-  gap: 20px;             /* 카드 사이 간격 */
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
 }
 
 .favorite-card {
   background: white;
-  border: 1px solid #eee;
-  border-radius: 16px;
-  height: 400px;
-  width: calc(25% - 15px); /* 한 행에 4개 배치 (데스크탑 기준) */
-  min-width: 250px;        /* 너무 작아지지 않게 방어 */
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: transform 0.2s;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+  display: flex;
+  flex-direction: column;
 }
 
 .favorite-card:hover {
-  transform: translateX(5px);
-  border-color: #ffcb05;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+  border-color: var(--poke-red);
+  box-shadow: var(--shadow-md);
 }
 
 .card-image-container {
-  width: 250px;
-  height: 250px;
-  background-color: #f9f9f9;
+  width: 100%;
+  height: 200px;
+  background-color: #f8f9fa;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
-  border-right: 1px solid #eee;
+  padding: 15px;
 }
 
 .card-image {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
 .card-info {
-  flex: 1;
-  padding: 15px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 15px;
 }
 
 .card-name {
-  font-size: 1.15rem;
-  font-weight: bold;
-  margin-bottom: 12px;
-  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
 .price-details {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .price-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .price-label {
-  width: 85px;
-  color: #888;
-  font-weight: 500;
+  color: var(--text-muted);
+  font-weight: 600;
 }
 
 .price-value {
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1rem;
 }
 
 .buy-price .price-value {
-  color: #ff4d4f;
+  color: var(--poke-red);
 }
 
 .sell-price .price-value {
-  color: #1890ff;
+  color: var(--poke-blue);
 }
 
 .empty-message {
   text-align: center;
-  padding: 50px 0;
-  color: #aaa;
-  font-style: italic;
+  padding: 80px 0;
+  color: var(--text-muted);
+  font-weight: 600;
 }

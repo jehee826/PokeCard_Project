@@ -126,62 +126,67 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 
 	return (
 		<div className={styles.stompContainer}>
-		<div className={styles.chatContainer}>	
-			{!isEnterChat ? (
-				
-				<div className={styles.emptyState}>
-					<div className={styles.pikachuIconLarge}></div>
-					<h2>{opponentId}님과 대화를 시작하시겠습니까?</h2>
-					<button className={styles.startChatButton} onClick={stompHandler.connect}>
-						대화 시작
-					</button>
-				</div>
-				
-			) : (
-				<div className={styles.chatWrapper}>
-					<div className={styles.chatHeader}>
-						<div className={styles.pikachuIcon}></div>
-						<span>{opponentId}님과의 채팅</span>
-						<button className={styles.disconnectButton} onClick={stompHandler.disconnect}>
-							종료
+			<div className={styles.chatContainer}>
+				{!isEnterChat ? (
+					<div className={styles.emptyState}>
+						<div className={styles.pikachuIconLarge}></div>
+						<h2>{opponentId}님과<br />대화를 시작하시겠습니까?</h2>
+						<button className={styles.startChatButton} onClick={stompHandler.connect}>
+							대화 시작하기
 						</button>
 					</div>
+				) : (
+					<div className={styles.chatWrapper}>
+						<div className={styles.chatHeader}>
+							<div style={{ display: 'flex', alignItems: 'center' }}>
+								<div className={styles.pikachuIcon}></div>
+								<span>{opponentId}님과 채팅 중</span>
+							</div>
+							<button className={styles.disconnectButton} onClick={stompHandler.disconnect}>
+								종료
+							</button>
+						</div>
 
-					<div className={styles.messageList} ref={scrollRef}>
-						{messages.map((item, index) => {
-							const isMine = item.sender === loginId;
-							return (
-								<div
-									key={`messages-${index}`}
-									className={`${styles.messageItem} ${isMine ? styles.myMessage : styles.otherMessage}`}
-								>
-									{!isMine && <div className={styles.senderName}>{item.sender}</div>}
-									<div className={`${styles.bubble} ${isMine ? styles.myBubble : styles.otherBubble}`}>
-										{item.content}
+						<div className={styles.messageList} ref={scrollRef}>
+							{messages.map((item, index) => {
+								const isMine = item.sender === loginId;
+								return (
+									<div
+										key={`messages-${index}`}
+										className={`${styles.messageItem} ${isMine ? styles.myMessage : styles.otherMessage}`}
+									>
+										{!isMine && <div className={styles.senderName}>{item.sender}</div>}
+										<div className={`${styles.bubble} ${isMine ? styles.myBubble : styles.otherBubble}`}>
+											{item.content}
+										</div>
 									</div>
-								</div>
-							);
-						})}
-					</div>
+								);
+							})}
+						</div>
 
-					<div className={styles.inputSection}>
-						<input
-							className={styles.chatInput}
-							type='text'
-							placeholder="메시지를 입력하세요..."
-							value={messageObj.content}
-							onChange={(e) => setMessageObj({ ...messageObj, content: e.target.value })}
-							onKeyPress={(e) => {
-								if (e.key === 'Enter') stompHandler.sendMessage();
-							}}
-						/>
-						<button className={styles.sendButton} onClick={stompHandler.sendMessage}>
-							전송
-						</button>
+						<div className={styles.inputSection}>
+							<input
+								className={styles.chatInput}
+								type='text'
+								autoFocus
+								placeholder="메시지를 입력하세요..."
+								value={messageObj.content}
+								onChange={(e) => setMessageObj({ ...messageObj, content: e.target.value })}
+								onKeyPress={(e) => {
+									if (e.key === 'Enter') stompHandler.sendMessage();
+								}}
+							/>
+							<button 
+								className={styles.sendButton} 
+								onClick={stompHandler.sendMessage}
+								disabled={!messageObj.content.trim()}
+							>
+								전송
+							</button>
+						</div>
 					</div>
-				</div>
-			)}
-		</div>
+				)}
+			</div>
 		</div>
 	);
 };

@@ -1,0 +1,62 @@
+:root {
+  /* Pokémon Signature Colors */
+  --poke-red: #FF5350;
+  --poke-red-dark: #D32F2F;
+  --poke-blue: #3D7DCA;
+  --poke-blue-dark: #003A70;
+  --poke-yellow: #FFCB05;
+  
+  /* Light Theme Palette (80% of UI) */
+  --bg-light: #F7F9FC;
+  --bg-white: #FFFFFF;
+  --border-light: #E2E8F0;
+  --text-main: #2D3748;
+  --text-muted: #718096;
+  
+  /* Dark Accents (20% of UI) */
+  --bg-dark-accent: #1A202C; /* Deep charcoal for headers/sidebars */
+  --text-on-dark: #FFFFFF;
+  --border-dark-accent: #2D3748;
+  
+  /* Effects */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-light);
+  color: var(--text-main);
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input[type="button"] {
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-light);
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E0;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A0AEC0;
+}

@@ -7,11 +7,11 @@
   min-height: 100vh;
   transition: background-color 0.5s ease;
   overflow: hidden;
-  font-family: 'Press Start 2P', cursive, sans-serif;
+  font-family: 'Noto Sans KR', sans-serif; /* Changed from pixel font for clarity */
   box-sizing: border-box;
+  background-color: var(--bg-light); /* Brighter background */
 }
 
-/* Reset for elements inside loginContainer */
 .loginContainer * {
   box-sizing: border-box;
   margin: 0;
@@ -19,95 +19,88 @@
 }
 
 .power-off {
-  background-color: #000;
+  background-color: #e9ecef;
 }
 
 .power-on {
-  background-color: #1a1a1a;
+  background-color: var(--bg-light);
 }
 
 .mainlogo {
-  width: 100px; 
-  height: 100px;
+  width: 140px; 
+  height: auto;
   transition: all 0.5s ease;
-   border-radius: 200px; 
-   margin: 30px;
-   margin-left: 115px;
-
+  margin-bottom: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
+
 .mainlogo-off {
-  opacity: 0; 
-  box-shadow: inset 0 0 50px rgba(0,0,0,1); /* 화면 안쪽으로 어두운 그림자 */
+  opacity: 0.5; 
+  filter: grayscale(1);
 }
 
 .mainlogo-on {
   opacity: 1; 
-  /* 켜졌을 때 은은한 광성 효과 */
-  box-shadow: 0 0 20px rgba(202, 247, 1, 0.5), inset 0 0 10px rgba(255,255,255,0.2);
+  filter: drop-shadow(0 0 15px rgba(255, 83, 80, 0.3));
 }
 
-
-/* Gameboy Body */
+/* Gameboy Body - Modernized */
 .gameboy {
   position: relative;
-  width: 340px; /* Slightly wider to accommodate side-by-side controls */
-  height: 520px;
-  background-color: #d8d8d8;
-  border-radius: 20px;
-  box-shadow: inset -5px -5px 0 #999, inset 5px 5px 0 #fff, 10px 10px 20px rgba(0,0,0,0.5);
+  width: 360px;
+  height: 580px;
+  background-color: var(--poke-red); /* Vibrant Red Body */
+  border-radius: 24px;
+  box-shadow: 
+    inset -4px -4px 0 rgba(0,0,0,0.1), 
+    inset 4px 4px 0 rgba(255,255,255,0.2), 
+    0 15px 40px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 25px;
   transition: all 0.5s ease;
-  opacity: 0.3;
 }
 
 .power-on .gameboy {
   opacity: 1;
   box-shadow: 
-    inset -5px -5px 0 #999, 
-    inset 5px 5px 0 #fff, 
-    0 0 50px rgba(155, 188, 15, 0.3);
+    inset -4px -4px 0 rgba(0,0,0,0.1), 
+    inset 4px 4px 0 rgba(255,255,255,0.2), 
+    0 20px 50px rgba(255, 83, 80, 0.2);
 }
 
-/* Screen Section */
+/* Screen Section - Modernized */
 .screen-container {
   width: 100%;
-  height: 240px;
-  background-color: #777;
-  border-radius: 10px;
-  padding: 30px 40px;
+  height: 260px;
+  background-color: #333; /* Dark frame */
+  border-radius: 12px;
+  padding: 12px;
   margin-bottom: 30px;
-  box-shadow: inset 3px 3px 10px rgba(0,0,0,0.5);
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .screen {
   width: 100%;
   height: 100%;
-  transition: all 0.3s ease;
-  border: 4px solid #333;
-  display: flex;
-  flex-direction: column;
+  border-radius: 6px;
   overflow: hidden;
-  transition: background-color 0.8s ease, box-shadow 0.8s ease, opacity 0.5s ease;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .screen-off {
-  background-color: #111;  
-  opacity: 0.9; 
-  box-shadow: inset 0 0 50px rgba(0,0,0,1); /* 화면 안쪽으로 어두운 그림자 */
+  background-color: #1a1a1a;  
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
 }
 
 .screen-on {
-  background-color: #9bbc0f;
-
-  opacity: 1;
-  /* 켜졌을 때 은은한 광성 효과 */
-  box-shadow: 0 0 20px rgba(155, 188, 15, 0.5), inset 0 0 10px rgba(255,255,255,0.2);
+  background-color: white; /* Brighter, modern screen */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .screen-content {
@@ -115,74 +108,77 @@
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  padding: 10px;
-  color: #0f380f;
-  font-size: 10px;
+  padding: 25px;
+  color: var(--text-main);
 }
 
 .login-header {
   text-align: center;
-  font-weight: bold;
-  border-bottom: 2px solid #0f380f;
-  padding-bottom: 5px;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--poke-red);
+  letter-spacing: -0.5px;
   margin-bottom: 10px;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   flex-grow: 1;
   justify-content: center;
   align-items: center;
 }
 
 .game-input {
-  background: transparent;
-  border: 2px solid #0f380f;
-  color: #0f380f;
-  padding: 5px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: var(--text-main);
+  padding: 12px 15px;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
   outline: none;
-  width: 80%;
+  width: 100%;
+  border-radius: 8px;
+  transition: var(--transition-fast);
 }
 
-.game-input::placeholder {
-  color: rgba(15, 56, 15, 0.5);
+.game-input:focus {
+  border-color: var(--poke-red);
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(255, 83, 80, 0.1);
 }
 
 .screen-footer {
   display: flex;
-  justify-content: space-around;
-  font-size: 8px;
-  margin-top: 10px;
+  justify-content: center;
+  gap: 15px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 15px;
+  color: var(--text-muted);
 }
 
 .footer-link {
   cursor: pointer;
-  text-decoration: none;
+  transition: var(--transition-fast);
 }
 
 .footer-link:hover {
-  text-decoration: underline;
+  color: var(--poke-red);
 }
 
-.separator {
-  color: #0f380f;
-}
-
-/* Controls - Layout changed to row for horizontal alignment */
+/* Controls - Layout modernized */
 .controls {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  margin-top: 10px;
 }
 
-/* D-Pad */
+/* D-Pad - Cleaner look */
 .d-pad {
   position: relative;
   width: 90px;
@@ -192,59 +188,58 @@
 .d-pad > div {
   position: absolute;
   background-color: #333;
-  box-shadow: inset 0 0 5px #000;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.up { width: 30px; height: 30px; top: 0; left: 30px; border-radius: 5px 5px 0 0; }
-.down { width: 30px; height: 30px; top: 60px; left: 30px; border-radius: 0 0 5px 5px; }
-.left { width: 30px; height: 30px; top: 30px; left: 0; border-radius: 5px 0 0 5px; }
-.right { width: 30px; height: 30px; top: 30px; left: 60px; border-radius: 0 5px 5px 0; }
+.up { width: 28px; height: 32px; top: 0; left: 31px; border-radius: 6px 6px 0 0; }
+.down { width: 28px; height: 32px; top: 58px; left: 31px; border-radius: 0 0 6px 6px; }
+.left { width: 32px; height: 28px; top: 31px; left: 0; border-radius: 6px 0 0 6px; }
+.right { width: 32px; height: 28px; top: 31px; left: 58px; border-radius: 0 6px 6px 0; }
 
-/* Action Buttons */
+/* Action Buttons - Switch style */
 .action-buttons {
   display: flex;
-  gap: 15px;
-  transform: rotate(-25deg); /* Classic Gameboy slant */
-  margin-right: 10px;
+  gap: 20px;
 }
 
 .button-label-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
 .btn-text {
-  font-size: 8px;
-  color: #888;
-  font-weight: bold;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.8);
+  font-weight: 800;
 }
 
 .btn-a, 
 .btn-b {
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
-  box-shadow: -2px 2px 0 #555, 2px -2px 0 #eee;
   font-family: inherit;
-  font-size: 14px;
-  color: rgba(0,0,0,0.3);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.1s;
+  transition: var(--transition-fast);
+  box-shadow: 0 4px 0 rgba(0,0,0,0.2);
 }
 
-.btn-a { background-color: #a93671; }
-.btn-b { background-color: #a93671; }
+.btn-a { background-color: var(--poke-blue); } /* Blue for A */
+.btn-b { background-color: #495057; } /* Gray for B */
 
 .btn-a:active, 
 .btn-b:active {
-  transform: translate(-2px, 2px);
-  box-shadow: none;
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.2);
 }
 
 /* Bottom Controls */
@@ -252,43 +247,43 @@
   margin-top: auto;
   display: flex;
   justify-content: center;
-  padding-bottom: 25px;
+  padding-bottom: 10px;
 }
 
 .select-start {
   display: flex;
-  gap: 20px;
-  transform: rotate(-20deg);
+  gap: 30px;
 }
 
 .pill-button-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .pill-button {
-  width: 50px;
+  width: 45px;
   height: 12px;
-  background-color: #999;
+  background-color: #333;
   border-radius: 10px;
-  box-shadow: inset 2px 2px 0 #777, inset -2px -2px 0 #bbb;
   cursor: pointer;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.2);
 }
 
 .pill-label {
-  font-size: 9px;
-  color: #888;
-  font-weight: bold;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.7);
+  font-weight: 800;
 }
 
 .pill-button:active {
-  box-shadow: inset -1px -1px 0 #777, inset 1px 1px 0 #bbb;
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2);
 }
 
 .screen-black {
-  background-color: #111;
+  background-color: #1a1a1a;
   width: 100%;
   height: 100%;
 }
