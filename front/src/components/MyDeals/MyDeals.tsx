@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import Card from "../Middle/M/Card.tsx";
 import styles from './MyDeals.module.css';
 import api from "../../api/axios";
+import { useNavigate } from "react-router";
 
 interface TradeHistory {
+  listingId: number;
   historyId: number;
   buyerId: number;
   sellerId: number;
@@ -22,14 +24,12 @@ const MyDeals = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"All" | "Buy" | "Sell">("All");
   const [tradeList, setTradeList] = useState<TradeHistory[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHistory = async () => {
-      const token = sessionStorage.getItem('accessToken');
       try {
-        const response = await api.get('/api/market/history', {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        });
+        const response = await api.get('/api/market/history');
         setTradeList(response.data);
       } catch (error) {
         console.error("거래 내역 로딩 실패:", error);
@@ -37,6 +37,10 @@ const MyDeals = () => {
     };
     fetchHistory();
   }, []);
+
+  const handleSellDetail = (listingId : number) => {
+    navigate(`/buysell/detail/${listingId}`, { state: { listingId: listingId } });
+  }
 
   // 필터링 로직: trade.buyer 플래그를 직접 사용
   const filteredCards = tradeList.filter(trade => {
@@ -78,7 +82,7 @@ const MyDeals = () => {
           {filteredCards.length > 0 ? (
             filteredCards.map((trade) => (
               <div key={trade.historyId} className={styles['card-item-wrapper']}>
-                <Card officialImageUrl={String(trade.officialImageUrl)} />
+                <Card officialImageUrl={String(trade.officialImageUrl)} onClick={() => handleSellDetail(trade.listingId)} />
                 <div className={styles['card-info-overlay']}>
                    <span style={{ fontWeight: 'bold', fontSize: '14px' }}>
                      {trade.buyer ? "구매완료" : "판매완료"}

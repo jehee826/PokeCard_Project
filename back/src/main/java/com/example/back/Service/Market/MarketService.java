@@ -103,7 +103,9 @@ public class MarketService {
 
         CardsEntity card = cardsRepository.findById(cardId).orElse(null);
 
-        return marketEntities.stream().map(market -> {
+        return marketEntities.stream()
+                .filter(market -> !"판매완료".equals(market.getStatus().name()))
+                .map(market -> {
             String nickname = userRepository.findById(market.getSellerId())
                     .map(UsersEntity::getNickname)
                     .orElse("알 수 없음");
@@ -203,9 +205,7 @@ public class MarketService {
         }
     }
 
-    /**
-     * 판매글 수정
-     */
+    /** 판매글 수정 */
     @Transactional
     public void editList(Long listingId, MarketPlaceListingsDTO editDTO) {
         MarketPlaceListingsEntity originList = marketPlaceListingsRepository.findById(listingId)
@@ -251,7 +251,8 @@ public class MarketService {
         }
     }
 
-    @Transactional // DB 작업과 파일 저장이 한 묶음으로 처리되도록 추가
+    /** 즐겨찾기 등록 */
+    @Transactional
     public String toggleFavorite(Long listingId, String token) {
         UsersEntity user = getAuthenticatedUser(token);
 
@@ -274,9 +275,7 @@ public class MarketService {
         }
     }
 
-    /**
-     * 내 즐겨찾기 목록 상세 조회
-     */
+    /** 내 즐겨찾기 목록 상세 조회 */
     @Transactional(readOnly = true)
     public List<MarketPlaceListingsDTO> getMyFavoriteList(String token) {
         UsersEntity user = getAuthenticatedUser(token);
@@ -338,9 +337,7 @@ public class MarketService {
         listEntity.setStatus(MarketPlaceListingsEntity.ListingStatus.valueOf(status));
     }
 
-    /**
-     * 내가 구매 OR 판매한 내역을 전부 가져옴
-     */
+    /** 내가 구매 OR 판매한 내역을 전부 가져옴 */
     @Transactional(readOnly = true)
     public List<TradeHistoryDTO> getMyTradeHistory(String token) {
         UsersEntity user = getAuthenticatedUser(token);
@@ -356,6 +353,7 @@ public class MarketService {
 
             // toDto를 쓰지 않고 여기서 직접 모든 필드를 매핑하여 빌드
             return TradeHistoryDTO.builder()
+                    .listingId(entity.getListingId())
                     .historyId(entity.getHistoryId())
                     .buyerId(entity.getBuyerId())
                     .sellerId(entity.getSellerId())
