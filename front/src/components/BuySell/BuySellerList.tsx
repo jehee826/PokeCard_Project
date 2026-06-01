@@ -25,7 +25,6 @@ interface MarketItemCardProps {
   BASE_URL: string;
 }
 
-// --- 하위 컴포넌트: 개별 판매글 아이템 ---
 const MarketItemCard = ({ item, navigate, BASE_URL }: MarketItemCardProps) => {
   const [isLiked, setIsLiked] = useState<boolean>(false);
 
@@ -52,7 +51,7 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: MarketItemCardProps) => {
       return;
     }
     try {
-      const response = await api.get<string>('/api/market/favorite', {
+      const response = await api.get('/api/market/favorite', {
         params: { listingId: listingId }
       });
       if (response.data.includes("등록")) setIsLiked(true);
@@ -84,15 +83,15 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: MarketItemCardProps) => {
         <div className="button-group">
           {item.owner === true ? (
             <>
-              <button onClick={() => alert("예약중 처리 로직")} className="btn-sell">
+              <button onClick={() => alert("미구현")} className="btn-sell">
                 예약중
               </button>
-              <button onClick={() => alert("판매완료 처리 로직")} className="btn-confirm">
+              <button onClick={() => alert("미구현")} className="btn-confirm">
                 판매완료
               </button>
             </>
           ) : (
-            <button className="btn-buy" onClick={() => alert("구매완료 처리 로직")}>구매문의</button>
+            <button className="btn-buy" onClick={() => alert("미구현")}>구매문의</button>
           )}
         </div>
 
@@ -116,11 +115,9 @@ const BuySellerList = () => {
 
   useEffect(() => {
     const fetchCards = async () => {
-      const token = sessionStorage.getItem('accessToken');
       try {
-        const response = await api.get<MarketPlaceListingsDTO[]>('/api/market/sellerlist', {
-          params: { cardId: id },
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        const response = await api.get('/api/market/sellerlist', {
+          params: { cardId: id }
         });
         setItems(response.data);
       } catch (error) {

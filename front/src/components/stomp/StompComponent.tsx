@@ -4,7 +4,7 @@ import SockJS from 'sockjs-client';
 import { useAuth } from '../AuthContext';
 import { useParams } from 'react-router-dom';
 import styles from './StompComponent.module.css';
-import api from '../../api/axios';
+import ip from '../../../default.ts';
 
 interface MessagesType {
 	sender: string; // 보내는 주체
@@ -21,7 +21,7 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 	const opponentId = propOpponentId || paramOpponentId;
 	const scrollRef = useRef<HTMLDivElement>(null);
 
-	const SERVER_URL = 'http://localhost:8080/ws-stomp';
+	const SERVER_URL =  `http://${ip}:8080/ws-stomp`;
 	
 	const roomId = useMemo(() => {
 		if (!loginId || !opponentId) return '';

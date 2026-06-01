@@ -18,6 +18,9 @@ public class TradeHistoryEntity {
     @Column(name = "history_id")
     private Long historyId;
 
+    @Column(name = "listing_id")
+    private Long listingId;
+
     @Column(name = "buyer_id")
     private Long buyerId;
 

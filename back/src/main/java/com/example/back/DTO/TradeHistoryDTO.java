@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class TradeHistoryDTO {
+    private Long listingId;
     private Long historyId;
     private Long buyerId;
     private Long sellerId;
