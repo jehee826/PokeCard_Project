@@ -17,9 +17,6 @@ public class CardsEntity {
     @Column(name = "card_id")
     private Long cardId;
 
-    @Column(name = "set_id", nullable = false)
-    private Integer setId;
-
     @Column(name = "external_id", unique = true, length = 50)
     private String externalId;
 

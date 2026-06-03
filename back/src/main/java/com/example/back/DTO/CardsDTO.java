@@ -32,7 +32,6 @@ public class CardsDTO {
     public static CardsDTO toDto(CardsEntity entity) {
         return CardsDTO.builder()
                 .cardId(entity.getCardId())
-                .setId(entity.getSetId())
                 .externalId(entity.getExternalId())
                 .cardNumber(entity.getCardNumber())
                 .cardNameKo(entity.getCardNameKo())
@@ -44,7 +43,6 @@ public class CardsDTO {
 
     public CardsEntity toEntity() {
         return CardsEntity.builder()
-                .setId(this.setId)
                 .externalId(this.externalId)
                 .cardNumber(this.cardNumber)
                 .cardNameKo(this.cardNameKo)
