@@ -17,7 +17,7 @@ import SellEdit from './components/BuySell/SellEdit';
 import ProtectedRoute from './components/ProtectedRoute';
 import AiCamera from './components/AiCamera/AiCamera';
 import MyDeals from './components/MyDeals/MyDeals';
-import StompComponent from './components/stomp/StompComponent';
+import StompComponent from './components/Stomp/StompComponent';
 
 
 
