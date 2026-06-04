@@ -20,6 +20,7 @@ public class MarketPlaceListingsDTO {
     private Integer price;
     private String contactInfo;
     private String location;
+    private String status;
     //card_id를 통해 조인한 cards테이블의 정보를 잠깐 담을 변수들
     private String cardNameKo;
     private String cardNumber;

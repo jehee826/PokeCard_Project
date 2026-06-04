@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -142,6 +143,7 @@ public class MarketService {
                 .contactInfo(listEntity.getContactInfo())
                 .location(listEntity.getLocation())
                 .cardNameKo(cardEntity.getCardNameKo())
+                .status(listEntity.getStatus().name())
                 .cardNumber(cardEntity.getCardNumber())
                 .attribute(cardEntity.getAttribute())
                 .officialImageUrl(cardEntity.getOfficialImageUrl())
@@ -342,33 +344,60 @@ public class MarketService {
     public List<TradeHistoryDTO> getMyTradeHistory(String token) {
         UsersEntity user = getAuthenticatedUser(token);
 
-        // 내가 구매자이거나 판매자인 내역을 모두 가져옴
         List<TradeHistoryEntity> entities = tradeHistoryRepository
                 .findByBuyerIdOrSellerIdOrderByTradeDateDesc(user.getId(), user.getId());
 
-
-        return entities.stream().map(entity -> {
-            // 해당 거래에 사용된 카드 상세 정보 조회
+        Stream<TradeHistoryDTO> historyStream = entities.stream().map(entity -> {
             CardsEntity card = cardsRepository.findById(entity.getCardId()).orElse(null);
 
-            // toDto를 쓰지 않고 여기서 직접 모든 필드를 매핑하여 빌드
             return TradeHistoryDTO.builder()
                     .listingId(entity.getListingId())
                     .historyId(entity.getHistoryId())
                     .buyerId(entity.getBuyerId())
                     .sellerId(entity.getSellerId())
-                    .buyer(entity.getBuyerId().equals(user.getId()))
                     .cardId(entity.getCardId())
                     .finalPrice(entity.getFinalPrice())
-                    .tradeDate(entity.getTradeDate())
-                    // 카드 정보 합치기 (카드 정보가 없을 경우를 대비해 null 체크 처리)
+                    .tradeDate(entity.getTradeDate()) // 거래 완료일
                     .cardNumber(card != null ? card.getCardNumber() : "N/A")
                     .cardNameKo(card != null ? card.getCardNameKo() : "삭제된 카드 정보")
                     .rarityCode(card != null ? card.getRarityCode() : "-")
                     .attribute(card != null ? card.getAttribute() : "-")
                     .officialImageUrl(card != null ? card.getOfficialImageUrl() : "")
+                    .owner(entity.getSellerId().equals(user.getId()))
+                    .status(entity.getSellerId().equals(user.getId()) ? "판매완료" : "구매완료")
                     .build();
-        }).collect(Collectors.toList());
+        });
+
+        List<MarketPlaceListingsEntity> lists = marketPlaceListingsRepository.findBySellerId(user.getId());
+
+        Stream<TradeHistoryDTO> activeListingStream = lists.stream()
+                .map(list -> {
+                    CardsEntity card = cardsRepository.findById(list.getCardId()).orElse(null);
+
+                    return TradeHistoryDTO.builder()
+                            .listingId(list.getListingId())
+                            .historyId(null) // 아직 거래 전이므로 이력 ID는 없음
+                            .buyerId(null)   // 아직 구매자가 없음
+                            .sellerId(user.getId())
+                            .cardId(list.getCardId())
+                            .finalPrice(list.getPrice()) // 장터 등록 가격을 주입
+                            .tradeDate(list.getCreatedAt()) // 등록일 또는 수정일 주입
+                            .cardNumber(card != null ? card.getCardNumber() : "N/A")
+                            .cardNameKo(card != null ? card.getCardNameKo() : "삭제된 카드 정보")
+                            .rarityCode(card != null ? card.getRarityCode() : "-")
+                            .attribute(card != null ? card.getAttribute() : "-")
+                            .officialImageUrl(card != null ? card.getOfficialImageUrl() : "")
+                            .owner(true)
+                            .status(list.getStatus().name())
+                            .build();
+                });
+
+        return Stream.concat(historyStream, activeListingStream)
+                .sorted((o1, o2) -> {
+                    if (o1.getTradeDate() == null || o2.getTradeDate() == null) return 0;
+                    return o2.getTradeDate().compareTo(o1.getTradeDate());
+                })
+                .collect(Collectors.toList());
     }
 
 }

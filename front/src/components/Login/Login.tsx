@@ -1,17 +1,19 @@
 import api from '../../api/axios';
 import axios from 'axios';
 import styles from './Login.module.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
 const Login = () => {
     const [id, setId] = useState(() => sessionStorage.getItem('login_id') || '');
     const [pw, setPw] = useState('');
+    const pwRef = useRef<HTMLInputElement>(null);
     const [isOn, setIsOn] = useState(() => sessionStorage.getItem('login_isOn') === 'true');
     const navigate = useNavigate();
     const location = useLocation();
     const { login } = useAuth();
+    
 
     // ProtectedRoute에서 넘겨준 '원래 가려던 경로' 정보를 가져옴
     const from = (location.state as any)?.from?.pathname || '/';
@@ -77,6 +79,11 @@ const Login = () => {
                                             onChange={(e) => setId(e.target.value)} 
                                             placeholder="ID" 
                                             value={id}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    pwRef.current?.focus();
+                                                }
+                                            }}
                                         />
                                         <input 
                                             className={styles['game-input']} 
@@ -84,6 +91,12 @@ const Login = () => {
                                             onChange={(e) => setPw(e.target.value)} 
                                             placeholder="PW" 
                                             value={pw}
+                                            ref={pwRef}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    handleLogin();
+                                                }
+                                            }}
                                         />
                                     </div>
                                     <div className={styles['screen-footer']}>

@@ -6,8 +6,8 @@ import { useNavigate } from "react-router";
 
 interface TradeHistory {
   listingId: number;
-  historyId: number;
-  buyerId: number;
+  historyId: number | null;
+  buyerId: number | null;
   sellerId: number;
   cardId: number;
   finalPrice: number;
@@ -17,7 +17,8 @@ interface TradeHistory {
   rarityCode: string; 
   attribute: string;
   officialImageUrl: string;
-  buyer: boolean; // 추가된 인터페이스 활용
+  owner: boolean; // 추가된 인터페이스 활용
+  status: string;
 }
 
 const MyDeals = () => {
@@ -46,8 +47,8 @@ const MyDeals = () => {
   const filteredCards = tradeList.filter(trade => {
     const matchesSearch = trade.cardNameKo.includes(searchTerm) || String(trade.cardId).includes(searchTerm);
     
-    if (activeTab === "Buy") return matchesSearch && trade.buyer; // 내가 구매자일 때
-    if (activeTab === "Sell") return matchesSearch && !trade.buyer; // 내가 판매자일 때
+    if (activeTab === "Buy") return matchesSearch && trade.status === "구매완료";
+    if (activeTab === "Sell") return matchesSearch && trade.owner; 
     return matchesSearch;
   });
 
@@ -81,11 +82,11 @@ const MyDeals = () => {
         <div className={styles['cards-grid']}>
           {filteredCards.length > 0 ? (
             filteredCards.map((trade) => (
-              <div key={trade.historyId} className={styles['card-item-wrapper']}>
+              <div key={trade.historyId !== null ? trade.historyId : `active-${trade.listingId}`} className={styles['card-item-wrapper']}>
                 <Card officialImageUrl={String(trade.officialImageUrl)} onClick={() => handleSellDetail(trade.listingId)} />
                 <div className={styles['card-info-overlay']}>
                    <span style={{ fontWeight: 'bold', fontSize: '14px' }}>
-                     {trade.buyer ? "구매완료" : "판매완료"}
+                     {trade.status}
                    </span>
                    <p className={styles.priceText}>₩{trade.finalPrice.toLocaleString()}</p>
                    <small className={styles.dateText}>{trade.tradeDate.split('T')[0]}</small>
