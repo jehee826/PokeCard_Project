@@ -91,7 +91,7 @@ const SellEdit = () => {
       });
 
       if (response.status === 200) {
-        alert('판매 등록이 완료되었습니다!');
+        alert('판매글 수정이 완료되었습니다!');
         navigate('/buysell');
       }
     } catch (error) {

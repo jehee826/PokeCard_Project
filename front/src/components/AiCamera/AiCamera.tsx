@@ -14,10 +14,12 @@ const AiCamera = () => {
   
   // 1. 서버에서 받은 공식 카드 이미지를 저장할 State 추가
   const [officialImg, setOfficialImg] = useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const BASE_URL = "http://localhost:8080/pokemon/";
 
   const TARGET_WIDTH = 400;
   const TARGET_HEIGHT = 558;
@@ -127,8 +129,6 @@ const AiCamera = () => {
   // 3. 서버로 데이터를 보내고 이미지를 받아오는 함수 분리
   const fetchCardDataFromServer = async (ocrResultText: string) => {
     console.log("현재 세션에 토큰이 있는가?:", sessionStorage.getItem('accessToken'));
-    alert("현재 전송하려는 토큰: " + (sessionStorage.getItem('accessToken') ? "있음" : "없음(null)"));
-    alert(sessionStorage.getItem('accessToken'));
     try {
       const token = sessionStorage.getItem('accessToken');
       console.log("AiCamera - Current Token in sessionStorage:", token);
@@ -142,7 +142,7 @@ const AiCamera = () => {
       
       // 서버에서 받은 이미지 URL을 상태에 저장하여 렌더링 유도
       if (imageUrl) {
-        setOfficialImg(imageUrl);
+        setOfficialImg(`${BASE_URL}${imageUrl}`);
       }
       
       // 검색용 카드 번호 정제 (예: 052/100 형태 추출)
@@ -228,7 +228,7 @@ const AiCamera = () => {
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
             <p style={{ fontSize: '12px', color: '#ffcb05', fontWeight: 'bold' }}>POKEDEX OFFICIAL DATA</p>
             <img onClick={handleImgClick} // 이미지 클릭 시 장터 페이지로 이동
-              src={officialImg} 
+              src={officialImg}
               alt="Official Card" 
               style={{ 
                 width: '100%', 

@@ -24,6 +24,7 @@ const Middle = () => {
     return sessionStorage.getItem('search_term') || "";
   });
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   // 2. 검색어가 바뀔 때마다 sessionStorage에 실시간으로 저장합니다.
   useEffect(() => {
@@ -61,6 +62,7 @@ const Middle = () => {
     const cardNumber = event.dataTransfer.getData("cardId");
     setSelectedCard(image);
     setSelectedCardNum(cardNumber);
+    setIsDragging(false);
   };
   const AiCamera = () => {
     navigate('/AiCamera');
@@ -79,7 +81,7 @@ const Middle = () => {
     );
   };
 
-  const handleSellerList = (cardId : number) => {
+  const handleSellerList = (cardId: number) => {
     navigate(`/buysell/seller/${cardId}`, { state: { cardId: cardId } });
   }
 
@@ -131,6 +133,15 @@ const Middle = () => {
               </div>
               <p className={styles.description}>▶ 대상의 유전자 정보와 카드 속성 데이터가 도감 데이터베이스에 성공적으로 등록되었습니다.</p>
             </div>
+          </div>
+        ) : isDragging ? (
+          <div className={`${styles["drop-placeholder"]} ${styles["dragging-active"]}`}>
+            <div className={styles["scan-line-idle"]} style={{ animationDuration: '1s' }}></div>
+            <p className={styles["system-ready"]} style={{ color: '#00ffcc' }}>[ DATA CAPTURING ]</p>
+            <p className={styles["hint-text"]} style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
+              여기에 카드를 놓아주세요!
+            </p>
+            <div className={styles["loading-spinner"]} style={{ borderColor: '#00ffcc transparent #00ffcc transparent' }}></div>
           </div>
         ) : (
           <div className={styles["drop-placeholder"]}>
@@ -196,7 +207,12 @@ const Middle = () => {
         <div className={styles["right-panel"]}>
           {filteredCards.length > 0 ? (
             filteredCards.map((card) => (
-              <Card key={card.cardId} cardId={card.cardId} officialImageUrl={card.officialImageUrl} onClick={() => handleSellerList(card.cardId)} />
+              <Card key={card.cardId} cardId={card.cardId}
+                officialImageUrl={card.officialImageUrl}
+                onClick={() => handleSellerList(card.cardId)}
+                onDragStartAction={() => setIsDragging(true)}
+                onDragEndAction={() => setIsDragging(false)}
+              />
             ))
           ) : (
             <div className={styles["no-results"]}>
