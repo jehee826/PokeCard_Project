@@ -34,8 +34,8 @@ const AiCamera = () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: 'environment',
-          width: { min: 1080, ideal: 2000 },
-          height: { min: 1920, ideal: 3600 },
+          width: { ideal: 2000 },
+          height: { ideal: 3600 },
         }
       });
 

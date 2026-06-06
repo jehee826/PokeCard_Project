@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import './BuySell.css';
@@ -174,7 +174,7 @@ const BuySellDetail = () => {
                     <div className="button-group" style={{ marginTop: '40px', gap: '15px' }}>
                         {item.owner === true ? (
                             <>
-                                {item.status === "예약중" || "판매완료" ? (
+                                {item.status === "예약중" || item.status === "판매완료" ? (
                                     <button onClick={() => handleListStatus(Number(id), "판매중")} className="btn-sell" style={{ padding: '15px' }}>
                                         판매중으로 변경
                                     </button>
