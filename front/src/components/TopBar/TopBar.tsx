@@ -65,7 +65,7 @@ useEffect(() => {
       webSocketFactory: () => new SockJS(`http://${ip}:8080/ws-stomp`),
       
       debug: (str) => console.log(`[STOMP] ${str}`),
-      onConnect: (frame) => {
+      onConnect: () => {
         console.log('알림 연결 성공');
 
 

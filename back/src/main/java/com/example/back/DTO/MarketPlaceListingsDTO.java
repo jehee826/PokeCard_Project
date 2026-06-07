@@ -34,6 +34,8 @@ public class MarketPlaceListingsDTO {
     private String nickname;
     //내글 확인 변수
     private boolean owner;
+    //현재 내역에 있는지 확인
+    private boolean inHistory;
 
 
     public static MarketPlaceListingsDTO toDto(MarketPlaceListingsEntity entity, CardsEntity cardEntity){

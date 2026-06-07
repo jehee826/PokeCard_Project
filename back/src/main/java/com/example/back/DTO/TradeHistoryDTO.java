@@ -24,9 +24,11 @@ public class TradeHistoryDTO {
     private String attribute;
     private String officialImageUrl;
     //해당 내역의 주인인지 확인
-    private boolean owner;
+    private Boolean owner;
     //해당 내역 상태 확인
     private String status;
+    //내역 저장시 어떤요청인지 확인
+    private String flag;
 
 
 

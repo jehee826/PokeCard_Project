@@ -18,6 +18,7 @@ interface detailCard {
     officialImageUrl: string;
     imageStrings: string[];
     owner: boolean;
+    inHistory: boolean;
 }
 
 const BuySellDetail = () => {
@@ -81,7 +82,6 @@ const BuySellDetail = () => {
 
     const handleStartChat = async () => {
         if (!loginId || !item) return;
-
         try {
 
             await api.post('/api/chat/request', {
@@ -91,14 +91,40 @@ const BuySellDetail = () => {
                 message: `${loginId}님이 대화를 요청하셨습니다.`,
                 content: `장터 아이템 [${item.cardNameKo}]에 대한 문의입니다.`
             });
-
-
             navigate(`/Chat/${item.loginId}`);
         } catch (error) {
             console.error('대화 요청 실패:', error);
             alert('대화 요청 중 오류가 발생했습니다.');
         }
     };
+
+    const handleHistory = async (flag: string) => {
+        try {
+            const response = await api.post('/api/market/addhistory', {
+                listingId: item?.listingId,
+                cardId: item?.cardId,
+                finalPrice: item?.price,
+                flag: flag
+            });
+            if (response.status === 200) {
+                if (item?.inHistory) {
+                    alert("구매내역이 삭제되었습니다.");
+                } else {
+                    alert("구매내역이 추가되었습니다.");
+                }
+                if (item) {
+                    setItem({
+                        ...item,
+                        inHistory: !item.inHistory
+                    });
+                }
+            }
+
+        } catch (error) {
+            console.error('내역 등록 실패:', error);
+            alert('내역 등록중 오류가 발생했습니다.');
+        }
+    }
 
 
     if (!item) return <div className="buysell-container">조회된 아이템이 없습니다.</div>;
@@ -191,7 +217,15 @@ const BuySellDetail = () => {
                                 </button>
                             </>
                         ) : (
-                            <button onClick={handleStartChat} className="btn-buy" style={{ padding: '18px', fontSize: '1.1rem' }}>채팅으로 문의하기</button>
+                            <>
+                                <button onClick={handleStartChat} className="btn-buy" style={{ padding: '18px', fontSize: '1.1rem' }}>채팅으로 문의하기</button>
+                                {item.inHistory === true ? (
+                                    <button onClick={() => handleHistory("buy")} className="btn-buy" style={{ padding: '18px', fontSize: '1.1rem' }}>구매내역 삭제</button>
+                                ) : (
+                                    <button onClick={() => handleHistory("buy")} className="btn-buy" style={{ padding: '18px', fontSize: '1.1rem' }}>구매내역 추가</button>
+                                )}
+
+                            </>
                         )}
                     </div>
                 </div>
