@@ -5,6 +5,7 @@ import { useAuth } from '../AuthContext';
 import { useParams } from 'react-router-dom';
 import styles from './StompComponent.module.css';
 import ip from '../../../default.ts';
+import api from '../../api/axios';
 
 interface MessagesType {
 	sender: string; // 보내는 주체
@@ -20,6 +21,21 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 	const { opponentId: paramOpponentId } = useParams<{ opponentId: string }>();
 	const opponentId = propOpponentId || paramOpponentId;
 	const scrollRef = useRef<HTMLDivElement>(null);
+	const [opponentNickname, setOpponentNickname] = useState<string>(opponentId || '');
+
+	useEffect(() => {
+		if (opponentId) {
+			api.get(`/api/public/nickname?loginId=${opponentId}`)
+				.then((res) => {
+					if (res.data) {
+						setOpponentNickname(res.data);
+					}
+				})
+				.catch((err) => {
+					console.error("상대방 닉네임을 가져오는데 실패했습니다.", err);
+				});
+		}
+	}, [opponentId]);
 
 	const SERVER_URL =  `http://${ip}:8080/ws-stomp`;
 	
@@ -130,7 +146,7 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 				{!isEnterChat ? (
 					<div className={styles.emptyState}>
 						<div className={styles.pikachuIconLarge}></div>
-						<h2>{opponentId}님과<br />대화를 시작하시겠습니까?</h2>
+						<h2>{opponentNickname}님과<br />대화를 시작하시겠습니까?</h2>
 						<button className={styles.startChatButton} onClick={stompHandler.connect}>
 							대화 시작하기
 						</button>
@@ -140,7 +156,7 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 						<div className={styles.chatHeader}>
 							<div style={{ display: 'flex', alignItems: 'center' }}>
 								<div className={styles.pikachuIcon}></div>
-								<span>{opponentId}님과 채팅 중</span>
+								<span>{opponentNickname}님과 채팅 중</span>
 							</div>
 							<button className={styles.disconnectButton} onClick={stompHandler.disconnect}>
 								종료
@@ -155,7 +171,7 @@ const StompComponent: React.FC<StompComponentProps> = ({ opponentId: propOpponen
 										key={`messages-${index}`}
 										className={`${styles.messageItem} ${isMine ? styles.myMessage : styles.otherMessage}`}
 									>
-										{!isMine && <div className={styles.senderName}>{item.sender}</div>}
+										{!isMine && <div className={styles.senderName}>{item.sender === opponentId ? opponentNickname : item.sender}</div>}
 										<div className={`${styles.bubble} ${isMine ? styles.myBubble : styles.otherBubble}`}>
 											{item.content}
 										</div>
