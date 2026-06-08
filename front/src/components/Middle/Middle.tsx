@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 
 interface cardList {
   cardId: number;
-  setId: number;
   externalId: string;
   cardNumber: string;
   cardNameKo: string
@@ -49,7 +48,7 @@ const Middle = () => {
     fetchCards();
   }, []);
 
-  const types = ["악", "초", "불", "벌레", "드래곤", "격투", "풀", "물", "번개", "에스퍼", "얼음", "고스트", "노말"];
+  const types = ["악", "불", "벌레", "드래곤", "격투", "풀", "물", "전기", "에스퍼", "얼음", "고스트", "노말"];
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
