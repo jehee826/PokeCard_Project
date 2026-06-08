@@ -56,7 +56,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173", "http://192.168.0.6:5173", "http://10.32.7.120:8080", "http://10.32.7.120:5173")); //집에서 테스트를 위해 컴퓨터 ip주소 허용해줌
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173", "https://thrower-unnerve-tux.ngrok-free.dev","http://10.32.7.27:5173")); // Vite uses 5173 usually
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // 모든 헤더 수용
         configuration.setAllowCredentials(true);

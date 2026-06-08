@@ -10,7 +10,6 @@ import lombok.*;
 @Builder
 public class CardsDTO {
     private Long cardId;
-    private Integer setId;
     private String externalId;
     private String cardNumber;
     private String cardNameKo;

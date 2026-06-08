@@ -139,4 +139,11 @@ public class AuthController {
 
         return ResponseEntity.ok("유저정보 업데이트 완료.");
     }
+
+    @GetMapping("/nickname")
+    public ResponseEntity<?> getNickname(@RequestParam("loginId") String loginId) {
+        return userRepository.findByLoginId(loginId)
+                .map(user -> ResponseEntity.ok(user.getNickname()))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 사용자입니다."));
+    }
 }
