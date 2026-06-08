@@ -95,16 +95,16 @@ public class MarketService {
         return marketEntities.stream()
                 .filter(market -> !"판매완료".equals(market.getStatus().name()))
                 .map(market -> {
-            String nickname = userRepository.findById(market.getSellerId())
-                    .map(UsersEntity::getNickname)
-                    .orElse("알 수 없음");
+                    String nickname = userRepository.findById(market.getSellerId())
+                            .map(UsersEntity::getNickname)
+                            .orElse("알 수 없음");
 
-            MarketPlaceListingsDTO dto = MarketPlaceListingsDTO.toDto(market, card);
-            dto.setNickname(nickname);
-            dto.setOwner(Objects.equals(market.getSellerId(), currentUserId));
-            dto.setImageStrings(getListingImages(market.getListingId()));
-            return dto;
-        }).collect(Collectors.toList());
+                    MarketPlaceListingsDTO dto = MarketPlaceListingsDTO.toDto(market, card);
+                    dto.setNickname(nickname);
+                    dto.setOwner(Objects.equals(market.getSellerId(), currentUserId));
+                    dto.setImageStrings(getListingImages(market.getListingId()));
+                    return dto;
+                }).collect(Collectors.toList());
     }
 
 
@@ -148,7 +148,6 @@ public class MarketService {
         UsersEntity user = getAuthenticatedUser(token);
         List<CardsEntity> results = userCollectionsRepository.findMyCardsByLoginId(user.getLoginId());
 
-        //JPQL사용한 메소드
         return results.stream()
                 .map(this::convertToCardsDTO).collect(Collectors.toList());
     }
@@ -156,7 +155,7 @@ public class MarketService {
     /**
      * 판매글 저장 (파일 시스템 저장 및 DB 경로 기록)
      */
-    @Transactional // DB 작업과 파일 저장이 한 묶음으로 처리되도록 추가
+    @Transactional
     public void saveListing(MarketPlaceListingsDTO register, String token) {
         UsersEntity user = getAuthenticatedUser(token);
 
@@ -206,16 +205,15 @@ public class MarketService {
         originList.setContactInfo(editDTO.getContactInfo());
         originList.setLocation(editDTO.getLocation());
 
-        //이미지 수정
         if (editDTO.getImages() != null && !editDTO.getImages().isEmpty()) {
             String uploadDir = "C:/pokemon/";
             List<MarketPlaceImageEntity> oldImages = marketPlaceImageRepository.findByListingId(listingId);
             for (MarketPlaceImageEntity img : oldImages) {
                 File oldFile = new File(uploadDir + img.getImagePath());
                 if (oldFile.exists()) {
-                    oldFile.delete(); // 로컬 파일 삭제
+                    oldFile.delete();
                 }
-                marketPlaceImageRepository.delete(img); // DB 삭제
+                marketPlaceImageRepository.delete(img);
             }
 
             File dir = new File(uploadDir);
@@ -247,16 +245,13 @@ public class MarketService {
     public String toggleFavorite(Long listingId, String token) {
         UsersEntity user = getAuthenticatedUser(token);
 
-        // 1. 이미 즐겨찾기가 되어 있는지 확인
         Optional<MarketPlaceFavoriteEntity> existingFavorite =
                 marketPlaceFavoriteRepository.findByUserIdAndListingId(user.getId(), listingId);
 
         if (existingFavorite.isPresent()) {
-            // 2. 이미 있다면? 삭제 (취소)
             marketPlaceFavoriteRepository.delete(existingFavorite.get());
             return "즐겨찾기가 취소되었습니다.";
         } else {
-            // 3. 없다면? 등록
             MarketPlaceFavoriteEntity favoriteEntity = MarketPlaceFavoriteEntity.builder()
                     .userId(user.getId())
                     .listingId(listingId)
@@ -279,7 +274,6 @@ public class MarketService {
         return favoriteEntities.stream()
                 .map(fav -> {
                     try {
-                        //위에 이미 만들어진 getDetailList메소드를 통해 코드 간결화(메소드 재사용)
                         return this.getDetailList(fav.getListingId(), token);
                     } catch (Exception e) {
                         return null;
@@ -294,58 +288,81 @@ public class MarketService {
     public boolean isFavorite(Long listingId, String token) {
         UsersEntity user = getAuthenticatedUser(token);
 
-        // 여기서 existsBy... 를 사용하여 가볍게 존재 여부만 체크!
         return marketPlaceFavoriteRepository.existsByUserIdAndListingId(user.getId(), listingId);
     }
 
-    /** 판매글의 상태 변경 */
+    /** 판매글의 상태 변경 및 예약/완료 거래내역 통합 관리 */
     @Transactional
-    public void listStatus(Long listId, String status) {
+    public void listStatus(Long listId, String status, String token) {
+        UsersEntity user = getAuthenticatedUser(token);
         MarketPlaceListingsEntity listEntity = marketPlaceListingsRepository.findById(listId)
                 .orElseThrow(() -> new RuntimeException("판매글을 찾을 수 없습니다."));
-        listEntity.setStatus(MarketPlaceListingsEntity.ListingStatus.valueOf(status));
-    }
 
-    /** 거래내역 등록 */
-    @Transactional
-    public void addHistory(Long listingId, Long cardId, Integer finalPrice, String flag, String token){
-        UsersEntity user = getAuthenticatedUser(token);
+        boolean isOwner = listEntity.getSellerId().equals(user.getId());
 
-        MarketPlaceListingsEntity listing = marketPlaceListingsRepository.findById(listingId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
-
-        if("buy".equals(flag)){
-
-            Optional<TradeHistoryEntity> existingHistory = tradeHistoryRepository
-                    .findByListingIdAndCardIdAndBuyerId(listingId, cardId, user.getId());
-
-            // 2. 이미 존재한다면 삭제(토글) 후 메시지 반환
-            if(existingHistory.isPresent()) {
-                tradeHistoryRepository.delete(existingHistory.get());
-                return;
+        if (!isOwner) {
+            if ("판매완료".equals(listEntity.getStatus().name())) {
+                throw new IllegalArgumentException("이미 판매 완료된 게시글입니다.");
             }
 
-            TradeHistoryEntity historyEntity = new TradeHistoryEntity();
-            historyEntity.setListingId(listingId);
-            historyEntity.setCardId(cardId);
-            historyEntity.setFinalPrice(finalPrice);
-            historyEntity.setBuyerId(user.getId());
-            historyEntity.setSellerId(listing.getSellerId());
+            Optional<TradeHistoryEntity> existingHistory = tradeHistoryRepository
+                    .findByListingIdAndCardIdAndBuyerId(listId, listEntity.getCardId(), user.getId());
 
-            tradeHistoryRepository.save(historyEntity);
-        } else if("sell".equals(flag)){
-            TradeHistoryEntity historyEntity = new TradeHistoryEntity();
-            historyEntity.setListingId(listingId);
-            historyEntity.setCardId(cardId);
-            historyEntity.setFinalPrice(finalPrice);
-            historyEntity.setSellerId(user.getId());
+            if (existingHistory.isPresent()) {
+                tradeHistoryRepository.delete(existingHistory.get());
+                listEntity.setStatus(MarketPlaceListingsEntity.ListingStatus.판매중);
+            } else {
+                TradeHistoryEntity historyEntity = new TradeHistoryEntity();
+                historyEntity.setListingId(listId);
+                historyEntity.setCardId(listEntity.getCardId());
+                historyEntity.setFinalPrice(listEntity.getPrice());
+                historyEntity.setBuyerId(user.getId());
+                historyEntity.setSellerId(listEntity.getSellerId());
 
-            tradeHistoryRepository.save(historyEntity);
-        } else {
-            throw new IllegalArgumentException("잘못된 접근입니다.");
+                tradeHistoryRepository.save(historyEntity);
+                listEntity.setStatus(MarketPlaceListingsEntity.ListingStatus.예약중);
+            }
+            return;
         }
 
+        if ("판매완료".equals(listEntity.getStatus().name()) && !"판매완료".equals(status)) {
+            Optional<TradeHistoryEntity> existingHistory = tradeHistoryRepository.findAll().stream()
+                    .filter(h -> h.getListingId().equals(listId))
+                    .findFirst();
 
+            if (existingHistory.isPresent()) {
+                TradeHistoryEntity history = existingHistory.get();
+                if (history.getBuyerId() == null) {
+                    tradeHistoryRepository.delete(history);
+                } else {
+                    if ("판매중".equals(status)) {
+                        tradeHistoryRepository.delete(history);
+                    }
+                }
+            }
+        }
+
+        listEntity.setStatus(MarketPlaceListingsEntity.ListingStatus.valueOf(status));
+
+        if ("판매완료".equals(status)) {
+            Optional<TradeHistoryEntity> existingHistory = tradeHistoryRepository.findAll().stream()
+                    .filter(h -> h.getListingId().equals(listId) && h.getBuyerId() != null)
+                    .findFirst();
+
+            if (existingHistory.isPresent()) {
+                TradeHistoryEntity history = existingHistory.get();
+                history.setFinalPrice(listEntity.getPrice());
+                tradeHistoryRepository.save(history);
+            } else {
+                TradeHistoryEntity historyEntity = new TradeHistoryEntity();
+                historyEntity.setListingId(listId);
+                historyEntity.setCardId(listEntity.getCardId());
+                historyEntity.setFinalPrice(listEntity.getPrice());
+                historyEntity.setSellerId(user.getId());
+
+                tradeHistoryRepository.save(historyEntity);
+            }
+        }
     }
 
     /** 내가 구매 OR 판매한 내역 및 예약 내역을 전부 가져옴 */

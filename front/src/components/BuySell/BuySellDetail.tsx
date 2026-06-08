@@ -29,7 +29,6 @@ const BuySellDetail = () => {
     const [imageList, setImageList] = useState<string[]>([]);
     const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
-
     const BASE_URL = "http://localhost:8080/pokemon/";
 
     useEffect(() => {
@@ -43,10 +42,9 @@ const BuySellDetail = () => {
                 const combined = [
                     response.data.officialImageUrl,
                     ...(response.data.imageStrings || [])
-                ].filter(Boolean); // 혹시 모를 null/undefined 제거
+                ].filter(Boolean);
 
                 setImageList(combined);
-
 
                 if (combined.length > 0) {
                     setSelectedImg(combined[0]);
@@ -62,28 +60,44 @@ const BuySellDetail = () => {
     const handleListStatus = async (id: number, status: string) => {
         try {
             const response = await api.post('/api/market/sellcomplete', {
-                listId: String(id),
+                listingId: id,
                 status: status
             });
+
             if (response.status === 200) {
-                alert(`${status} 상태변경`);
-                navigate('/buysell');
+                if (item?.owner) {
+                    alert(`${status} 상태변경 완료`);
+                    navigate('/buysell');
+                } else {
+                    if (item?.inHistory) {
+                        alert("구매예약이 취소되었습니다.");
+                    } else {
+                        alert("구매예약이 등록되었습니다.");
+                    }
+
+                    if (item) {
+                        setItem({
+                            ...item,
+                            inHistory: !item.inHistory,
+                            status: item.inHistory ? "판매중" : "예약중"
+                        });
+                    }
+                }
             }
         } catch (error) {
-            console.error("데이터 로딩 실패:", error);
+            console.error("상태 변경 요청 실패:", error);
+            alert("처리 중 오류가 발생했습니다.");
         }
+    };
 
-    }
     const roomId = (() => {
         if (!loginId || !item?.loginId) return '';
         return [loginId, item.loginId].sort().join('_');
     })();
 
-
     const handleStartChat = async () => {
         if (!loginId || !item) return;
         try {
-
             await api.post('/api/chat/request', {
                 roomId: roomId,
                 sender: loginId,
@@ -97,35 +111,6 @@ const BuySellDetail = () => {
             alert('대화 요청 중 오류가 발생했습니다.');
         }
     };
-
-    const handleHistory = async (flag: string) => {
-        try {
-            const response = await api.post('/api/market/addhistory', {
-                listingId: item?.listingId,
-                cardId: item?.cardId,
-                finalPrice: item?.price,
-                flag: flag
-            });
-            if (response.status === 200) {
-                if (item?.inHistory) {
-                    alert("구매내역이 삭제되었습니다.");
-                } else {
-                    alert("구매내역이 추가되었습니다.");
-                }
-                if (item) {
-                    setItem({
-                        ...item,
-                        inHistory: !item.inHistory
-                    });
-                }
-            }
-
-        } catch (error) {
-            console.error('내역 등록 실패:', error);
-            alert('내역 등록중 오류가 발생했습니다.');
-        }
-    }
-
 
     if (!item) return <div className="buysell-container">조회된 아이템이 없습니다.</div>;
 
@@ -207,7 +192,8 @@ const BuySellDetail = () => {
                                 ) : (
                                     <button onClick={() => handleListStatus(Number(id), "예약중")} className="btn-booking" style={{ padding: '15px' }}>
                                         예약중으로 변경
-                                    </button>)}
+                                    </button>
+                                )}
 
                                 <button onClick={() => handleListStatus(Number(id), "판매완료")} className="btn-confirm" style={{ padding: '15px' }}>
                                     판매 완료 확정
@@ -219,12 +205,12 @@ const BuySellDetail = () => {
                         ) : (
                             <>
                                 <button onClick={handleStartChat} className="btn-buy" style={{ padding: '18px', fontSize: '1.1rem' }}>채팅으로 문의하기</button>
+                                
                                 {item.inHistory === true ? (
-                                    <button onClick={() => handleHistory("buy")} className="btn-buy" style={{ padding: '18px', fontSize: '1.1rem' }}>구매내역 삭제</button>
+                                    <button onClick={() => handleListStatus(item.listingId, item.status)} className="btn-buy" style={{ padding: '18px', fontSize: '1.1rem' }}>구매내역 삭제</button>
                                 ) : (
-                                    <button onClick={() => handleHistory("buy")} className="btn-buy" style={{ padding: '18px', fontSize: '1.1rem' }}>구매내역 추가</button>
+                                    <button onClick={() => handleListStatus(item.listingId, item.status)} className="btn-buy" style={{ padding: '18px', fontSize: '1.1rem' }}>구매내역 추가</button>
                                 )}
-
                             </>
                         )}
                     </div>

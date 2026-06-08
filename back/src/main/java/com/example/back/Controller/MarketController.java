@@ -151,31 +151,16 @@ public class MarketController {
         return ResponseEntity.ok(marketService.isFavorite(listingId, token));
     }
 
-    /** 판매완료 요청 */
-    @PostMapping("/sellcomplete")
-    public ResponseEntity<?> sellComplete(@RequestBody Map<String, String> data){
-        Long listId = Long.parseLong(data.get("listId"));
-        String status = data.get("status");
+        /** 상태변경 요청 */
+        @PostMapping("/sellcomplete")
+        public ResponseEntity<?> sellComplete(@RequestBody TradeHistoryDTO dto, @RequestHeader("Authorization") String authHeader){
+            String token = authHeader.substring(7);
 
-        marketService.listStatus(listId, status);
+            marketService.listStatus(dto.getListingId(), dto.getStatus(), token);
 
-        return ResponseEntity.ok("상태변경 완료");
-    }
+            return ResponseEntity.ok("상태변경 완료");
+        }
 
-    /** 거래내역 등록 */
-    @PostMapping("/addhistory")
-    public ResponseEntity<?> addHistory(@RequestBody TradeHistoryDTO dto, @RequestHeader("Authorization") String authHeader){
-        Long listingId = dto.getListingId();
-        Long cardId = dto.getCardId();
-        Integer finalPrice = dto.getFinalPrice();
-        String flag = dto.getFlag();
-
-        String token = authHeader.substring(7);
-
-        marketService.addHistory(listingId, cardId, finalPrice, flag, token);
-
-        return ResponseEntity.ok("거래내역 등록 완료");
-    }
 
     /** 거래내역 조회 */
     @GetMapping("/history")
