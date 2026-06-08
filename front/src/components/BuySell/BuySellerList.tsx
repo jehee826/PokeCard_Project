@@ -68,7 +68,7 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: MarketItemCardProps) => {
         <div
           onClick={() => navigate(`/buysell/detail/${item.listingId}`)}
           className="item-image"
-          style={{ backgroundImage: `url(${BASE_URL}${item.imageStrings[0]})`, cursor: 'pointer' }}
+          style={{ backgroundImage: `url("${BASE_URL}${encodeURI(item.imageStrings[0])}")`, cursor: 'pointer' }}
         />
       ) : (
         <div className="item-image" style={{ backgroundColor: '#f1f5f9', color: '#94a3b8', fontSize: '0.8rem' }}>사진 없음</div>
@@ -79,21 +79,6 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: MarketItemCardProps) => {
           {item.nickname}
         </h3>
         <div className="item-price">{item.price.toLocaleString()}원</div>
-
-        <div className="button-group">
-          {item.owner === true ? (
-            <>
-              <button onClick={() => alert("미구현")} className="btn-sell">
-                예약중
-              </button>
-              <button onClick={() => alert("미구현")} className="btn-confirm">
-                판매완료
-              </button>
-            </>
-          ) : (
-            <button className="btn-buy" onClick={() => alert("미구현")}>구매문의</button>
-          )}
-        </div>
 
         <button
           onClick={() => handleFavorite(item.listingId)}

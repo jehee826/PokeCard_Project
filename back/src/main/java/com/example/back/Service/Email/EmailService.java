@@ -10,9 +10,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import com.example.back.Entity.Email.EmailEntity;
-//import server.user.service.UserService;
-
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Random;
@@ -25,14 +22,10 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
 
-//    private final UserService userService;
-
     public String sendMail(EmailEntity emailMessage, String type) {
         String authNum = createCode();
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-
-//        if (type.equals("password")) userService.SetTempPassword(emailMessage.getTo(), authNum);
 
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");

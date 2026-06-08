@@ -6,9 +6,11 @@ interface CardProps {
   officialImageUrl: string;
   cardId?: number;
   onClick?: () => void;
+  onDragStartAction?: () => void; 
+  onDragEndAction?: () => void;  
 }
 
-const Card = ({ cardId, officialImageUrl, onClick }: CardProps) => {
+const Card = ({ cardId, officialImageUrl, onClick, onDragStartAction, onDragEndAction }: CardProps) => {
   const [x, setX] = useState<number>(0);
   const [y, setY] = useState<number>(0);
   const [isHovering, setIsHovering] = useState<boolean>(false);
@@ -40,6 +42,11 @@ const Card = ({ cardId, officialImageUrl, onClick }: CardProps) => {
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
     event.dataTransfer.setData("image", BASE_URL + officialImageUrl);
     event.dataTransfer.setData("cardId", String(cardId));
+    if(onDragStartAction) onDragStartAction();
+  };
+
+  const handleDragEnd = () => {
+    if (onDragEndAction) onDragEndAction(); 
   };
 
   return (
@@ -48,6 +55,7 @@ const Card = ({ cardId, officialImageUrl, onClick }: CardProps) => {
         className={styles.card}
         draggable={true}
         onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
         onMouseMove={mouseMove}
         onMouseLeave={Reset}
         onClick={handleClick}

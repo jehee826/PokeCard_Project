@@ -86,16 +86,11 @@ public class MainController {
         CardsEntity card = cardOpt.get();
         String officialImageUrl = card.getOfficialImageUrl();
 
-        if (officialImageUrl != null && !officialImageUrl.startsWith("http") && !officialImageUrl.startsWith("/")) {
-            officialImageUrl = "/" + officialImageUrl;
-        }
-        String finalImageUrl = officialImageUrl;
-
         log.info("받은 헤더 토큰값: {}", token);
         // 1. 비로그인 상태 처리
         if (token == null || token.isEmpty() || !token.startsWith("Bearer ")) {
             log.warn("유효한 토큰이 헤더에 포함되지 않았습니다. (token: {})", token);
-            return ResponseEntity.ok(new CardsDTO(finalImageUrl, "카드 인식 성공 (유저 정보를 찾을 수 없습니다.)"));
+            return ResponseEntity.ok(new CardsDTO(officialImageUrl, "카드 인식 성공 (유저 정보를 찾을 수 없습니다.)"));
         }
 
         try {
@@ -110,7 +105,7 @@ public class MainController {
                         boolean isAlreadyCollected = userCollectionsRepository.existsByUserIdAndCardId(user.getId(), card.getCardId());
 
                         if (isAlreadyCollected) {
-                            return ResponseEntity.ok(new CardsDTO(finalImageUrl, "이미 도감에 등록된 카드입니다."));
+                            return ResponseEntity.ok(new CardsDTO(officialImageUrl, "이미 도감에 등록된 카드입니다."));
                         } else {
                             // 도감에 새로 등록
                             UserCollectionsEntity newCollection = UserCollectionsEntity.builder()
@@ -123,17 +118,17 @@ public class MainController {
                             userCollectionsRepository.save(newCollection);
 
                             log.info("유저 ID {} 의 도감에 카드 ID {} 등록 완료", user.getId(), card.getCardId());
-                            CardsDTO cardsDTO = new CardsDTO(finalImageUrl, "새로운 카드 인식 성공");
+                            CardsDTO cardsDTO = new CardsDTO(officialImageUrl, "새로운 카드 인식 성공");
                             return ResponseEntity.ok(cardsDTO);
                         }
                     })
                     .orElseGet(() -> {
                         log.warn("DB에서 해당 Login ID를 찾을 수 없음: {}", loginId);
-                        return ResponseEntity.ok(new CardsDTO(finalImageUrl, "카드 인식 성공 (유저 정보를 찾을 수 없습니다.)"));
+                        return ResponseEntity.ok(new CardsDTO(officialImageUrl, "카드 인식 성공 (유저 정보를 찾을 수 없습니다.)"));
                     });
         } catch (Exception e) {
             log.error("토큰 검증 또는 처리 중 오류 발생: {}", e.getMessage(), e);
-            return ResponseEntity.ok(new CardsDTO(finalImageUrl, "카드 인식 성공 (유저 정보를 찾을 수 없습니다.)"));
+            return ResponseEntity.ok(new CardsDTO(officialImageUrl, "카드 인식 성공 (유저 정보를 찾을 수 없습니다.)"));
         }
     }
 }

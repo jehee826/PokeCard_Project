@@ -139,17 +139,16 @@
 
 .item-image {
     width: 100%;
-    aspect-ratio: 2 / 2.8;
-    background-size: contain;
+    aspect-ratio: 2 / 2.8; 
+    background-size: contain; 
+    background-position: center; 
     background-repeat: no-repeat;
-    background-position: center;
     border-radius: 8px;
-    background-color: #f8fafc;
+    background-color: #f1f5f9; 
     margin-bottom: 12px;
     position: relative;
     overflow: hidden;
 }
-
 .item-info {
     text-align: left;
 }
@@ -185,7 +184,7 @@
     margin-top: 12px;
 }
 
-.btn-buy, .btn-sell, .btn-confirm, .btn-edit {
+.btn-buy, .btn-sell, .btn-booking, .btn-confirm, .btn-edit {
     flex: 1;
     padding: 8px 12px;
     border-radius: 8px;
@@ -197,7 +196,8 @@
 }
 
 .btn-buy { background-color: var(--market-accent); color: white; }
-.btn-sell { background-color: var(--market-gold); color: white; }
+.btn-sell { background-color: var(--market-sell); color: white; }
+.btn-booking { background-color: var(--market-gold); color: white; }
 .btn-confirm { background-color: var(--market-success); color: white; }
 .btn-edit { background-color: var(--text-muted); color: white; }
 

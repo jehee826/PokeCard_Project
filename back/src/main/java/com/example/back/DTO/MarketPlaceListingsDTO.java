@@ -20,6 +20,7 @@ public class MarketPlaceListingsDTO {
     private Integer price;
     private String contactInfo;
     private String location;
+    private String status;
     //card_id를 통해 조인한 cards테이블의 정보를 잠깐 담을 변수들
     private String cardNameKo;
     private String cardNumber;
@@ -33,6 +34,8 @@ public class MarketPlaceListingsDTO {
     private String nickname;
     //내글 확인 변수
     private boolean owner;
+    //현재 내역에 있는지 확인
+    private boolean inHistory;
 
 
     public static MarketPlaceListingsDTO toDto(MarketPlaceListingsEntity entity, CardsEntity cardEntity){
