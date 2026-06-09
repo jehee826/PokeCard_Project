@@ -56,13 +56,12 @@ const Payment = () => {
                 <p>위 금액으로 구매를 확정하시겠습니까?</p>
                 
                 <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
-                    <button 
+                    <button
                         onClick={handleConfirmPurchase}
-                        style={{ padding: '10px 20px', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+                        style={{ padding: '10px 20px', backgroundColor: 'var(--market-accent)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }}
                     >
                         결제하기
-                    </button>
-                    <button 
+                    </button>                    <button 
                         onClick={() => navigate(-1)}
                         style={{ padding: '10px 20px', backgroundColor: '#eee', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
                     >

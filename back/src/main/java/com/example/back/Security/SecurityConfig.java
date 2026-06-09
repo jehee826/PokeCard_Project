@@ -44,7 +44,8 @@ public class SecurityConfig {
                 })
             )
             .authorizeHttpRequests(auth -> auth /* 어떤 주소로 들어오는 요청을 허용하거나 막을지 정함 */
-                .requestMatchers("/api/public/**", "/api/main/ai", "/api/main/ency","/api/market/alllist","/pokemon/**", "/api/market/sellerlist","/ws-stomp/**"/*,/api/market/detail/**","/api/market/**"*/).permitAll() /* 로그인이나 회원가입 페이지 /api/auth/** 은 모두 허용 */
+                    .requestMatchers("/", "/*.html", "/assets/**", "/favicon.ico", "/static/**", "/*.png", "/*.jpg", "/*.jpeg", "/*.gif", "/*.onnx", "/*.txt").permitAll()
+                    .requestMatchers("/api/public/**", "/api/main/ai", "/api/main/ency","/api/market/alllist","/pokemon/**", "/api/market/sellerlist","/ws-stomp/**"/*,/api/market/detail/**","/api/market/**"*/).permitAll() /* 로그인이나 회원가입 페이지 /api/auth/** 은 모두 허용 */
                 .anyRequest().authenticated() /* 그 외 모든 페이지 요청은 인증 필요 */
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); /* 아이디/비번을 치기 전에 이미 토큰을 들고 온 사람인지 먼저 확인해서, 인증이 됐다면 바로 통과시켜주기 위한 코드 */
@@ -55,7 +56,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173", "https://thrower-unnerve-tux.ngrok-free.dev")); // Vite uses 5173 usually
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173","http://10.32.7.27:8080"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // 모든 헤더 수용
         configuration.setAllowCredentials(true);

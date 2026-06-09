@@ -1,74 +1,81 @@
-
 .loginContainer {
-  display: flex;            /* Flexbox 활성화 */
-  flex-direction: column;
-  justify-content: center;  /* 가로 방향 중앙 정렬 */
-  align-items: center;      /* 세로 방향 중앙 정렬 */
-  min-height: 100vh;        /* 화면 전체 높이(Viewport Height) 차지 */
-  background-color: #eed0cb; /* (선택) 배경색 */
-}
-
-.loginForm {
-  border: 2px solid #333;
   display: flex;
-  flex-direction: column;
-  width: 200px;
-  height: 120px;
-  border-radius: 10px;    
-  margin : 10px;
-  align-items: center;
-  background-color: #ff5252;
-  box-shadow: #835050 0px 2px 10px;
-}
-
-.loginTitle {
-  border-radius: 10px;
-  margin : 1px;
-}
-
-.loginInput {
-  width: 150px;
-  height: 20px;
-  border-radius: 7px;
-  margin : 5px;
-  align-items: left;
-}
-
-
-.pwForm {
-  border-top: 2px solid #333;
-  width: 100%;
-  height: 100%;
-  border-radius: 0px 0px 8px 8px;
-  display: flex;
-  box-sizing: border-box;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #f0f0f0;
+  min-height: 100vh;
+  background-color: var(--bg-light);
+  padding: 20px;
 }
 
-.loginPw {
-  width: 150px;
-  height: 20px;
-  border-radius: 5px;
-  margin : 5px;
+.loginForm {
+  background-color: white;
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid var(--poke-red);
+}
+
+.loginTitle {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--poke-red);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.loginInput {
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 15px;
+  border: 1px solid #dee2e6;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.loginInput:focus {
+  border-color: var(--poke-red);
+  box-shadow: 0 0 0 3px rgba(255, 83, 80, 0.1);
+}
+
+.pwForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .loginButton {
-  border-radius: 10px;
-  margin : 5px;
-  box-shadow: #232323 0px 2px 4px;
+  width: 100%;
+  padding: 14px;
+  background-color: var(--poke-red);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
+  transition: var(--transition-fast);
+  margin-top: 10px;
 }
 
-.loginButton:focus {
-  border-radius: 10px;
-  margin : 5px;
-  cursor: pointer;
+.loginButton:hover {
+  background-color: var(--poke-red-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 83, 80, 0.3);
 }
 
 .signup {
+  margin-top: 20px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }

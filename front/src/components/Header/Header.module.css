@@ -1,126 +1,153 @@
 .Title {
-    color: #454545;
-    font-size: 20px;
-    padding: 40px;
-    text-align: center ;
-    align-items: center;
+    color: var(--text-main);
+    font-size: 2.2rem;
+    font-weight: 800;
+    padding: 60px 0 20px;
+    text-align: center;
+    letter-spacing: -1px;
 }
 
-
 .search-section {
-  background-image: url('KakaoTalk_20260316_194134001.png'); 
-  background-size: cover;      
-  background-position: center; 
-  background-repeat: no-repeat;
-  padding : 10px;
+  background: var(--bg-white);
+  padding: 50px 20px;
+  display: flex;
   flex-direction: column;
   justify-content: center; 
   align-items: center;     
   position: relative;
+  border-radius: var(--radius-lg);
+  margin: 0 40px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
 }
 
-
+.search-section::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('KakaoTalk_20260316_194134001.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.05; 
+  pointer-events: none;
+}
 
 .search-container {
-  max-width: 900px;
-  margin: 40px auto;
-  font-family: 'Noto Sans KR', sans-serif;
+  max-width: 850px;
+  width: 100%;
+  z-index: 1;
 }
-
 
 .tabs-container {
   display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
 .tab {
-  padding: 12px 40px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
+  padding: 10px 25px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: 1px solid var(--border-light);
   cursor: pointer;
+  border-radius: 12px;
+  transition: var(--transition-normal);
+  background: var(--bg-light);
+  color: var(--text-muted);
 }
 
 .tab.active {
-  background-color: #4a4a4a; 
+  background-color: var(--bg-dark-accent); /* Dark Accent Part */
   color: white;
+  border-color: var(--bg-dark-accent);
 }
 
-.tab:not(.active) {
-  background-color: #e6e6e6; 
-  color: #888;
-}
 .tab:not(.active):hover {
-  background-color: #c1c1c1; 
-  color: #707070;
+  background-color: #edf2f7;
+  color: var(--text-main);
 }
-
 
 .search-box {
   display: flex;
-  background-color: #4a4a4a; 
-  padding: 8px; 
+  background-color: var(--bg-white); 
+  padding: 10px; 
   align-items: center;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--border-light);
+}
+
+.search-box:focus-within {
+  border-color: var(--poke-red);
 }
 
 .search-select {
-  padding: 15px 20px;
-  font-size: 15px;
+  padding: 10px 15px;
+  font-size: 0.95rem;
   border: none;
-  border-right: 1px solid #eee; 
   outline: none;
-  background-color: white;
+  background-color: transparent;
   cursor: pointer;
+  color: var(--text-main);
+  font-weight: 600;
+  border-right: 1px solid var(--border-light);
 }
 
 .search-input {
   flex-grow: 1; 
-  padding: 15px 20px;
-  font-size: 15px;
+  padding: 10px 20px;
+  font-size: 1rem;
   border: none;
   outline: none; 
+  color: var(--text-main);
 }
 
 .search-submit-btn {
-  padding: 15px 40px;
-  background-color: #4a4a4a; 
+  padding: 12px 35px;
+  background-color: var(--bg-dark-accent); /* Dark Accent Part */
   color: white;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 700;
   border: none;
+  border-radius: 10px;
   cursor: pointer;
 }
 
+.search-submit-btn:hover {
+  background-color: #2d3748;
+}
 
 .bottom-buttons {
   display: flex;
-  gap: 10px; 
-  margin-top: 15px;
+  gap: 15px; 
+  margin-top: 30px;
 }
 
 .btn-red, .btn-white {
-  padding: 12px 20px;
-  font-size: 15px;
-  font-weight: bold;
-  border-radius: 4px ; 
+  padding: 12px 25px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 12px; 
   border: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .btn-red {
-  background-color: #e33b41;
+  background-color: var(--poke-red);
   color: white;
-}
-
-.btn-red:hover {
-  background-color: #c7292f;
+  box-shadow: 0 4px 10px rgba(255, 83, 80, 0.2);
 }
 
 .btn-white {
   background-color: white;
-  color: #333;
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
 }
 
 .btn-white:hover {
-  background-color: rgb(222, 222, 222);
-  color: #232323;
+  background-color: var(--bg-light);
 }

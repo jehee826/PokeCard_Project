@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@Service // 👈 이제 스프링 시큐리티가 이 서비스를 정상적으로 인식합니다!
+@Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 

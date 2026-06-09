@@ -11,12 +11,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 public class TradeHistoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "history_id")
     private Long historyId;
+
+    @Column(name = "listing_id")
+    private Long listingId;
 
     @Column(name = "buyer_id")
     private Long buyerId;

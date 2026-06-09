@@ -7,6 +7,7 @@ import com.example.back.DTO.TradeHistoryDTO;
 import com.example.back.Entity.MarketPlaceListingsEntity;
 import com.example.back.Service.Market.MarketService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j //로그찍기
 @RestController
@@ -149,30 +151,16 @@ public class MarketController {
         return ResponseEntity.ok(marketService.isFavorite(listingId, token));
     }
 
-//    @PostMapping("/payment")
-//    public ResponseEntity<?> processPayment(@RequestBody TradeHistoryDTO request,
-//            @RequestHeader("Authorization") String authHeader) {
-//
-//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//            return ResponseEntity.ok(false); // 토큰 없으면 당연히 찜 아님
-//        }
-//        String token = authHeader.substring(7);
-//
-//        marketService.registerPayment(request.getSellerId(), request.getCardId(), request.getFinalPrice(), token);
-//
-//        return ResponseEntity.ok().body("거래가 완료되었습니다.");
-//    }
+        /** 상태변경 요청 */
+        @PostMapping("/sellcomplete")
+        public ResponseEntity<?> sellComplete(@RequestBody TradeHistoryDTO dto, @RequestHeader("Authorization") String authHeader){
+            String token = authHeader.substring(7);
 
-    /** 판매완료 요청 */
-    @PostMapping("/sellcomplete")
-    public ResponseEntity<?> sellComplete(@RequestBody Map<String, String> data){
-        Long listId = Long.parseLong(data.get("listId"));
-        String status = data.get("status");
+            marketService.listStatus(dto.getListingId(), dto.getStatus(), token);
 
-        marketService.listStatus(listId, status);
+            return ResponseEntity.ok("상태변경 완료");
+        }
 
-        return ResponseEntity.ok("상태변경 완료");
-    }
 
     /** 거래내역 조회 */
     @GetMapping("/history")

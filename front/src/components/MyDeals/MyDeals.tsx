@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import Card from "../Middle/M/Card.tsx";
 import styles from './MyDeals.module.css';
 import api from "../../api/axios";
+import { useNavigate } from "react-router";
 
 interface TradeHistory {
-  historyId: number;
-  buyerId: number;
+  listingId: number;
+  historyId: number | null;
+  buyerId: number | null;
   sellerId: number;
   cardId: number;
   finalPrice: number;
@@ -15,21 +17,20 @@ interface TradeHistory {
   rarityCode: string; 
   attribute: string;
   officialImageUrl: string;
-  buyer: boolean; // 추가된 인터페이스 활용
+  owner: boolean; // 추가된 인터페이스 활용
+  status: string;
 }
 
 const MyDeals = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"All" | "Buy" | "Sell">("All");
   const [tradeList, setTradeList] = useState<TradeHistory[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHistory = async () => {
-      const token = sessionStorage.getItem('accessToken');
       try {
-        const response = await api.get('/api/market/history', {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        });
+        const response = await api.get('/api/market/history');
         setTradeList(response.data);
       } catch (error) {
         console.error("거래 내역 로딩 실패:", error);
@@ -38,12 +39,16 @@ const MyDeals = () => {
     fetchHistory();
   }, []);
 
+  const handleSellDetail = (listingId : number) => {
+    navigate(`/buysell/detail/${listingId}`, { state: { listingId: listingId } });
+  }
+
   // 필터링 로직: trade.buyer 플래그를 직접 사용
   const filteredCards = tradeList.filter(trade => {
     const matchesSearch = trade.cardNameKo.includes(searchTerm) || String(trade.cardId).includes(searchTerm);
     
-    if (activeTab === "Buy") return matchesSearch && trade.buyer; // 내가 구매자일 때
-    if (activeTab === "Sell") return matchesSearch && !trade.buyer; // 내가 판매자일 때
+    if (activeTab === "Buy") return matchesSearch && trade.status === "구매완료";
+    if (activeTab === "Sell") return matchesSearch && trade.owner; 
     return matchesSearch;
   });
 
@@ -77,11 +82,11 @@ const MyDeals = () => {
         <div className={styles['cards-grid']}>
           {filteredCards.length > 0 ? (
             filteredCards.map((trade) => (
-              <div key={trade.historyId} className={styles['card-item-wrapper']}>
-                <Card officialImageUrl={String(trade.officialImageUrl)} />
+              <div key={trade.historyId !== null ? trade.historyId : `active-${trade.listingId}`} className={styles['card-item-wrapper']}>
+                <Card officialImageUrl={String(trade.officialImageUrl)} onClick={() => handleSellDetail(trade.listingId)} />
                 <div className={styles['card-info-overlay']}>
                    <span style={{ fontWeight: 'bold', fontSize: '14px' }}>
-                     {trade.buyer ? "구매완료" : "판매완료"}
+                     {trade.status}
                    </span>
                    <p className={styles.priceText}>₩{trade.finalPrice.toLocaleString()}</p>
                    <small className={styles.dateText}>{trade.tradeDate.split('T')[0]}</small>

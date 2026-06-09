@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class TradeHistoryDTO {
+    private Long listingId;
     private Long historyId;
     private Long buyerId;
     private Long sellerId;
@@ -22,8 +23,12 @@ public class TradeHistoryDTO {
     private String rarityCode;
     private String attribute;
     private String officialImageUrl;
-    //해당 내역의 구매자인지 확인
-    private boolean buyer;
+    //해당 내역의 주인인지 확인
+    private Boolean owner;
+    //해당 내역 상태 확인
+    private String status;
+    //내역 저장시 어떤요청인지 확인
+    private String flag;
 
 
 

@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 
 interface cardList {
   cardId: number;
-  setId: number;
   externalId: string;
   cardNumber: string;
   cardNameKo: string
@@ -24,6 +23,7 @@ const Middle = () => {
     return sessionStorage.getItem('search_term') || "";
   });
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   // 2. 검색어가 바뀔 때마다 sessionStorage에 실시간으로 저장합니다.
   useEffect(() => {
@@ -49,7 +49,7 @@ const Middle = () => {
     fetchCards();
   }, []);
 
-  const types = ["악", "초", "불", "벌레", "드래곤", "격투", "풀", "물", "번개", "에스퍼", "얼음", "고스트", "노말"];
+  const types = ["악", "불", "벌레", "드래곤", "격투", "풀", "물", "전기", "에스퍼", "얼음", "고스트", "노말"];
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -60,7 +60,8 @@ const Middle = () => {
     const image = event.dataTransfer.getData("image");
     const cardNumber = event.dataTransfer.getData("cardId");
     setSelectedCard(image);
-    setSelectedCardNum(cardId);
+    setSelectedCardNum(cardNumber);
+    setIsDragging(false);
   };
   const AiCamera = () => {
     navigate('/AiCamera');
@@ -79,7 +80,7 @@ const Middle = () => {
     );
   };
 
-  const handleSellerList = (cardId : number) => {
+  const handleSellerList = (cardId: number) => {
     navigate(`/buysell/seller/${cardId}`, { state: { cardId: cardId } });
   }
 
@@ -131,6 +132,15 @@ const Middle = () => {
               </div>
               <p className={styles.description}>▶ 대상의 유전자 정보와 카드 속성 데이터가 도감 데이터베이스에 성공적으로 등록되었습니다.</p>
             </div>
+          </div>
+        ) : isDragging ? (
+          <div className={`${styles["drop-placeholder"]} ${styles["dragging-active"]}`}>
+            <div className={styles["scan-line-idle"]} style={{ animationDuration: '1s' }}></div>
+            <p className={styles["system-ready"]} style={{ color: '#00ffcc' }}>[ DATA CAPTURING ]</p>
+            <p className={styles["hint-text"]} style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
+              여기에 카드를 놓아주세요!
+            </p>
+            <div className={styles["loading-spinner"]} style={{ borderColor: '#00ffcc transparent #00ffcc transparent' }}></div>
           </div>
         ) : (
           <div className={styles["drop-placeholder"]}>
@@ -196,7 +206,12 @@ const Middle = () => {
         <div className={styles["right-panel"]}>
           {filteredCards.length > 0 ? (
             filteredCards.map((card) => (
-              <Card key={card.cardId} cardId={card.cardId} officialImageUrl={card.officialImageUrl} onClick={() => handleSellerList(card.cardId)} />
+              <Card key={card.cardId} cardId={card.cardId}
+                officialImageUrl={card.officialImageUrl}
+                onClick={() => handleSellerList(card.cardId)}
+                onDragStartAction={() => setIsDragging(true)}
+                onDragEndAction={() => setIsDragging(false)}
+              />
             ))
           ) : (
             <div className={styles["no-results"]}>

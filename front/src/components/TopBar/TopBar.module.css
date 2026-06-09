@@ -2,76 +2,59 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    background-color: #ffffff;
-    padding: 12px 60px;
+    background-color: var(--bg-white);
+    padding: 10px 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid #eee;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--border-light);
 }
 
 .topBar-buttons {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
 }
 
-.topBar input[type="text"] {
-    padding: 10px 15px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-    outline: none;
-    font-size: 0.9rem;
-    width: 200px;
-    transition: all 0.2s;
-}
-
-.topBar input[type="text"]:focus {
-    border-color: #e3350d;
-    box-shadow: 0 0 0 2px rgba(227, 53, 13, 0.1);
-}
-
 .topBar input[type="button"] {
-    padding: 8px 20px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    color: #444;
+    padding: 8px 16px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    background-color: var(--bg-white);
+    color: var(--text-main);
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
-    outline: none;
+    transition: var(--transition-fast);
 }
 
 .topBar input[type="button"]:hover {
-    background-color: #f8f9fa;
-    border-color: #bbb;
+    background-color: #f0f3f5;
+    border-color: #cbd5e0;
     transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 /* Primary/Logout Button Style */
 .topBar input[value="로그아웃"],
 .topBar input[value="로그인"] {
-    background-color: #2a2a2a;
+    background-color: var(--poke-red);
     color: white;
     border: none;
-    padding: 8px 22px;
+    font-weight: 600;
 }
 
 .topBar input[value="로그아웃"]:hover,
 .topBar input[value="로그인"]:hover {
-    background-color: #444;
+    background-color: var(--poke-red-dark);
+    box-shadow: 0 4px 10px rgba(255, 83, 80, 0.3);
 }
 
 .main_icon {
-    height: 45px;
+    height: 80px;
     width: auto;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: var(--transition-fast);
 }
 
 .main_icon:hover {
@@ -83,24 +66,31 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-    margin-right: 15px;
+    margin-right: 10px;
+    padding: 8px;
+    border-radius: 50%;
+    transition: var(--transition-fast);
+}
+
+.notification-container:hover {
+    background-color: #f1f3f5;
 }
 
 .bell-icon {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
 }
 
 .badge {
     position: absolute;
-    top: -5px;
-    right: -8px;
-    background-color: #ff4d4f;
+    top: 2px;
+    right: 2px;
+    background-color: var(--poke-red);
     color: white;
     border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 0.7rem;
+    padding: 2px 5px;
+    font-size: 0.65rem;
     font-weight: bold;
-    min-width: 18px;
+    min-width: 16px;
     text-align: center;
     border: 2px solid white;
 }

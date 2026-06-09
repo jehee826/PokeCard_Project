@@ -2,9 +2,9 @@ import styles from './TopBar.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { useEffect, useState } from 'react';
-// import Stomp from '@stomp/stompjs';
 import { Client } from '@stomp/stompjs'
 import SockJS from 'sockjs-client';
+import ip from '../../../default.ts';
 
 const TopBar = () => {
   const navigate = useNavigate();
@@ -62,9 +62,10 @@ useEffect(() => {
 
     const stompClient = new Client({
       brokerURL: 'ws://localhost:8080/ws', 
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws-stomp'),
+      webSocketFactory: () => new SockJS(`http://${ip}:8080/ws-stomp`),
+      
       debug: (str) => console.log(`[STOMP] ${str}`),
-      onConnect: (frame) => {
+      onConnect: () => {
         console.log('알림 연결 성공');
 
 

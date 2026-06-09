@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../api/axios';
 import './BuySell.css';
+import ip from "../../../default.ts"
 
 interface MarketPlaceListingsDTO {
   listingId: number;
@@ -25,7 +26,6 @@ interface MarketItemCardProps {
   BASE_URL: string;
 }
 
-// --- 하위 컴포넌트: 개별 판매글 아이템 ---
 const MarketItemCard = ({ item, navigate, BASE_URL }: MarketItemCardProps) => {
   const [isLiked, setIsLiked] = useState<boolean>(false);
 
@@ -52,7 +52,7 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: MarketItemCardProps) => {
       return;
     }
     try {
-      const response = await api.get<string>('/api/market/favorite', {
+      const response = await api.get('/api/market/favorite', {
         params: { listingId: listingId }
       });
       if (response.data.includes("등록")) setIsLiked(true);
@@ -64,44 +64,30 @@ const MarketItemCard = ({ item, navigate, BASE_URL }: MarketItemCardProps) => {
   };
 
   return (
-    <div className="item-info">
+    <div className="item-card">
       {item.imageStrings && item.imageStrings.length > 0 ? (
         <div
           onClick={() => navigate(`/buysell/detail/${item.listingId}`)}
           className="item-image"
-          style={{ backgroundImage: `url(${BASE_URL}${item.imageStrings[0]})`, cursor: 'pointer' }}
+          style={{ backgroundImage: `url("${BASE_URL}${encodeURI(item.imageStrings[0])}")`, cursor: 'pointer' }}
         />
       ) : (
-        <div className="item-image">사진 없음</div>
+        <div className="item-image" style={{ backgroundColor: '#f1f5f9', color: '#94a3b8', fontSize: '0.8rem' }}>사진 없음</div>
       )}
 
-      <h3 onClick={() => navigate(`/buysell/detail/${item.listingId}`)} style={{ cursor: 'pointer', border: '2px solid #cd6332', padding: '5px', borderRadius: '10px' }}>
-        {item.nickname}
-      </h3>
-      <p style={{ color: 'red' }}>{item.price.toLocaleString()}원</p>
+      <div className="item-info">
+        <h3 onClick={() => navigate(`/buysell/detail/${item.listingId}`)} style={{ cursor: 'pointer' }}>
+          {item.nickname}
+        </h3>
+        <div className="item-price">{item.price.toLocaleString()}원</div>
 
-      {/* --- 인터페이스 기반의 정확한 조건부 렌더링 --- */}
-      <div className="button-group">
-        {item.owner === true ? (
-          <>
-            <button onClick={() => alert("예약중 처리 로직")} className="btn-sell">
-              예약중
-            </button>
-            <button onClick={() => alert("판매완료 처리 로직")} className="btn-confirm">
-              판매완료
-            </button>
-          </>
-        ) : (
-          <button className="btn-buy" onClick={() => alert("구매완료 처리 로직")}>구매</button>
-        )}
+        <button
+          onClick={() => handleFavorite(item.listingId)}
+          style={{ cursor: 'pointer', fontSize: '1.2rem', border: 'none', background: 'none', marginTop: '10px', padding: 0, width: 'fit-content' }}
+        >
+          {isLiked ? '❤️' : '🤍'}
+        </button>
       </div>
-
-      <button
-        onClick={() => handleFavorite(item.listingId)}
-        style={{ cursor: 'pointer', fontSize: '1.2rem', border: 'none', background: 'none', marginTop: '10px' }}
-      >
-        {isLiked ? '❤️' : '🤍'}
-      </button>
     </div>
   );
 };
@@ -111,15 +97,13 @@ const BuySellerList = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [items, setItems] = useState<MarketPlaceListingsDTO[]>([]);
-  const BASE_URL = "http://localhost:8080/pokemon/";
+  const BASE_URL = `http://${ip}:8080/pokemon/`;
 
   useEffect(() => {
     const fetchCards = async () => {
-      const token = sessionStorage.getItem('accessToken');
       try {
-        const response = await api.get<MarketPlaceListingsDTO[]>('/api/market/sellerlist', {
-          params: { cardId: id },
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        const response = await api.get('/api/market/sellerlist', {
+          params: { cardId: id }
         });
         setItems(response.data);
       } catch (error) {

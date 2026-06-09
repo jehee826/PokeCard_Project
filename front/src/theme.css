@@ -1,0 +1,72 @@
+:root {
+  /* Pokémon Signature Colors - Red Focused */
+  --poke-red: #FF5350;
+  --poke-red-dark: #D32F2F;
+  --poke-red-deep: #C53030;
+  --poke-yellow: #FFCB05;
+  
+  /* Unified Theme Palette (Red Focus) */
+  --market-accent: #E53E3E; 
+  --market-gold: #D4AF37; 
+  --market-success: #27AE60;
+  --market-sell: #2980B9;
+  
+  
+  /* Light Palette (80%) */
+  --bg-light: #F7F9FC;
+  --bg-white: #FFFFFF;
+  --border-light: #E2E8F0;
+  --text-main: #2D3748;
+  --text-muted: #718096;
+  
+  /* Dark Palette (20%) - Deep Reds & Charcoals */
+  --bg-dark-accent: #1A0505; /* Very dark red-black */
+  --text-on-dark: #FFFFFF;
+  --border-dark-accent: #2D1A1A;
+  
+  /* Semantic Variables (Mapped to Red) */
+  --poke-blue: var(--poke-red);
+  --poke-blue-dark: var(--poke-red-dark);
+  
+  /* Effects */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 25px rgba(229, 62, 62, 0.15); /* Red-tinted shadow */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-light);
+  color: var(--text-main);
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input[type="button"] {
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-light);
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E0;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--poke-red);
+}
