@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate,useLocation } from 'react-router-dom';
 import api from '../../api/axios'; //통신기능
 import './BuySell.css';
+import ip from "../../../default.ts"
 
 interface MarketCard {
     cardId: number;
@@ -22,7 +23,7 @@ const BuySellList = () => {
     const [selectedType, setSelectedType] = useState("All");
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const BASE_URL = "http://localhost:8080/pokemon/";
+    const BASE_URL = `http://${ip}:8080/pokemon/`;
     const types = ["All", "풀", "불", "물", "벌레", "악", "드래곤"];
 
     // 페이지 로드 시 DB에서 데이터를 가져오는 useEffect

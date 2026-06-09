@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../api/axios';
 import './BuySell.css';
+import ip from "../../../default.ts"
 
 interface MarketPlaceListingsDTO {
   listingId: number;
@@ -96,7 +97,7 @@ const BuySellerList = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [items, setItems] = useState<MarketPlaceListingsDTO[]>([]);
-  const BASE_URL = "http://localhost:8080/pokemon/";
+  const BASE_URL = `http://${ip}:8080/pokemon/`;
 
   useEffect(() => {
     const fetchCards = async () => {

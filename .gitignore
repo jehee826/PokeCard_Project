@@ -1,10 +1,5 @@
 # Backend (Spring)
-<<<<<<< HEAD
-back/*
-back/src/main/resources/application.yml
-=======
 back/*         
->>>>>>> develop
 !back/src/
 back/src/main/resources/application.yml      
 
