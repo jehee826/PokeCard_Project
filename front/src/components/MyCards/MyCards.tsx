@@ -16,7 +16,7 @@ const MyCards = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [myCards, setMyCards] = useState<MyCard[]>([]);
   
-  const types = ["Grass", "Fire", "Water", "Bug", "Dragon", "Normal"];
+  const types = ["노말", "드래곤", "물", "불", "악", "에스퍼", "전기", "풀"];
 
   useEffect(() => {
     const fetchMyCards = async () => {

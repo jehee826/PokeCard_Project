@@ -12,6 +12,7 @@
 }
 
 /* Sidebar for Search & Filter */
+/* Sidebar for Search & Filter */
 .sidebar {
   width: 320px;
   background-color: var(--bg-light);
@@ -20,6 +21,8 @@
   display: flex;
   flex-direction: column;
   gap: 35px;
+  overflow-y: auto;
+  height: 100%;
 }
 
 .sidebar-title {
