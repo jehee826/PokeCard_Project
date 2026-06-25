@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import './BuySell.css';
 import { useAuth } from '../AuthContext';
+import ip from "../../../default.ts"
 
 interface detailCard {
     listingId: number;
@@ -29,7 +30,7 @@ const BuySellDetail = () => {
     const [imageList, setImageList] = useState<string[]>([]);
     const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
-    const BASE_URL = "http://localhost:8080/pokemon/";
+    const BASE_URL = `http://${ip}:8080/pokemon/`;
 
     useEffect(() => {
         const fetchCards = async () => {
